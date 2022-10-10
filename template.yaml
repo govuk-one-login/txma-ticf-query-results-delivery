@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  fraud-secure-site
+
+  Simple solution for storing data for fraud related enquiries
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 1
+
+Resources:
+
+  # this does not need to be a complicated table as it's only storing:
+  # FraudId (Primary Key): a hash
+  # DownloadsRemaining: a number initialised on creation
+  # S3FraudDataFile: The S3 object that the user needs to gain access too
+  SecureFraudSiteData:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey: FraudId
+      
+  SecureFraudSiteBucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      AccessControl: Private
+      LoggingConfiguration:
+        DestinationBucketName: !Ref SecureFraudSiteLoggingBucket
+        LogFilePrefix: secure-fraud-request-logs
+
+  # this bucket logs all requests for the above bucket (just in case)
+  SecureFraudSiteLoggingBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: LogDeliveryWrite
+
+  SecureFraudSiteApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: test
+
+  HereBeDragonsFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: here-be-dragons/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Architectures:
+        - arm64
+      Policies:
+        - DynamoDbReadPolicy:
+          TableName: !Ref SecureFraudSiteData
+      Environment:
+        Variables:
+          FRAUDTABLE: !Ref SecureFraudSiteData
+      Events:
+        HereBeDragons:
+          Type: HttpApi 
+          Properties:
+            ApiId: SecureFraudSiteApi
+            Method: get
+            Path: /secure/{f}
+  
+  HereAreDragonsFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: here-are-dragons/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Architectures:
+        - arm64
+      Policies:
+        - DynamoDbReadPolicy:
+          TableName: !Ref SecureFraudSiteData
+        - DynamoDbWritePolicy:
+          TableName: !Ref SecureFraudSiteData
+        - S3CrudPolicy:
+          BucketName: !Ref SecureFraudSiteBucket
+      Environment:
+        Variables:
+          FRAUDTABLE: !Ref SecureFraudSiteData
+      Events:
+        HereBeDragons:
+          Type: HttpApi 
+          Properties:
+            ApiId: SecureFraudSiteApi
+            Method: post
+            Path: /secure/{f}
+
+Outputs:
+  SecureFraudSite: 
+    Description: "The root of the website for downloading secure fraud data"
+    Value: !Sub "https://${SecureFraudSiteApi}.execute-api.${AWS::Region}.amazonaws.com/test/"
+  HereBeDragonsFunction:
+    Description: "Function to show security page before link"
+    Value: !GetAtt HereBeDragonsFunction.Arn
+  HereAreDragonsFunction:
+    Description: "Function to take 1 from the number of downloads remaining and redirect user to download the data"
+    Value: !GetAtt HereAreDragonsFunction.Arn
+  SecureFraudDataTable:
+    Description: "DynamoDB Table for storing the data for the site"
+    Value: !GetAtt SecureFraudSiteData.Arn
+  SecureFraudS3Bucket:
+    Description: "S3Bucket for storing the data for download"
+    Value: !GetAtt SecureFraudSiteBucket.Arn
+  SecureFraudS3LoggingBucket:
+    Description: "S3Bucket for logging access to the Secure Fraud S3 bucket"
+    Value: !GetAtt SecureFraudSiteLoggingBucket.Arn
+
+
+    
