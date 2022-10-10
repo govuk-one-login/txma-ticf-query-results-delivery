@@ -14,7 +14,7 @@ export const handler = async (
     const fraudDataResponse = await getDownloadAvailabilityResult(
       event.pathParameters.f as string
     )
-    if (!fraudDataResponse.hasAvailableDownloads) {
+    if (!fraudDataResponse.hasAvailableDownload) {
       return {
         statusCode: 404,
         body: 'Not found'

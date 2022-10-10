@@ -1813,7 +1813,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.1.2":
+"@types/jest-when@npm:3.5.2":
+  version: 3.5.2
+  resolution: "@types/jest-when@npm:3.5.2"
+  dependencies:
+    "@types/jest": "*"
+  checksum: 106230dd71ee266bbd7620ab339a7305054e56ba7638f0eff9f222e67a959df0ad68a7f0108156c50f7005881bae59cd5c38b3760c101d060cdb3dac9cd77ee2
+  languageName: node
+  linkType: hard
+
+"@types/jest@npm:*, @types/jest@npm:29.1.2":
   version: 29.1.2
   resolution: "@types/jest@npm:29.1.2"
   dependencies:
@@ -2904,6 +2913,7 @@ __metadata:
     "@jest/types": 29.1.2
     "@types/aws-lambda": 8.10.106
     "@types/jest": 29.1.2
+    "@types/jest-when": 3.5.2
     "@types/node": 18.8.3
     "@typescript-eslint/eslint-plugin": 5.39.0
     "@typescript-eslint/parser": 5.39.0
@@ -2912,6 +2922,7 @@ __metadata:
     eslint-plugin-jest: 27.1.1
     husky: 8.0.1
     jest: 29.1.2
+    jest-when: 3.5.1
     lint-staged: 13.0.3
     prettier: 2.7.1
     ts-jest: 29.0.3
@@ -4382,6 +4393,15 @@ __metadata:
     jest-util: ^29.1.2
     string-length: ^4.0.1
   checksum: 79577ff1dcf1a9c2bf0939f37f9ce23aa24f43eb337b33b04b017bb45151b7f79e7c64f888020caa38df5fba37f8915e4bde77514ccbbcdb4389aa5f7c67ab05
+  languageName: node
+  linkType: hard
+
+"jest-when@npm:3.5.1":
+  version: 3.5.1
+  resolution: "jest-when@npm:3.5.1"
+  peerDependencies:
+    jest: ">= 25"
+  checksum: 1efb9f497f7c846fe8b0f4125d5f449c4a4d78d5d0afa910d134b301ae4c119ea52c9465db38d2146269d42808afe8f3a4328d1d656878a9a69458ee653f6499
   languageName: node
   linkType: hard
 

@@ -95,7 +95,7 @@ Resources:
           TableName: !Ref SecureFraudSiteData
       Environment:
         Variables:
-          FRAUDTABLE: !Ref SecureFraudSiteData
+          FRAUD_TABLE: !Ref SecureFraudSiteData
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         DownloadWarning:

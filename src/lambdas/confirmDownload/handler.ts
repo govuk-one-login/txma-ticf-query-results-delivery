@@ -9,34 +9,26 @@ export const handler = async (
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return {
         statusCode: 400,
-        body: 'Invalid parameters'
+        body: '<html><body>Invalid parameters</body></html>'
       }
     }
     const fraudDataResponse = await getDownloadAvailabilityResult(
-      event.pathParameters.f as string
+      event.pathParameters.downloadHash as string
     )
 
-    if (!fraudDataResponse.hasAvailableDownloads) {
-      // 2. return a 404 if [1] fails
+    if (!fraudDataResponse.hasAvailableDownload) {
       return {
         statusCode: 404,
         body: 'Not found'
       }
     }
-    // 3. create the 30 second expiring link to the s3 file
-
-    // get the object data from the DynamoDB Item
-
-    // create the expiring link
-
-    // 4. redirect the user to the link in [3]
 
     const body = `<html>
         <header>
-        <title>Here Are Dragons</title>
+        <title>Downloading data</title>
         </header>
         <body>
-            <h1>Fraud Secure Page - Here Be Dragons</h1>
+            <h1>Fraud Secure Page - Downloading data</h1>
             <p>Redirecting</p>
         </body>
         </html>`

@@ -5,6 +5,6 @@ export const getDownloadAvailabilityResult = async (
 ): Promise<DownloadAvailibilityResult> => {
   console.log('looking for download availability for ', downloadHash)
   return {
-    hasAvailableDownloads: false
+    hasAvailableDownload: false
   }
 }
