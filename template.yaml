@@ -1,11 +1,30 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Allow TICF analysts to view the results of Athena queries on TxMA audit data
+
+Parameters:
+  CodeSigningConfigArn:
+    Description: The ARN of the Code Signing Config to use, provided by the deployment pipeline
+    Type: String
+    Default: none
+  Environment:
+    Description: The environment type
+    Type: String
+    AllowedValues:
+      - dev
+      - build
+      - staging
+      - integration
+      - production
+  PermissionsBoundary:
+    Description: The ARN of the permissions boundary to apply to any role created by the template
+    Type: String
+    Default: none
+
 Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
 
-  
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -50,7 +69,34 @@ Resources:
   SecureFraudSiteData:
     Type: AWS::Serverless::SimpleTable
     Properties:
-      PrimaryKey: FraudId
+      PrimaryKey:
+        Name: FraudId
+        Type: String
+      SSESpecification:
+        SSEEnabled: true
+        SSEType: KMS
+        KMSMasterKeyId: !GetAtt DatabaseKmsKey.Arn
+  
+  DatabaseKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - kms:*
+            Resource:
+              - '*'
+
+  DatabaseKmsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub alias/${AWS::StackName}/sandbox/secure-fraud-site-database-kms-key
+      TargetKeyId: !Ref DatabaseKmsKey
 
   SecureFraudSiteApi:
     #checkov:skip=CKV_AWS_120:We explicitly don't want caching
@@ -112,21 +158,40 @@ Resources:
     Properties:
       Handler: confirmDownload.handler
       Policies:
-        - DynamoDbReadPolicy:
-          TableName: !Ref SecureFraudSiteData
+        - Statement:
+          - Sid: DynamoDBReadWrite
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+            Resource:
+              - !GetAtt SecureFraudSiteData.Arn
+          - Sid: KmsDatabaseDecryptionKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource:
+              - !GetAtt DatabaseKmsKey.Arn
       Environment:
         Variables:
           FRAUDTABLE: !Ref SecureFraudSiteData
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         ConfirmDownload:
-          Type: HttpApi 
+          Type: Api 
           Properties:
-            ApiId: SecureFraudSiteApi
+            RestApiId: !Ref SecureFraudSiteApi
             Method: get
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
   
+  ConfirmDownloadFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: !GetAtt LogsKmsKey.Arn
+      LogGroupName: !Join ['', ['/aws/lambda/', !Ref ConfirmDownloadFunction]]
+      RetentionInDays: 30
+
   DownloadWarningFunction:
     #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
     #checkov:skip=CKV_AWS_117:VPC not required
@@ -134,19 +199,35 @@ Resources:
     Properties:
       Handler: downloadWarning.handler
       Policies:
-        - DynamoDbReadPolicy:
-          TableName: !Ref SecureFraudSiteData
-        - DynamoDbWritePolicy:
-          TableName: !Ref SecureFraudSiteData
+        - Statement:
+          - Sid: DynamoDBRead
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+            Resource:
+              - !GetAtt SecureFraudSiteData.Arn
+          - Sid: KmsDatabaseDecryptionKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource:
+              - !GetAtt DatabaseKmsKey.Arn
       Environment:
         Variables:
           FRAUD_TABLE: !Ref SecureFraudSiteData
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         DownloadWarning:
-          Type: HttpApi 
+          Type: Api 
           Properties:
-            ApiId: SecureFraudSiteApi
+            RestApiId: !Ref SecureFraudSiteApi
             Method: post
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
+
+  DownloadWarningFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: !GetAtt LogsKmsKey.Arn
+      LogGroupName: !Join ['', ['/aws/lambda/', !Ref DownloadWarningFunction]]
+      RetentionInDays: 30
