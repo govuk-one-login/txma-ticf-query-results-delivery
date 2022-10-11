@@ -71,7 +71,6 @@ Resources:
       Environment:
         Variables:
           FRAUDTABLE: !Ref SecureFraudSiteData
-            KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         ConfirmDownload:
