@@ -1,0 +1,23 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "ticf-query-results"
+region = "eu-west-2"
+tags = "project=\"di-txma-ticf-ticf-query-results-delivery\" stage=\"build\""
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides=[
+    "Environment=build",
+    "CodeSigningConfigArn=none",
+    "PermissionsBoundary=none"
+]
+
+[build.deploy.parameters]
+stack_name = "ticf-query-results"
+region = "eu-west-2"
+tags = "project=\"di-txma-ticf-ticf-query-results-delivery\" stage=\"build\""
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides=[
+    "Environment=build",
+    "CodeSigningConfigArn=none",
+    "PermissionsBoundary=none"
+]

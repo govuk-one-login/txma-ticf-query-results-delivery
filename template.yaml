@@ -1,16 +1,47 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  fraud-secure-site
+Description: Allow TICF analysts to view the results of Athena queries on TxMA audit data
+Conditions:
+  UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
+  UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
 
-  Simple solution for storing data for fraud related enquiries
   
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 1
+    CodeSigningConfigArn: !If [UseCodeSigning, !Ref CodeSigningConfigArn, !Ref AWS::NoValue]
+    CodeUri: dist/
+    Environment:
+      Variables:
+        NODE_OPTIONS: --enable-source-maps
+    PermissionsBoundary: !If [UsePermissionsBoundary, !Ref PermissionsBoundary, !Ref AWS::NoValue]
+    Runtime: nodejs16.x
+    Timeout: 15
+  Api:
+    OpenApiVersion: 3.0.1
 
 Resources:
+
+  LambdaKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - kms:*
+            Resource:
+              - '*'
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - kms:Decrypt
+            Resource: '*'
 
   # this does not need to be a complicated table as it's only storing:
   # FraudId (Primary Key): a hash
@@ -20,93 +51,102 @@ Resources:
     Type: AWS::Serverless::SimpleTable
     Properties:
       PrimaryKey: FraudId
-      
-  SecureFraudSiteBucket:
-    Type: AWS::S3::Bucket
-    Properties: 
-      AccessControl: Private
-      LoggingConfiguration:
-        DestinationBucketName: !Ref SecureFraudSiteLoggingBucket
-        LogFilePrefix: secure-fraud-request-logs
-
-  # this bucket logs all requests for the above bucket (just in case)
-  SecureFraudSiteLoggingBucket:
-    Type: 'AWS::S3::Bucket'
-    Properties:
-      AccessControl: LogDeliveryWrite
 
   SecureFraudSiteApi:
-    Type: AWS::Serverless::HttpApi
+    #checkov:skip=CKV_AWS_120:We explicitly don't want caching
+    Type: AWS::Serverless::Api
     Properties:
-      StageName: test
+      AccessLogSetting:
+        DestinationArn: !GetAtt SecureFraudSiteAccessLogGroup.Arn
+        Format: $context.requestId
+      Name: !Sub ${AWS::StackName}-secure-fraud-site-api
+      StageName: default
+      TracingEnabled: true
 
-  HereBeDragonsFunction:
+  SecureFraudSiteAccessLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: !GetAtt LogsKmsKey.Arn
+      LogGroupName: !Sub /aws/apigateway/${SecureFraudSiteApi}-access-logs
+      RetentionInDays: 7
+
+  LogsKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - kms:*
+            Resource:
+              - '*'
+          - Effect: Allow
+            Principal:
+              Service: !Sub logs.${AWS::Region}.amazonaws.com
+            Action:
+              - kms:Decrypt*
+              - kms:Describe*
+              - kms:Encrypt*
+              - kms:GenerateDataKey*
+              - kms:ReEncrypt*
+            Resource:
+              - '*'
+            Condition:
+              ArnLike:
+                kms:EncryptionContext:aws:logs:arn: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*
+
+  LogsKmsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub alias/${AWS::StackName}/sandbox/secure-fraud-site-logs-kms-key
+      TargetKeyId: !Ref LogsKmsKey
+
+  ConfirmDownloadFunction:
+    #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
+    #checkov:skip=CKV_AWS_117:VPC not required
     Type: AWS::Serverless::Function 
     Properties:
-      CodeUri: here-be-dragons/
-      Handler: app.lambdaHandler
-      Runtime: nodejs14.x
-      Architectures:
-        - arm64
+      Handler: confirmDownload.handler
       Policies:
         - DynamoDbReadPolicy:
           TableName: !Ref SecureFraudSiteData
       Environment:
         Variables:
           FRAUDTABLE: !Ref SecureFraudSiteData
+      KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
-        HereBeDragons:
+        ConfirmDownload:
           Type: HttpApi 
           Properties:
             ApiId: SecureFraudSiteApi
             Method: get
-            Path: /secure/{f}
+            Path: /secure/{downloadHash}
+      ReservedConcurrentExecutions: 10
   
-  HereAreDragonsFunction:
+  DownloadWarningFunction:
+    #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
+    #checkov:skip=CKV_AWS_117:VPC not required
     Type: AWS::Serverless::Function 
     Properties:
-      CodeUri: here-are-dragons/
-      Handler: app.lambdaHandler
-      Runtime: nodejs14.x
-      Architectures:
-        - arm64
+      Handler: downloadWarning.handler
       Policies:
         - DynamoDbReadPolicy:
           TableName: !Ref SecureFraudSiteData
         - DynamoDbWritePolicy:
           TableName: !Ref SecureFraudSiteData
-        - S3CrudPolicy:
-          BucketName: !Ref SecureFraudSiteBucket
       Environment:
         Variables:
-          FRAUDTABLE: !Ref SecureFraudSiteData
+          FRAUD_TABLE: !Ref SecureFraudSiteData
+      KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
-        HereBeDragons:
+        DownloadWarning:
           Type: HttpApi 
           Properties:
             ApiId: SecureFraudSiteApi
             Method: post
-            Path: /secure/{f}
-
-Outputs:
-  SecureFraudSite: 
-    Description: "The root of the website for downloading secure fraud data"
-    Value: !Sub "https://${SecureFraudSiteApi}.execute-api.${AWS::Region}.amazonaws.com/test/"
-  HereBeDragonsFunction:
-    Description: "Function to show security page before link"
-    Value: !GetAtt HereBeDragonsFunction.Arn
-  HereAreDragonsFunction:
-    Description: "Function to take 1 from the number of downloads remaining and redirect user to download the data"
-    Value: !GetAtt HereAreDragonsFunction.Arn
-  SecureFraudDataTable:
-    Description: "DynamoDB Table for storing the data for the site"
-    Value: !GetAtt SecureFraudSiteData.Arn
-  SecureFraudS3Bucket:
-    Description: "S3Bucket for storing the data for download"
-    Value: !GetAtt SecureFraudSiteBucket.Arn
-  SecureFraudS3LoggingBucket:
-    Description: "S3Bucket for logging access to the Secure Fraud S3 bucket"
-    Value: !GetAtt SecureFraudSiteLoggingBucket.Arn
-
-
-    
+            Path: /secure/{downloadHash}
+      ReservedConcurrentExecutions: 10
