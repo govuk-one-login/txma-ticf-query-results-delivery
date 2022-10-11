@@ -8,7 +8,7 @@ export const handler = async (
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return {
         statusCode: 400,
-        body: 'Invalid parameters'
+        body: '<html><body>Invalid parameters</body></html>'
       }
     }
     const fraudDataResponse = await getDownloadAvailabilityResult(
