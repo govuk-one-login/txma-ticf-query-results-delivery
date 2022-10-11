@@ -174,7 +174,7 @@ Resources:
               - !GetAtt DatabaseKmsKey.Arn
       Environment:
         Variables:
-          FRAUDTABLE: !Ref SecureFraudSiteData
+          SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         ConfirmDownload:
@@ -214,7 +214,7 @@ Resources:
               - !GetAtt DatabaseKmsKey.Arn
       Environment:
         Variables:
-          FRAUD_TABLE: !Ref SecureFraudSiteData
+          SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         DownloadWarning:

@@ -1,5 +1,5 @@
 import { DownloadAvailibilityResult } from '../types/downloadAvailabilityResult'
-
+// import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 export const getDownloadAvailabilityResult = async (
   downloadHash: string
 ): Promise<DownloadAvailibilityResult> => {

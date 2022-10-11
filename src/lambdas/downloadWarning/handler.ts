@@ -12,7 +12,7 @@ export const handler = async (
       }
     }
     const fraudDataResponse = await getDownloadAvailabilityResult(
-      event.pathParameters.f as string
+      event.pathParameters.downloadHash as string
     )
     if (!fraudDataResponse.hasAvailableDownload) {
       return {
@@ -23,10 +23,10 @@ export const handler = async (
 
     const body = `<html>
                <header>
-               <title>Here Be Dragons</title>
+               <title>Download TICF analyst data</title>
                </header>
                <body>
-                   <h1>Fraud Secure Page - Here Be Dragons</h1>
+                   <h1>TiCF analyst data download</h1>
                    <p>Downloading data from this page is for authorised people. If this is not you, please close this page immediately.</p>
                    <p>If you are authorised to download the data please click the link below.</p>
                    <form method="POST">
