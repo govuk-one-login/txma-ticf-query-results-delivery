@@ -1,13 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  fraud-secure-site
-
-  Simple solution for storing data for fraud related enquiries
+Description: Allow TICF analysts to view the results of Athena queries on TxMA audit data
 Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
 
+  
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -55,9 +53,57 @@ Resources:
       PrimaryKey: FraudId
 
   SecureFraudSiteApi:
-    Type: AWS::Serverless::HttpApi
+    #checkov:skip=CKV_AWS_120:We explicitly don't want caching
+    Type: AWS::Serverless::Api
     Properties:
-      StageName: test
+      AccessLogSetting:
+        DestinationArn: !GetAtt SecureFraudSiteAccessLogGroup.Arn
+        Format: $context.requestId
+      Name: !Sub ${AWS::StackName}-secure-fraud-site-api
+      StageName: default
+      TracingEnabled: true
+
+  SecureFraudSiteAccessLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: !GetAtt LogsKmsKey.Arn
+      LogGroupName: !Sub /aws/apigateway/${SecureFraudSiteApi}-access-logs
+      RetentionInDays: 7
+
+  LogsKmsKey:
+    Type: AWS::KMS::Key
+    Properties:
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - kms:*
+            Resource:
+              - '*'
+          - Effect: Allow
+            Principal:
+              Service: !Sub logs.${AWS::Region}.amazonaws.com
+            Action:
+              - kms:Decrypt*
+              - kms:Describe*
+              - kms:Encrypt*
+              - kms:GenerateDataKey*
+              - kms:ReEncrypt*
+            Resource:
+              - '*'
+            Condition:
+              ArnLike:
+                kms:EncryptionContext:aws:logs:arn: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*
+
+  LogsKmsKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub alias/${AWS::StackName}/sandbox/secure-fraud-site-logs-kms-key
+      TargetKeyId: !Ref LogsKmsKey
 
   ConfirmDownloadFunction:
     #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
@@ -104,5 +150,3 @@ Resources:
             Method: post
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
-
-    
