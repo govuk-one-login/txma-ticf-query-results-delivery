@@ -50,7 +50,9 @@ Resources:
   SecureFraudSiteData:
     Type: AWS::Serverless::SimpleTable
     Properties:
-      PrimaryKey: FraudId
+      PrimaryKey:
+        Name: FraudId
+        Type: String
 
   SecureFraudSiteApi:
     #checkov:skip=CKV_AWS_120:We explicitly don't want caching
@@ -112,17 +114,23 @@ Resources:
     Properties:
       Handler: confirmDownload.handler
       Policies:
-        - DynamoDbReadPolicy:
-          TableName: !Ref SecureFraudSiteData
+        - Statement:
+          - Sid: DynamoDBReadWrite
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+            Resource:
+              - !GetAtt SecureFraudSiteData.Arn
       Environment:
         Variables:
           FRAUDTABLE: !Ref SecureFraudSiteData
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         ConfirmDownload:
-          Type: HttpApi 
+          Type: Api 
           Properties:
-            ApiId: SecureFraudSiteApi
+            RestApiId: !Ref SecureFraudSiteApi
             Method: get
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
@@ -134,19 +142,22 @@ Resources:
     Properties:
       Handler: downloadWarning.handler
       Policies:
-        - DynamoDbReadPolicy:
-          TableName: !Ref SecureFraudSiteData
-        - DynamoDbWritePolicy:
-          TableName: !Ref SecureFraudSiteData
+        - Statement:
+          - Sid: DynamoDBRead
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+            Resource:
+              - !GetAtt SecureFraudSiteData.Arn
       Environment:
         Variables:
           FRAUD_TABLE: !Ref SecureFraudSiteData
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         DownloadWarning:
-          Type: HttpApi 
+          Type: Api 
           Properties:
-            ApiId: SecureFraudSiteApi
+            RestApiId: !Ref SecureFraudSiteApi
             Method: post
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
