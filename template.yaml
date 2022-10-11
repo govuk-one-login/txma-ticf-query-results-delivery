@@ -185,6 +185,13 @@ Resources:
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
   
+  ConfirmDownloadFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: !GetAtt LogsKmsKey.Arn
+      LogGroupName: !Join ['', ['/aws/lambda/', !Ref ConfirmDownloadFunction]]
+      RetentionInDays: 30
+
   DownloadWarningFunction:
     #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
     #checkov:skip=CKV_AWS_117:VPC not required
@@ -217,3 +224,10 @@ Resources:
             Method: post
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
+
+  DownloadWarningFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: !GetAtt LogsKmsKey.Arn
+      LogGroupName: !Join ['', ['/aws/lambda/', !Ref DownloadWarningFunction]]
+      RetentionInDays: 30
