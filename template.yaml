@@ -1,9 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  fraud-secure-site
-
-  Simple solution for storing data for fraud related enquiries
+Description: Allow TICF analysts to view the results of Athena queries on TxMA audit data
   
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -107,6 +104,3 @@ Outputs:
   SecureFraudS3LoggingBucket:
     Description: "S3Bucket for logging access to the Secure Fraud S3 bucket"
     Value: !GetAtt SecureFraudSiteLoggingBucket.Arn
-
-
-    
