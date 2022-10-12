@@ -19,9 +19,12 @@ export const getSecureDownloadRecord = async (
   }
 
   const responseObject = data.Item
+
   const record = {
     downloadRecordId: responseObject?.downloadRecordId?.S,
-    downloadsRemaining: responseObject?.downloadsRemaining?.N,
+    downloadsRemaining: parseInt(
+      responseObject?.downloadsRemaining?.N as string
+    ),
     s3ResultsArn: responseObject?.s3ResultsArn?.S
   }
 

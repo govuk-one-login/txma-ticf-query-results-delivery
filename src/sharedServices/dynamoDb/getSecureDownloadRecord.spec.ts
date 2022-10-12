@@ -1,4 +1,5 @@
 import {
+  AttributeValue,
   DynamoDBClient,
   GetItemCommand,
   GetItemOutput
@@ -17,7 +18,7 @@ describe('dynamoDBGet', () => {
     jest.resetAllMocks()
   })
 
-  it('Finds valid request query in database', async () => {
+  it('Returns result if value found in database', async () => {
     const mockDbContents = {
       Item: {
         downloadRecordId: { S: DOWNLOAD_HASH },
@@ -35,19 +36,19 @@ describe('dynamoDBGet', () => {
     })
   })
 
-  it('Does not find request query in database - empty object response', async () => {
+  it('Returns null if nothing found for hash', async () => {
     dynamoMock.on(GetItemCommand).resolves(null)
 
     const result = await getSecureDownloadRecord(DOWNLOAD_HASH)
     expect(result).toBe(null)
   })
 
-  it('Finds Request query but cant turn info into a valid query', async () => {
+  it('throws error when download record is malformed', async () => {
     const mockDbContents = {
       Item: {
-        wrongColumn: { S: '12' }
+        someProperty: { S: 'someValue' }
       }
-    }
+    } as GetItemOutput
 
     dynamoMock.on(GetItemCommand).resolves(mockDbContents)
 
@@ -55,4 +56,26 @@ describe('dynamoDBGet', () => {
       'Secure download data returned from db was not of correct type'
     )
   })
+
+  it.each(['downloadRecordId', 'downloadsRemaining', 's3ResultsArn'])(
+    'Finds download record id but property %p missing',
+    async (propertyName: string) => {
+      const mockDbContents = {
+        Item: {
+          downloadRecordId: { S: DOWNLOAD_HASH },
+          downloadsRemaining: { N: '3' },
+          s3ResultsArn: { S: TEST_S3_OBJECT_ARN }
+        }
+      } as GetItemOutput
+      delete (mockDbContents.Item as Record<string, AttributeValue>)[
+        propertyName
+      ]
+
+      dynamoMock.on(GetItemCommand).resolves(mockDbContents)
+
+      await expect(getSecureDownloadRecord(DOWNLOAD_HASH)).rejects.toThrow(
+        'Secure download data returned from db was not of correct type'
+      )
+    }
+  )
 })
