@@ -70,7 +70,7 @@ Resources:
     Type: AWS::Serverless::SimpleTable
     Properties:
       PrimaryKey:
-        Name: FraudId
+        Name: downloadHash
         Type: String
       SSESpecification:
         SSEEnabled: true

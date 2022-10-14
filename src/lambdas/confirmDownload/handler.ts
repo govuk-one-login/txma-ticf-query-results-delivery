@@ -9,7 +9,10 @@ export const handler = async (
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return {
         statusCode: 400,
-        body: '<html><body>Invalid parameters</body></html>'
+        body: '<html><body>Invalid parameters</body></html>',
+        headers: {
+          'Content-type': 'text/html'
+        }
       }
     }
     const fraudDataResponse = await getDownloadAvailabilityResult(
@@ -19,7 +22,10 @@ export const handler = async (
     if (!fraudDataResponse.hasAvailableDownload) {
       return {
         statusCode: 404,
-        body: 'Not found'
+        body: '<html><body>Download not found</body></html>',
+        headers: {
+          'Content-type': 'text/html'
+        }
       }
     }
 
@@ -37,7 +43,10 @@ export const handler = async (
       body,
       statusCode: 301,
       headers: {
-        location: createTemporaryS3Link(fraudDataResponse.sResultsArn as string)
+        location: createTemporaryS3Link(
+          fraudDataResponse.sResultsArn as string
+        ),
+        'Content-type': 'text/html'
       }
     }
   } catch (err) {
@@ -45,7 +54,10 @@ export const handler = async (
 
     return {
       statusCode: 500,
-      body: '<html><body>There was an error processing your request</body></html>'
+      body: '<html><body>There was an error processing your request</body></html>',
+      headers: {
+        'Content-type': 'text/html'
+      }
     }
   }
 }
