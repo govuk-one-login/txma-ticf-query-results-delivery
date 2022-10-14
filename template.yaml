@@ -181,7 +181,7 @@ Resources:
           Type: Api 
           Properties:
             RestApiId: !Ref SecureFraudSiteApi
-            Method: get
+            Method: post
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
   
