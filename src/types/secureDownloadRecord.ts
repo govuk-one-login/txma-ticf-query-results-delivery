@@ -1,5 +1,5 @@
 export interface SecureDownloadRecord {
-  downloadRecordId: string
+  downloadHash: string
   downloadsRemaining: number
   s3ResultsArn: string
 }
@@ -9,7 +9,7 @@ export const isSecureDownloadRecord = (
 ): arg is SecureDownloadRecord => {
   const test = arg as SecureDownloadRecord
   return (
-    typeof test?.downloadRecordId === 'string' &&
+    typeof test?.downloadHash === 'string' &&
     typeof test?.downloadsRemaining === 'number' &&
     typeof test?.s3ResultsArn === 'string' &&
     test?.downloadsRemaining >= 0

@@ -21,7 +21,7 @@ export const getSecureDownloadRecord = async (
   const responseObject = data.Item
 
   const record = {
-    downloadRecordId: responseObject?.downloadRecordId?.S,
+    downloadHash: responseObject?.downloadHash?.S,
     downloadsRemaining: parseInt(
       responseObject?.downloadsRemaining?.N as string
     ),

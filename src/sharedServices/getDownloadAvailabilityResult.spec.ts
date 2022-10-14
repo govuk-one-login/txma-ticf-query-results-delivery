@@ -16,7 +16,7 @@ describe('getDownloadAvailabilityResult', () => {
 
   const givenDownloadRecordAvailable = (downloadsRemaining: number) => {
     when(getSecureDownloadRecord).mockResolvedValue({
-      downloadRecordId: DOWNLOAD_HASH,
+      downloadHash: DOWNLOAD_HASH,
       downloadsRemaining,
       s3ResultsArn: TEST_S3_OBJECT_ARN
     })
@@ -46,7 +46,7 @@ describe('getDownloadAvailabilityResult', () => {
 
   it('should indicate when the maximum number of downloads has been exceeded', async () => {
     when(getSecureDownloadRecord).mockResolvedValue({
-      downloadRecordId: DOWNLOAD_HASH,
+      downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 0,
       s3ResultsArn: TEST_S3_OBJECT_ARN
     })

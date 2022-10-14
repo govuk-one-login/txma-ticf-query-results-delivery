@@ -21,7 +21,7 @@ describe('dynamoDBGet', () => {
   it('Returns result if value found in database', async () => {
     const mockDbContents = {
       Item: {
-        downloadRecordId: { S: DOWNLOAD_HASH },
+        downloadHash: { S: DOWNLOAD_HASH },
         downloadsRemaining: { N: '3' },
         s3ResultsArn: { S: TEST_S3_OBJECT_ARN }
       }
@@ -30,7 +30,7 @@ describe('dynamoDBGet', () => {
 
     const result = await getSecureDownloadRecord(DOWNLOAD_HASH)
     expect(result).toEqual({
-      downloadRecordId: DOWNLOAD_HASH,
+      downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 3,
       s3ResultsArn: TEST_S3_OBJECT_ARN
     })
@@ -57,12 +57,12 @@ describe('dynamoDBGet', () => {
     )
   })
 
-  it.each(['downloadRecordId', 'downloadsRemaining', 's3ResultsArn'])(
+  it.each(['downloadHash', 'downloadsRemaining', 's3ResultsArn'])(
     'Finds download record id but property %p missing',
     async (propertyName: string) => {
       const mockDbContents = {
         Item: {
-          downloadRecordId: { S: DOWNLOAD_HASH },
+          downloadHash: { S: DOWNLOAD_HASH },
           downloadsRemaining: { N: '3' },
           s3ResultsArn: { S: TEST_S3_OBJECT_ARN }
         }
