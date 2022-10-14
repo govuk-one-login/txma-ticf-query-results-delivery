@@ -1,26 +1,26 @@
 import { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
+import {
+  invalidParametersResponse,
+  notFoundResponse,
+  serverErrorResponse
+} from '../../sharedServices/responseHelpers'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
 
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
+  console.log('received request', JSON.stringify(event))
   try {
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
-      return {
-        statusCode: 400,
-        body: '<html><body>Invalid parameters</body></html>'
-      }
+      return invalidParametersResponse()
     }
-    const fraudDataResponse = await getDownloadAvailabilityResult(
+    const downloadAvailabilityResult = await getDownloadAvailabilityResult(
       event.pathParameters.downloadHash as string
     )
 
-    if (!fraudDataResponse.hasAvailableDownload) {
-      return {
-        statusCode: 404,
-        body: 'Not found'
-      }
+    if (!downloadAvailabilityResult.hasAvailableDownload) {
+      return notFoundResponse()
     }
 
     const body = `<html>
@@ -37,15 +37,15 @@ export const handler = async (
       body,
       statusCode: 301,
       headers: {
-        location: createTemporaryS3Link(fraudDataResponse.s3ObjectArn as string)
+        location: createTemporaryS3Link(
+          downloadAvailabilityResult.sResultsArn as string
+        ),
+        'Content-type': 'text/html'
       }
     }
   } catch (err) {
     console.log(err)
 
-    return {
-      statusCode: 500,
-      body: '<html><body>There was an error processing your request</body></html>'
-    }
+    return serverErrorResponse()
   }
 }

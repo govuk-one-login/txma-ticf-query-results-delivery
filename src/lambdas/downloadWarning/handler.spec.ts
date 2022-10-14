@@ -1,7 +1,6 @@
 import { defaultApiRequest } from '../../utils/tests/defaultApiRequest'
 import { handler } from './handler'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
-import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
@@ -12,11 +11,9 @@ jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
   getDownloadAvailabilityResult: jest.fn()
 }))
 
-jest.mock('./createTemporaryS3Link', () => ({
-  createTemporaryS3Link: jest.fn()
-}))
+const TEST_DOWNLOADS_REMAINING = 3
 
-describe('confirmDownload.handler', () => {
+describe('downloadWarning.handler', () => {
   beforeEach(() => jest.resetAllMocks())
   const givenNoDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
@@ -26,6 +23,7 @@ describe('confirmDownload.handler', () => {
 
   const givenDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
+      downloadsRemaining: TEST_DOWNLOADS_REMAINING,
       hasAvailableDownload: true,
       sResultsArn: TEST_S3_OBJECT_ARN
     })
@@ -49,7 +47,7 @@ describe('confirmDownload.handler', () => {
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 
-  it('should redirect to signed S3 URL if has corresponds to a valid download entry', async () => {
+  it('should return a page containing a submit button to the same URL', async () => {
     givenDownloadAvailable()
     const result = await handler({
       ...defaultApiRequest,
@@ -57,8 +55,11 @@ describe('confirmDownload.handler', () => {
         downloadHash: DOWNLOAD_HASH
       }
     })
-
-    expect(result.statusCode).toEqual(301)
-    expect(createTemporaryS3Link).toHaveBeenCalledWith(TEST_S3_OBJECT_ARN)
+    expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
+    expect(result.statusCode).toEqual(200)
+    expect(result.body).toContain('<input type="submit" value="Download Data">')
+    expect(result.body).toContain(
+      `You have ${TEST_DOWNLOADS_REMAINING} downloads remaining.`
+    )
   })
 })

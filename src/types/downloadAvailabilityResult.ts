@@ -1,4 +1,5 @@
-export interface DownloadAvailibilityResult {
+export interface DownloadAvailabilityResult {
   hasAvailableDownload: boolean
-  s3ObjectArn?: string
+  sResultsArn?: string
+  downloadsRemaining?: number
 }

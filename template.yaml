@@ -70,7 +70,7 @@ Resources:
     Type: AWS::Serverless::SimpleTable
     Properties:
       PrimaryKey:
-        Name: FraudId
+        Name: downloadHash
         Type: String
       SSESpecification:
         SSEEnabled: true
@@ -174,14 +174,15 @@ Resources:
               - !GetAtt DatabaseKmsKey.Arn
       Environment:
         Variables:
-          FRAUDTABLE: !Ref SecureFraudSiteData
+          SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
+      FunctionName: !Sub ${AWS::StackName}-confirm-download-page
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         ConfirmDownload:
           Type: Api 
           Properties:
             RestApiId: !Ref SecureFraudSiteApi
-            Method: get
+            Method: post
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
   
@@ -212,16 +213,17 @@ Resources:
               - kms:Decrypt
             Resource:
               - !GetAtt DatabaseKmsKey.Arn
+      FunctionName: !Sub ${AWS::StackName}-download-warning-page
       Environment:
         Variables:
-          FRAUD_TABLE: !Ref SecureFraudSiteData
+          SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         DownloadWarning:
           Type: Api 
           Properties:
             RestApiId: !Ref SecureFraudSiteApi
-            Method: post
+            Method: get
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
 

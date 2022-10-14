@@ -1,10 +1,18 @@
-import { DownloadAvailibilityResult } from '../types/downloadAvailabilityResult'
-
+import { DownloadAvailabilityResult } from '../types/downloadAvailabilityResult'
+import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 export const getDownloadAvailabilityResult = async (
   downloadHash: string
-): Promise<DownloadAvailibilityResult> => {
-  console.log('looking for download availability for ', downloadHash)
+): Promise<DownloadAvailabilityResult> => {
+  const record = await getSecureDownloadRecord(downloadHash)
+  if (!record) {
+    return {
+      hasAvailableDownload: false
+    }
+  }
+
   return {
-    hasAvailableDownload: false
+    hasAvailableDownload: record.downloadsRemaining > 0,
+    downloadsRemaining: record.downloadsRemaining,
+    sResultsArn: record.s3ResultsArn
   }
 }
