@@ -37,7 +37,7 @@ export const handler = async (
       body,
       statusCode: 301,
       headers: {
-        location: createTemporaryS3Link(fraudDataResponse.s3ObjectArn as string)
+        location: createTemporaryS3Link(fraudDataResponse.sResultsArn as string)
       }
     }
   } catch (err) {

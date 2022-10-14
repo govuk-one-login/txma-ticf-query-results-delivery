@@ -3,7 +3,10 @@ import { handler } from './handler'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { when } from 'jest-when'
-import { DOWNLOAD_HASH, TEST_S3_OBJECT_ARN } from '../../utils/tests/setup/testConstants'
+import {
+  DOWNLOAD_HASH,
+  TEST_S3_OBJECT_ARN
+} from '../../utils/tests/setup/testConstants'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
   getDownloadAvailabilityResult: jest.fn()
@@ -24,7 +27,7 @@ describe('confirmDownload.handler', () => {
   const givenDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
       hasAvailableDownload: true,
-      s3ObjectArn: TEST_S3_OBJECT_ARN
+      sResultsArn: TEST_S3_OBJECT_ARN
     })
   }
   it('should return a 400 if no hash is provided', async () => {
