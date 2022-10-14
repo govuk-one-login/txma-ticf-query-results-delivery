@@ -16,7 +16,9 @@ export const handler = async (
       return notFoundResponse()
     }
 
-    return downloadConfirmResponse()
+    return downloadConfirmResponse(
+      fraudDataResponse.downloadsRemaining as number
+    )
   } catch (err) {
     console.error(err)
     return serverErrorResponse()
@@ -35,12 +37,13 @@ const invalidParametersResponse = () => {
     }
   }
 }
+
 const notFoundResponse = () => {
   console.warn('Returning 404 response because no download record was found')
   return htmlResponse(404, '<html><body>Download not found</body></html>')
 }
 
-const downloadConfirmResponse = () => {
+const downloadConfirmResponse = (downloadsRemaining: number) => {
   const body = `<html>
   <header>
   <title>Download TICF analyst data</title>
@@ -49,6 +52,7 @@ const downloadConfirmResponse = () => {
       <h1>TiCF analyst data download</h1>
       <p>Downloading data from this page is for authorised people. If this is not you, please close this page immediately.</p>
       <p>If you are authorised to download the data please click the link below.</p>
+      <p>You have ${downloadsRemaining} downloads remaining.</p>
       <form method="POST">
       <input type="submit" value="Download Data">
       </form>

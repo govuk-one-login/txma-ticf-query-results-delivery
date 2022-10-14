@@ -11,6 +11,8 @@ jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
   getDownloadAvailabilityResult: jest.fn()
 }))
 
+const TEST_DOWNLOADS_REMAINING = 3
+
 describe('downloadWarning.handler', () => {
   beforeEach(() => jest.resetAllMocks())
   const givenNoDownloadAvailable = () => {
@@ -21,6 +23,7 @@ describe('downloadWarning.handler', () => {
 
   const givenDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
+      downloadsRemaining: TEST_DOWNLOADS_REMAINING,
       hasAvailableDownload: true,
       sResultsArn: TEST_S3_OBJECT_ARN
     })
@@ -55,5 +58,8 @@ describe('downloadWarning.handler', () => {
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(result.statusCode).toEqual(200)
     expect(result.body).toContain('<input type="submit" value="Download Data">')
+    expect(result.body).toContain(
+      `You have ${TEST_DOWNLOADS_REMAINING} downloads remaining.`
+    )
   })
 })
