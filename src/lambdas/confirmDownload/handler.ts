@@ -5,9 +5,12 @@ import { createTemporaryS3Link } from './createTemporaryS3Link'
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  console.log('received request', event)
+  console.log('received request', JSON.stringify(event))
   try {
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
+      console.warn(
+        'Returning 400 response because path parameter downloadHash not found in request'
+      )
       return {
         statusCode: 400,
         body: '<html><body>Invalid parameters</body></html>',
@@ -21,6 +24,9 @@ export const handler = async (
     )
 
     if (!fraudDataResponse.hasAvailableDownload) {
+      console.warn(
+        'Returning 404 response because no download record was found'
+      )
       return {
         statusCode: 404,
         body: '<html><body>Download not found</body></html>',

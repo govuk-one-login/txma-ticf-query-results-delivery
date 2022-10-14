@@ -7,6 +7,9 @@ export const handler = async (
   try {
     console.log('received request', event)
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
+      console.warn(
+        'Returning 400 response because path parameter downloadHash not found in request'
+      )
       return {
         statusCode: 400,
         body: '<html><body>Invalid parameters</body></html>',
@@ -19,9 +22,12 @@ export const handler = async (
       event.pathParameters.downloadHash as string
     )
     if (!fraudDataResponse.hasAvailableDownload) {
+      console.warn(
+        'Returning 404 response because no download record was found'
+      )
       return {
         statusCode: 404,
-        body: '<html><body>Invalid parameters</body></html>',
+        body: '<html><body>Download not found</body></html>',
         headers: {
           'Content-type': 'text/html'
         }
