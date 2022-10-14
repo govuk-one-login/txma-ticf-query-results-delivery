@@ -175,6 +175,7 @@ Resources:
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
+      FunctionName: !Sub ${AWS::StackName}-confirm-download-page
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         ConfirmDownload:
@@ -212,6 +213,7 @@ Resources:
               - kms:Decrypt
             Resource:
               - !GetAtt DatabaseKmsKey.Arn
+      FunctionName: !Sub ${AWS::StackName}-download-warning-page
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
