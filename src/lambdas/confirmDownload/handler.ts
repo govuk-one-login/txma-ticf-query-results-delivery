@@ -6,6 +6,7 @@ import {
   serverErrorResponse
 } from '../../sharedServices/responseHelpers'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
+import { decrementDownloadCount } from './decrementDownloadCount'
 
 export const handler = async (
   event: APIGatewayProxyEvent
@@ -15,8 +16,9 @@ export const handler = async (
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()
     }
+    const downloadHash = event.pathParameters.downloadHash as string
     const downloadAvailabilityResult = await getDownloadAvailabilityResult(
-      event.pathParameters.downloadHash as string
+      downloadHash
     )
 
     if (!downloadAvailabilityResult.hasAvailableDownload) {
@@ -33,13 +35,17 @@ export const handler = async (
         </body>
         </html>`
 
+    const temporaryS3Link = await createTemporaryS3Link(
+      downloadAvailabilityResult.sResultsArn as string
+    )
+
+    await decrementDownloadCount(downloadHash)
+
     return {
       body,
       statusCode: 301,
       headers: {
-        location: createTemporaryS3Link(
-          downloadAvailabilityResult.sResultsArn as string
-        ),
+        location: temporaryS3Link,
         'Content-type': 'text/html'
       }
     }

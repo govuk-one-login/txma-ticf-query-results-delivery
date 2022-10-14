@@ -2,6 +2,7 @@ import { defaultApiRequest } from '../../utils/tests/defaultApiRequest'
 import { handler } from './handler'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
+import { decrementDownloadCount } from './decrementDownloadCount'
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
@@ -14,6 +15,10 @@ jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
 
 jest.mock('./createTemporaryS3Link', () => ({
   createTemporaryS3Link: jest.fn()
+}))
+
+jest.mock('./decrementDownloadCount', () => ({
+  decrementDownloadCount: jest.fn()
 }))
 
 describe('confirmDownload.handler', () => {
@@ -60,5 +65,6 @@ describe('confirmDownload.handler', () => {
 
     expect(result.statusCode).toEqual(301)
     expect(createTemporaryS3Link).toHaveBeenCalledWith(TEST_S3_OBJECT_ARN)
+    expect(decrementDownloadCount).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 })
