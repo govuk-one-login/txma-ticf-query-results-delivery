@@ -5,6 +5,7 @@ import { createTemporaryS3Link } from './createTemporaryS3Link'
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
+  console.log('received request', event)
   try {
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return {

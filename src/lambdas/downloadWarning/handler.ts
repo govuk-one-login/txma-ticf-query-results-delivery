@@ -5,6 +5,7 @@ export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
+    console.log('received request', event)
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return {
         statusCode: 400,
