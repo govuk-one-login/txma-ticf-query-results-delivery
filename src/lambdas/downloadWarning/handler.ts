@@ -1,5 +1,11 @@
 import { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
+import {
+  htmlResponse,
+  invalidParametersResponse,
+  notFoundResponse,
+  serverErrorResponse
+} from '../../sharedServices/responseHelpers'
 
 export const handler = async (
   event: APIGatewayProxyEvent
@@ -9,38 +15,20 @@ export const handler = async (
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()
     }
-    const fraudDataResponse = await getDownloadAvailabilityResult(
+    const downloadAvailabilityResult = await getDownloadAvailabilityResult(
       event.pathParameters.downloadHash as string
     )
-    if (!fraudDataResponse.hasAvailableDownload) {
+    if (!downloadAvailabilityResult.hasAvailableDownload) {
       return notFoundResponse()
     }
 
     return downloadConfirmResponse(
-      fraudDataResponse.downloadsRemaining as number
+      downloadAvailabilityResult.downloadsRemaining as number
     )
   } catch (err) {
     console.error(err)
     return serverErrorResponse()
   }
-}
-
-const invalidParametersResponse = () => {
-  console.warn(
-    'Returning 400 response because path parameter downloadHash not found in request'
-  )
-  return {
-    statusCode: 400,
-    body: '<html><body>Invalid parameters</body></html>',
-    headers: {
-      'Content-type': 'text/html'
-    }
-  }
-}
-
-const notFoundResponse = () => {
-  console.warn('Returning 404 response because no download record was found')
-  return htmlResponse(404, '<html><body>Download not found</body></html>')
 }
 
 const downloadConfirmResponse = (downloadsRemaining: number) => {
@@ -59,21 +47,4 @@ const downloadConfirmResponse = (downloadsRemaining: number) => {
   </body>
   </html>`
   return htmlResponse(200, body)
-}
-
-const serverErrorResponse = () => {
-  return htmlResponse(
-    500,
-    '<html><body>There was an error processing your request</body></html>'
-  )
-}
-
-const htmlResponse = (statusCode: number, body: string) => {
-  return {
-    statusCode: statusCode,
-    body: body,
-    headers: {
-      'Content-type': 'text/html'
-    }
-  }
 }
