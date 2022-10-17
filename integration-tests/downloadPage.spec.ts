@@ -89,6 +89,14 @@ describe('Download pages', () => {
       expect(response.status).toEqual(301)
       const locationHeader = response.headers['location']
       expect(locationHeader).toContain('https')
+      const getResponseAfterDownload = await sendRequestForHash(
+        'GET',
+        VALID_HASH
+      )
+      expect(getResponseAfterDownload.status).toEqual(200)
+      expect(getResponseAfterDownload.data).toContain(
+        'You have 2 downloads remaining'
+      )
     })
   })
 })
