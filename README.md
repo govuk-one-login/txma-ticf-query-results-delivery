@@ -19,4 +19,27 @@ This is an API Gateway, 2 AWS Lambda functions, a DynamoDB table and an S3 bucke
   - Send an HTTP Redirect to the user to the expiring link just generated
     - This will ensure that even if the user shares the link it cannot be downloaded unless they download it within the time above
 
+## Integration tests
 
+As well as the usual unit tests, we have some tests which hit the deployed Lambdas, and also set up some test data so that those tests have what they need.
+
+To get started with those, you need to create a file called `.integration.test.env` at the root, with the following contents (adjust as necessary)
+
+```
+process.env.DOWNLOAD_PAGE_BASE_URL="https://YOUR-LAMBDA-URL.amazonaws.com/default/"
+
+process.env.DOWNLOAD_DYNAMODB_TABLE_NAME="<Dynamo DB table, look in SECURE_DOWNLOAD_TABLE_NAME env variable in lambda>"
+
+process.env.AWS_REGION="eu-west-2"
+```
+
+You also need permissions to access AWS resources, which
+we do by running our script from the di-txma-ticf-integration called `assumeRole.sh` in https://github.com/alphagov/di-txma-ticf-integration/blob/main/scripts/assumeRole.sh
+
+If you've got this repo checked out at the same level as this one, you can just run this first
+
+```
+source ../di-txma-ticf-integration/scripts/assumeRole.sh <MFA code>
+```
+
+and then run `yarn test:integration`
