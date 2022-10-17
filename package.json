@@ -15,7 +15,8 @@
     "lint:fix": "prettier . --write ; eslint . --fix",
     "postinstall": "husky install",
     "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
-    "test": "jest -c jest.config.ts"
+    "test": "jest -c jest.config.ts",
+    "test:integration": "jest -c jest.integration.config.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.186.0"
@@ -30,6 +31,7 @@
     "@typescript-eslint/parser": "5.39.0",
     "aws-sdk-client-mock": "1.0.0",
     "aws-sdk-client-mock-jest": "^2.0.0",
+    "axios": "0.27.2",
     "eslint": "8.25.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-jest": "27.1.1",

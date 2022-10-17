@@ -18,3 +18,4 @@ node_modules/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+.integration.test.env
