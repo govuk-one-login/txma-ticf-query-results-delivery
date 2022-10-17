@@ -1,4 +1,4 @@
-import axios, { AxiosPromise } from 'axios'
+import axios, { AxiosPromise, AxiosResponse } from 'axios'
 import { createOrUpdateDbHashRecord } from './utils/aws/createOrUpdateDbHashRecord'
 import { getIntegrationTestEnvironmentVariable } from './utils/getIntegrationTestEnvironmentVariable'
 
@@ -20,19 +20,38 @@ const sendRequestForHash = (method: string, hash: string): AxiosPromise => {
 }
 
 const NON_EXISTENT_HASH = 'aHashThatShouldNotExist'
-const VALID_HASH = 'myValidHash'
+const VALID_HASH = 'integrationTestHash'
+const HASH_WITH_NO_DOWNLOADS_REMAINING =
+  'integrationTest-noDownloadsRemainingHash'
 describe('Download pages', () => {
-  beforeAll(async () => {
+  const resetDatabase = async () => {
     await createOrUpdateDbHashRecord(VALID_HASH)
-  })
+    await createOrUpdateDbHashRecord(HASH_WITH_NO_DOWNLOADS_REMAINING, 0)
+  }
+
+  const assertDownloadNotFoundResponse = (response: AxiosResponse) => {
+    expect(response.status).toEqual(404)
+    const contentType = response.headers['content-type']
+    expect(contentType).toEqual('text/html')
+    expect(response.data).toContain('Download not found')
+  }
 
   describe('Download warning page', () => {
+    beforeAll(async () => {
+      await resetDatabase()
+    })
+
     it('should return a 404 when no record is available for the provided hash', async () => {
       const response = await sendRequestForHash('GET', NON_EXISTENT_HASH)
-      expect(response.status).toEqual(404)
-      const contentType = response.headers['content-type']
-      expect(contentType).toEqual('text/html')
-      expect(response.data).toContain('Download not found')
+      assertDownloadNotFoundResponse(response)
+    })
+
+    it('should return a 404 when there are no downloads remaining for the hash', async () => {
+      const response = await sendRequestForHash(
+        'GET',
+        HASH_WITH_NO_DOWNLOADS_REMAINING
+      )
+      assertDownloadNotFoundResponse(response)
     })
 
     it('should return a success response when there is a record for the provided hash', async () => {
@@ -48,12 +67,21 @@ describe('Download pages', () => {
   })
 
   describe('Confirm download page', () => {
+    beforeAll(async () => {
+      await resetDatabase()
+    })
+
     it('should return a 404 when no record is available for the provided hash', async () => {
       const response = await sendRequestForHash('POST', NON_EXISTENT_HASH)
-      expect(response.status).toEqual(404)
-      const contentType = response.headers['content-type']
-      expect(contentType).toEqual('text/html')
-      expect(response.data).toContain('Download not found')
+      assertDownloadNotFoundResponse(response)
+    })
+
+    it('should return a 404 when there are no downloads remaining for the hash', async () => {
+      const response = await sendRequestForHash(
+        'GET',
+        HASH_WITH_NO_DOWNLOADS_REMAINING
+      )
+      assertDownloadNotFoundResponse(response)
     })
 
     it('should return a success response when there is a record for the provided hash', async () => {
