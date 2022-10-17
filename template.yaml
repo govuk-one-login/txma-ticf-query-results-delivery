@@ -163,7 +163,7 @@ Resources:
             Effect: Allow
             Action:
               - dynamodb:GetItem
-              - dynamodb:PutItem
+              - dynamodb:UpdateItem
             Resource:
               - !GetAtt SecureFraudSiteData.Arn
           - Sid: KmsDatabaseDecryptionKey
