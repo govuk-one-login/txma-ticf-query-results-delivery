@@ -24,26 +24,27 @@ export const handler = async (
     if (!downloadAvailabilityResult.hasAvailableDownload) {
       return notFoundResponse()
     }
+    const temporaryS3Link = await createTemporaryS3Link({
+      bucket: downloadAvailabilityResult.s3ResultsBucket as string,
+      key: downloadAvailabilityResult.s3ResultsKey as string
+    })
 
     const body = `<html>
         <header>
+        <meta http-equiv="refresh" content="0; url=${temporaryS3Link}">
         <title>Downloading data</title>
         </header>
         <body>
-            <h1>Fraud Secure Page - Downloading data</h1>
-            <p>Redirecting</p>
+            <h1>Fraud Secure Page - Retrieving your data</h1>
+            <p>Your download should start automatically. If not, <a href="${temporaryS3Link}">click here</a></p>
         </body>
         </html>`
-
-    const temporaryS3Link = await createTemporaryS3Link(
-      downloadAvailabilityResult.sResultsArn as string
-    )
 
     await decrementDownloadCount(downloadHash)
 
     return {
       body,
-      statusCode: 301,
+      statusCode: 200,
       headers: {
         location: temporaryS3Link,
         'Content-type': 'text/html'

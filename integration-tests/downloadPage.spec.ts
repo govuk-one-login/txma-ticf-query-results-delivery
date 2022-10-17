@@ -3,6 +3,15 @@ import { createOrUpdateDbHashRecord } from './utils/aws/createOrUpdateDbHashReco
 import { getIntegrationTestEnvironmentVariable } from './utils/getIntegrationTestEnvironmentVariable'
 
 const sendRequestForHash = (method: string, hash: string): AxiosPromise => {
+  return sendRequest(
+    `${getIntegrationTestEnvironmentVariable(
+      'DOWNLOAD_PAGE_BASE_URL'
+    )}/secure/${hash}`,
+    method
+  )
+}
+
+const sendRequest = (url: string, method: string) => {
   return axios({
     // Some of our responses contain a redirect, which we don't want to follow,
     // just need to examine the contents of the Location header
@@ -12,9 +21,7 @@ const sendRequestForHash = (method: string, hash: string): AxiosPromise => {
       // having to try/catch.
       return true
     },
-    url: `${getIntegrationTestEnvironmentVariable(
-      'DOWNLOAD_PAGE_BASE_URL'
-    )}/secure/${hash}`,
+    url: url,
     method: method
   })
 }
@@ -87,8 +94,11 @@ describe('Download pages', () => {
     it('should return a success response when there is a record for the provided hash', async () => {
       const response = await sendRequestForHash('POST', VALID_HASH)
       expect(response.status).toEqual(301)
-      const locationHeader = response.headers['location']
-      expect(locationHeader).toContain('https')
+      const s3FileToDownloadUrl = response.headers['location']
+      expect(s3FileToDownloadUrl).toContain('https')
+      console.log(s3FileToDownloadUrl)
+      const fileDownloadResponse = await sendRequest(s3FileToDownloadUrl, 'GET')
+      expect(fileDownloadResponse.status).toEqual(200)
       const getResponseAfterDownload = await sendRequestForHash(
         'GET',
         VALID_HASH

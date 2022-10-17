@@ -6,7 +6,8 @@ import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementD
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
-  TEST_S3_OBJECT_ARN
+  TEST_S3_OBJECT_BUCKET,
+  TEST_S3_OBJECT_KEY
 } from '../../utils/tests/setup/testConstants'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
@@ -32,7 +33,8 @@ describe('confirmDownload.handler', () => {
   const givenDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
       hasAvailableDownload: true,
-      sResultsArn: TEST_S3_OBJECT_ARN
+      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsKey: TEST_S3_OBJECT_KEY
     })
   }
   it('should return a 400 if no hash is provided', async () => {
@@ -63,8 +65,11 @@ describe('confirmDownload.handler', () => {
       }
     })
 
-    expect(result.statusCode).toEqual(301)
-    expect(createTemporaryS3Link).toHaveBeenCalledWith(TEST_S3_OBJECT_ARN)
+    expect(result.statusCode).toEqual(200)
+    expect(createTemporaryS3Link).toHaveBeenCalledWith({
+      bucket: TEST_S3_OBJECT_BUCKET,
+      key: TEST_S3_OBJECT_KEY
+    })
     expect(decrementDownloadCount).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 })

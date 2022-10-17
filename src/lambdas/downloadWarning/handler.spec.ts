@@ -4,7 +4,8 @@ import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadA
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
-  TEST_S3_OBJECT_ARN
+  TEST_S3_OBJECT_BUCKET,
+  TEST_S3_OBJECT_KEY
 } from '../../utils/tests/setup/testConstants'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
@@ -25,7 +26,8 @@ describe('downloadWarning.handler', () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
       downloadsRemaining: TEST_DOWNLOADS_REMAINING,
       hasAvailableDownload: true,
-      sResultsArn: TEST_S3_OBJECT_ARN
+      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsKey: TEST_S3_OBJECT_KEY
     })
   }
   it('should return a 400 if no hash is provided', async () => {
