@@ -2,7 +2,7 @@ import { defaultApiRequest } from '../../utils/tests/defaultApiRequest'
 import { handler } from './handler'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
-import { decrementDownloadCount } from './decrementDownloadCount'
+import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
@@ -17,7 +17,7 @@ jest.mock('./createTemporaryS3Link', () => ({
   createTemporaryS3Link: jest.fn()
 }))
 
-jest.mock('./decrementDownloadCount', () => ({
+jest.mock('../../sharedServices/dynamoDb/decrementDownloadCount', () => ({
   decrementDownloadCount: jest.fn()
 }))
 

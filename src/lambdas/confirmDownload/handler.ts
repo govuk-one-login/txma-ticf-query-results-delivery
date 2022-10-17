@@ -6,7 +6,7 @@ import {
   serverErrorResponse
 } from '../../sharedServices/responseHelpers'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
-import { decrementDownloadCount } from './decrementDownloadCount'
+import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
 
 export const handler = async (
   event: APIGatewayProxyEvent

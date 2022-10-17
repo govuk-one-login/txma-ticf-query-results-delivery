@@ -27,7 +27,6 @@ describe('dynamoDBGet', () => {
       }
     }
     dynamoMock.on(GetItemCommand).resolves(mockDbContents as GetItemOutput)
-
     const result = await getSecureDownloadRecord(DOWNLOAD_HASH)
     expect(result).toEqual({
       downloadHash: DOWNLOAD_HASH,
