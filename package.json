@@ -16,7 +16,8 @@
     "postinstall": "husky install",
     "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
     "test": "jest -c jest.config.ts",
-    "test:integration": "jest -c jest.integration.config.ts"
+    "test:integration": "jest -c jest.integration.config.ts",
+    "test:integration-single": "jest -c jest.integration.config.ts $0"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.186.0",
@@ -42,6 +43,7 @@
     "jest-extended": "3.1.0",
     "jest-when": "3.5.1",
     "lint-staged": "13.0.3",
+    "node-html-parser": "6.1.1",
     "prettier": "2.7.1",
     "ts-jest": "29.0.3",
     "ts-loader": "9.3.1",

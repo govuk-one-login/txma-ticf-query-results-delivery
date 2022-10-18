@@ -1,6 +1,7 @@
 import axios, { AxiosPromise, AxiosResponse } from 'axios'
 import { createOrUpdateDbHashRecord } from './utils/aws/createOrUpdateDbHashRecord'
 import { getIntegrationTestEnvironmentVariable } from './utils/getIntegrationTestEnvironmentVariable'
+import { parse } from 'node-html-parser'
 
 const sendRequestForHash = (method: string, hash: string): AxiosPromise => {
   return sendRequest(
@@ -61,15 +62,15 @@ describe('Download pages', () => {
       assertDownloadNotFoundResponse(response)
     })
 
-    it('should return a success response when there is a record for the provided hash', async () => {
+    it('should return a success response with correct number of downloads when there is a record for the provided hash', async () => {
       const response = await sendRequestForHash('GET', VALID_HASH)
       expect(response.status).toEqual(200)
       const contentType = response.headers['content-type']
       expect(contentType).toEqual('text/html')
+      expect(response.data).toContain('Download the report')
       expect(response.data).toContain(
-        '<input type="submit" value="Download Data">'
+        'You have 3 attempts before the link expires.'
       )
-      expect(response.data).toContain('You have 3 downloads remaining')
     })
   })
 
@@ -93,20 +94,35 @@ describe('Download pages', () => {
 
     it('should return a success response when there is a record for the provided hash', async () => {
       const response = await sendRequestForHash('POST', VALID_HASH)
-      expect(response.status).toEqual(301)
-      const s3FileToDownloadUrl = response.headers['location']
-      expect(s3FileToDownloadUrl).toContain('https')
-      console.log(s3FileToDownloadUrl)
-      const fileDownloadResponse = await sendRequest(s3FileToDownloadUrl, 'GET')
+      expect(response.status).toEqual(200)
+
+      const fileDownloadResponse = await sendRequest(
+        retrieveS3LinkFromHtml(response.data),
+        'GET'
+      )
+
       expect(fileDownloadResponse.status).toEqual(200)
+
       const getResponseAfterDownload = await sendRequestForHash(
         'GET',
         VALID_HASH
       )
       expect(getResponseAfterDownload.status).toEqual(200)
       expect(getResponseAfterDownload.data).toContain(
-        'You have 2 downloads remaining'
+        'You have 2 attempts before the link expires'
       )
     })
+
+    const retrieveS3LinkFromHtml = (htmlBody: string): string => {
+      const htmlRoot = parse(htmlBody)
+      const metaTag = htmlRoot.querySelector('meta[http-equiv="refresh"]')
+      const contentAttribute = metaTag?.attributes['content'] as string
+      expect(contentAttribute).toBeDefined()
+
+      const urlMatch = contentAttribute.match(/url=(.*)/)
+      const url = urlMatch ? urlMatch[1] : undefined
+      expect(url).toBeDefined()
+      return url as string
+    }
   })
 })
