@@ -7,7 +7,8 @@ import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
   TEST_S3_OBJECT_BUCKET,
-  TEST_S3_OBJECT_KEY
+  TEST_S3_OBJECT_KEY,
+  TEST_SIGNED_URL
 } from '../../utils/tests/setup/testConstants'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
@@ -56,8 +57,10 @@ describe('confirmDownload.handler', () => {
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 
-  it('should redirect to signed S3 URL if has corresponds to a valid download entry', async () => {
+  it('should redirect to signed S3 URL if hash corresponds to a valid download entry', async () => {
     givenDownloadAvailable()
+    when(createTemporaryS3Link).mockResolvedValue(TEST_SIGNED_URL)
+
     const result = await handler({
       ...defaultApiRequest,
       pathParameters: {
@@ -66,6 +69,13 @@ describe('confirmDownload.handler', () => {
     })
 
     expect(result.statusCode).toEqual(200)
+    expect(result.body).toContain(
+      `<meta http-equiv="refresh" content="0; url=${TEST_SIGNED_URL}">`
+    )
+    expect(result.body).toContain(
+      `<a href="${TEST_SIGNED_URL}" class="govuk-link">`
+    )
+    expect(result.headers?.location).toEqual(TEST_SIGNED_URL)
     expect(createTemporaryS3Link).toHaveBeenCalledWith({
       bucket: TEST_S3_OBJECT_BUCKET,
       key: TEST_S3_OBJECT_KEY

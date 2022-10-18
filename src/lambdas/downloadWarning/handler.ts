@@ -301,11 +301,13 @@ const downloadConfirmResponse = (downloadsRemaining: number) => {
             </p>
             <form method="POST">
               <button class="govuk-button" data-module="govuk-button" type="submit">
-                Save and continue
+                Download the report
               </button>
             </form>
             <p class="govuk-body">
-              You have ${downloadsRemaining} attempts before the link expires.
+              You have ${downloadsRemaining} attempt${
+    downloadsRemaining > 1 ? 's' : ''
+  } before the link expires.
             </p>
           </div>
         </main>

@@ -22,9 +22,11 @@ describe('downloadWarning.handler', () => {
     })
   }
 
-  const givenDownloadAvailable = () => {
+  const givenDownloadAvailable = (
+    downloadsRemaining = TEST_DOWNLOADS_REMAINING
+  ) => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
-      downloadsRemaining: TEST_DOWNLOADS_REMAINING,
+      downloadsRemaining,
       hasAvailableDownload: true,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
       s3ResultsKey: TEST_S3_OBJECT_KEY
@@ -59,9 +61,20 @@ describe('downloadWarning.handler', () => {
     })
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(result.statusCode).toEqual(200)
-    expect(result.body).toContain('Save and continue')
+    expect(result.body).toContain('Download the report')
     expect(result.body).toContain(
       `You have ${TEST_DOWNLOADS_REMAINING} attempts before the link expires.`
     )
+  })
+
+  it('should report a single download remaining correctly', async () => {
+    givenDownloadAvailable(1)
+    const result = await handler({
+      ...defaultApiRequest,
+      pathParameters: {
+        downloadHash: DOWNLOAD_HASH
+      }
+    })
+    expect(result.body).toContain(`You have 1 attempt before the link expires.`)
   })
 })
