@@ -202,6 +202,23 @@ const downloadConfirmResponse = (downloadsRemaining: number) => {
           cursor: pointer;
           -webkit-appearance: none;
         }
+        .govuk-button:hover {
+          background-color: #005a30;
+        }
+        .govuk-button:active {
+          top: 2px;
+        }
+        .govuk-button:focus {
+          border-color: #fd0;
+          outline: 3px solid rgba(0, 0, 0, 0);
+          box-shadow: inset 0 0 0 1px #fd0;
+        }
+        .govuk-button:focus:not(:active):not(:hover) {
+          border-color: #fd0;
+          color: #0b0c0c;
+          background-color: #fd0;
+          box-shadow: 0 2px 0 #0b0c0c;
+        }
         @media (min-width: 1020px) {
           .govuk-width-container {
             margin-right: auto;
