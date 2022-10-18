@@ -59,9 +59,9 @@ describe('downloadWarning.handler', () => {
     })
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(result.statusCode).toEqual(200)
-    expect(result.body).toContain('<input type="submit" value="Download Data">')
+    expect(result.body).toContain('Save and continue')
     expect(result.body).toContain(
-      `You have ${TEST_DOWNLOADS_REMAINING} downloads remaining.`
+      `You have ${TEST_DOWNLOADS_REMAINING} attempts before the link expires.`
     )
   })
 })
