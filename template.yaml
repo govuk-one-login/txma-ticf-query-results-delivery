@@ -62,13 +62,10 @@ Resources:
               - kms:Decrypt
             Resource: '*'
 
-  # this does not need to be a complicated table as it's only storing:
-  # FraudId (Primary Key): a hash
-  # DownloadsRemaining: a number initialised on creation
-  # S3FraudDataFile: The S3 object that the user needs to gain access too
   SecureFraudSiteData:
     Type: AWS::Serverless::SimpleTable
     Properties:
+      TableName: !Sub ${AWS::StackName}-secure-fraud-site-data
       PrimaryKey:
         Name: downloadHash
         Type: String
