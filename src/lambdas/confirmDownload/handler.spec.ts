@@ -75,7 +75,6 @@ describe('confirmDownload.handler', () => {
     expect(result.body).toContain(
       `<a href="${TEST_SIGNED_URL}" class="govuk-link">`
     )
-    expect(result.headers?.location).toEqual(TEST_SIGNED_URL)
     expect(createTemporaryS3Link).toHaveBeenCalledWith({
       bucket: TEST_S3_OBJECT_BUCKET,
       key: TEST_S3_OBJECT_KEY
