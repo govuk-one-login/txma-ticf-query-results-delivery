@@ -1,5 +1,6 @@
 export interface DownloadAvailabilityResult {
   hasAvailableDownload: boolean
-  sResultsArn?: string
+  s3ResultsKey?: string
+  s3ResultsBucket?: string
   downloadsRemaining?: number
 }

@@ -4,7 +4,8 @@ import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadA
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
-  TEST_S3_OBJECT_ARN
+  TEST_S3_OBJECT_BUCKET,
+  TEST_S3_OBJECT_KEY
 } from '../../utils/tests/setup/testConstants'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
@@ -21,11 +22,14 @@ describe('downloadWarning.handler', () => {
     })
   }
 
-  const givenDownloadAvailable = () => {
+  const givenDownloadAvailable = (
+    downloadsRemaining = TEST_DOWNLOADS_REMAINING
+  ) => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
-      downloadsRemaining: TEST_DOWNLOADS_REMAINING,
+      downloadsRemaining,
       hasAvailableDownload: true,
-      sResultsArn: TEST_S3_OBJECT_ARN
+      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsKey: TEST_S3_OBJECT_KEY
     })
   }
   it('should return a 400 if no hash is provided', async () => {
@@ -57,9 +61,20 @@ describe('downloadWarning.handler', () => {
     })
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(result.statusCode).toEqual(200)
-    expect(result.body).toContain('<input type="submit" value="Download Data">')
+    expect(result.body).toContain('Download the report')
     expect(result.body).toContain(
-      `You have ${TEST_DOWNLOADS_REMAINING} downloads remaining.`
+      `You have ${TEST_DOWNLOADS_REMAINING} attempts before the link expires.`
     )
+  })
+
+  it('should report a single download remaining correctly', async () => {
+    givenDownloadAvailable(1)
+    const result = await handler({
+      ...defaultApiRequest,
+      pathParameters: {
+        downloadHash: DOWNLOAD_HASH
+      }
+    })
+    expect(result.body).toContain(`You have 1 attempt before the link expires.`)
   })
 })

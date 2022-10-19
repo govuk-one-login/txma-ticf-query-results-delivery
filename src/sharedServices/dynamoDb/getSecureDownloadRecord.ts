@@ -25,7 +25,8 @@ export const getSecureDownloadRecord = async (
     downloadsRemaining: parseInt(
       responseObject?.downloadsRemaining?.N as string
     ),
-    s3ResultsArn: responseObject?.s3ResultsArn?.S
+    s3ResultsKey: responseObject?.s3ResultsKey?.S,
+    s3ResultsBucket: responseObject?.s3ResultsBucket?.S
   }
 
   if (!isSecureDownloadRecord(record)) {

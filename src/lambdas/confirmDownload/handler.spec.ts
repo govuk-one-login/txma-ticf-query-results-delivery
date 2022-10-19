@@ -2,10 +2,13 @@ import { defaultApiRequest } from '../../utils/tests/defaultApiRequest'
 import { handler } from './handler'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
+import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
-  TEST_S3_OBJECT_ARN
+  TEST_S3_OBJECT_BUCKET,
+  TEST_S3_OBJECT_KEY,
+  TEST_SIGNED_URL
 } from '../../utils/tests/setup/testConstants'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
@@ -14,6 +17,10 @@ jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
 
 jest.mock('./createTemporaryS3Link', () => ({
   createTemporaryS3Link: jest.fn()
+}))
+
+jest.mock('../../sharedServices/dynamoDb/decrementDownloadCount', () => ({
+  decrementDownloadCount: jest.fn()
 }))
 
 describe('confirmDownload.handler', () => {
@@ -27,7 +34,8 @@ describe('confirmDownload.handler', () => {
   const givenDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
       hasAvailableDownload: true,
-      sResultsArn: TEST_S3_OBJECT_ARN
+      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsKey: TEST_S3_OBJECT_KEY
     })
   }
   it('should return a 400 if no hash is provided', async () => {
@@ -49,8 +57,10 @@ describe('confirmDownload.handler', () => {
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 
-  it('should redirect to signed S3 URL if has corresponds to a valid download entry', async () => {
+  it('should redirect to signed S3 URL if hash corresponds to a valid download entry', async () => {
     givenDownloadAvailable()
+    when(createTemporaryS3Link).mockResolvedValue(TEST_SIGNED_URL)
+
     const result = await handler({
       ...defaultApiRequest,
       pathParameters: {
@@ -58,7 +68,17 @@ describe('confirmDownload.handler', () => {
       }
     })
 
-    expect(result.statusCode).toEqual(301)
-    expect(createTemporaryS3Link).toHaveBeenCalledWith(TEST_S3_OBJECT_ARN)
+    expect(result.statusCode).toEqual(200)
+    expect(result.body).toContain(
+      `<meta http-equiv="refresh" content="0; url=${TEST_SIGNED_URL}">`
+    )
+    expect(result.body).toContain(
+      `<a href="${TEST_SIGNED_URL}" class="govuk-link">`
+    )
+    expect(createTemporaryS3Link).toHaveBeenCalledWith({
+      bucket: TEST_S3_OBJECT_BUCKET,
+      key: TEST_S3_OBJECT_KEY
+    })
+    expect(decrementDownloadCount).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 })

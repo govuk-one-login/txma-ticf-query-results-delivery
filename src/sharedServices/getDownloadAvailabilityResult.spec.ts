@@ -1,7 +1,8 @@
 import { resetAllWhenMocks, when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
-  TEST_S3_OBJECT_ARN
+  TEST_S3_OBJECT_BUCKET,
+  TEST_S3_OBJECT_KEY
 } from '../utils/tests/setup/testConstants'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 import { getDownloadAvailabilityResult } from './getDownloadAvailabilityResult'
@@ -18,7 +19,8 @@ describe('getDownloadAvailabilityResult', () => {
     when(getSecureDownloadRecord).mockResolvedValue({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining,
-      s3ResultsArn: TEST_S3_OBJECT_ARN
+      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsKey: TEST_S3_OBJECT_KEY
     })
   }
 
@@ -33,6 +35,8 @@ describe('getDownloadAvailabilityResult', () => {
       const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
       expect(response.downloadsRemaining).toEqual(downloadsAvailable)
       expect(response.hasAvailableDownload).toEqual(true)
+      expect(response.s3ResultsBucket).toEqual(TEST_S3_OBJECT_BUCKET)
+      expect(response.s3ResultsKey).toEqual(TEST_S3_OBJECT_KEY)
       expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
     }
   )
@@ -48,7 +52,8 @@ describe('getDownloadAvailabilityResult', () => {
     when(getSecureDownloadRecord).mockResolvedValue({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 0,
-      s3ResultsArn: TEST_S3_OBJECT_ARN
+      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsKey: TEST_S3_OBJECT_KEY
     })
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
     expect(response.hasAvailableDownload).toEqual(false)

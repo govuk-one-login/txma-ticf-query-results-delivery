@@ -160,7 +160,7 @@ Resources:
             Effect: Allow
             Action:
               - dynamodb:GetItem
-              - dynamodb:PutItem
+              - dynamodb:UpdateItem
             Resource:
               - !GetAtt SecureFraudSiteData.Arn
           - Sid: KmsDatabaseDecryptionKey
@@ -169,6 +169,12 @@ Resources:
               - kms:Decrypt
             Resource:
               - !GetAtt DatabaseKmsKey.Arn
+          - Sid: S3ResultsBucketRead
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: #need to rename this
+              - arn:aws:s3:::ticf-integration-sandbox-query-results-bucket/*
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData

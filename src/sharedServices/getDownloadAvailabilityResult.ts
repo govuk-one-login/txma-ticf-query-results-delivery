@@ -13,6 +13,7 @@ export const getDownloadAvailabilityResult = async (
   return {
     hasAvailableDownload: record.downloadsRemaining > 0,
     downloadsRemaining: record.downloadsRemaining,
-    sResultsArn: record.s3ResultsArn
+    s3ResultsBucket: record.s3ResultsBucket,
+    s3ResultsKey: record.s3ResultsKey
   }
 }

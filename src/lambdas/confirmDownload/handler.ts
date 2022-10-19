@@ -3,9 +3,12 @@ import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadA
 import {
   invalidParametersResponse,
   notFoundResponse,
-  serverErrorResponse
+  serverErrorResponse,
+  htmlResponse
 } from '../../sharedServices/responseHelpers'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
+import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
+import { createDownloadPageResponse } from './createDownloadPageResponse'
 
 export const handler = async (
   event: APIGatewayProxyEvent
@@ -15,34 +18,22 @@ export const handler = async (
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()
     }
+    const downloadHash = event.pathParameters.downloadHash as string
     const downloadAvailabilityResult = await getDownloadAvailabilityResult(
-      event.pathParameters.downloadHash as string
+      downloadHash
     )
 
     if (!downloadAvailabilityResult.hasAvailableDownload) {
       return notFoundResponse()
     }
+    const temporaryS3Link = await createTemporaryS3Link({
+      bucket: downloadAvailabilityResult.s3ResultsBucket as string,
+      key: downloadAvailabilityResult.s3ResultsKey as string
+    })
 
-    const body = `<html>
-        <header>
-        <title>Downloading data</title>
-        </header>
-        <body>
-            <h1>Fraud Secure Page - Downloading data</h1>
-            <p>Redirecting</p>
-        </body>
-        </html>`
+    await decrementDownloadCount(downloadHash)
 
-    return {
-      body,
-      statusCode: 301,
-      headers: {
-        location: createTemporaryS3Link(
-          downloadAvailabilityResult.sResultsArn as string
-        ),
-        'Content-type': 'text/html'
-      }
-    }
+    return htmlResponse(200, createDownloadPageResponse(temporaryS3Link))
   } catch (err) {
     console.log(err)
 

@@ -19,7 +19,12 @@ export const createOrUpdateDbHashRecord = (
     Item: {
       downloadHash: { S: downloadHash },
       downloadsRemaining: { N: downloadsRemaining.toString() },
-      s3ResultsArn: { S: 'myArn' }
+      s3ResultsKey: {
+        S: getIntegrationTestEnvironmentVariable('S3_RESULTS_KEY')
+      },
+      s3ResultsBucket: {
+        S: getIntegrationTestEnvironmentVariable('S3_RESULTS_BUCKET')
+      }
     }
   } as PutItemCommandInput
   return ddbClient.send(new PutItemCommand(putItemCommandInput))
