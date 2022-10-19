@@ -1,10 +1,10 @@
 import { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
 import {
-  htmlResponse,
   invalidParametersResponse,
   notFoundResponse,
-  serverErrorResponse
+  serverErrorResponse,
+  htmlResponse
 } from '../../sharedServices/responseHelpers'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
