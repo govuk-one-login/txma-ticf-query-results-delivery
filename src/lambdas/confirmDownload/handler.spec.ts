@@ -38,9 +38,11 @@ describe('confirmDownload.handler', () => {
       s3ResultsKey: TEST_S3_OBJECT_KEY
     })
   }
+
   it('should return a 400 if no hash is provided', async () => {
     const result = await handler(defaultApiRequest)
     expect(result.statusCode).toEqual(400)
+    expect(result.body).toBe('')
     expect(getDownloadAvailabilityResult).not.toHaveBeenCalled()
   })
 
@@ -54,6 +56,7 @@ describe('confirmDownload.handler', () => {
     })
 
     expect(result.statusCode).toEqual(404)
+    expect(result.body).toBe('')
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 

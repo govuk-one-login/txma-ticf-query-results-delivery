@@ -1,26 +1,17 @@
 export const notFoundResponse = () => {
   console.warn('Returning 404 response because no download record was found')
-  return htmlResponse(404, '<html><body>Download not found</body></html>')
+  return emptyStatusCodeResponse(404)
 }
 
 export const serverErrorResponse = () => {
-  return htmlResponse(
-    500,
-    '<html><body>There was an error processing your request</body></html>'
-  )
+  return emptyStatusCodeResponse(500)
 }
 
 export const invalidParametersResponse = () => {
   console.warn(
     'Returning 400 response because path parameter downloadHash not found in request'
   )
-  return {
-    statusCode: 400,
-    body: '<html><body>Invalid parameters</body></html>',
-    headers: {
-      'Content-type': 'text/html'
-    }
-  }
+  return emptyStatusCodeResponse(400)
 }
 
 export const htmlResponse = (statusCode: number, body: string) => {
@@ -30,5 +21,12 @@ export const htmlResponse = (statusCode: number, body: string) => {
     headers: {
       'Content-type': 'text/html'
     }
+  }
+}
+
+export const emptyStatusCodeResponse = (statusCode: number) => {
+  return {
+    statusCode,
+    body: ''
   }
 }
