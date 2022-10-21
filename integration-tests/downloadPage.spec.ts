@@ -39,9 +39,7 @@ describe('Download pages', () => {
 
   const assertDownloadNotFoundResponse = (response: AxiosResponse) => {
     expect(response.status).toEqual(404)
-    const contentType = response.headers['content-type']
-    expect(contentType).toEqual('text/html')
-    expect(response.data).toContain('Download not found')
+    expect(response.data).toEqual('')
   }
 
   describe('Download warning page', () => {
