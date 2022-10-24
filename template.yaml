@@ -25,7 +25,6 @@ Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     CodeSigningConfigArn: !If [UseCodeSigning, !Ref CodeSigningConfigArn, !Ref AWS::NoValue]
@@ -92,7 +91,7 @@ Resources:
   DatabaseKmsKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Sub alias/${AWS::StackName}/sandbox/secure-fraud-site-database-kms-key
+      AliasName: !Sub alias/${AWS::StackName}/${Environment}/secure-fraud-site-database-kms-key
       TargetKeyId: !Ref DatabaseKmsKey
 
   SecureFraudSiteApi:
@@ -145,7 +144,7 @@ Resources:
   LogsKmsKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Sub alias/${AWS::StackName}/sandbox/secure-fraud-site-logs-kms-key
+      AliasName: !Sub alias/${AWS::StackName}/${Environment}/secure-fraud-site-logs-kms-key
       TargetKeyId: !Ref LogsKmsKey
 
   ConfirmDownloadFunction:
@@ -173,8 +172,8 @@ Resources:
             Effect: Allow
             Action:
               - s3:GetObject
-            Resource: #need to rename this
-              - arn:aws:s3:::ticf-integration-sandbox-query-results-bucket/*
+            Resource:
+              - !Sub arn:aws:s3:::ticf-integration-${Environment}-query-results-bucket/*
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
