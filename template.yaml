@@ -74,7 +74,7 @@ Resources:
         - AttributeName: downloadHash
           KeyType: HASH
       GlobalSecondaryIndexes:
-        - IndexName: zendeskIdIndex
+        - IndexName: zendeskIdAndDownloadHashIndex
           KeySchema:
             - AttributeName: zendeskId
               KeyType: HASH
