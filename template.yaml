@@ -79,7 +79,7 @@ Resources:
             - AttributeName: zendeskId
               KeyType: HASH
           Projection:
-            ProjectionType: "KEYS"
+            ProjectionType: "KEYS_ONLY"
           ProvisionedThroughput:
             ReadCapacityUnits: 5
             WriteCapacityUnits: 5
