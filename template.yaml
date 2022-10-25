@@ -79,7 +79,7 @@ Resources:
             - AttributeName: zendeskId
               KeyType: HASH
           Projection:
-            ProjectionType: "ALL"
+            ProjectionType: "KEYS"
           ProvisionedThroughput:
             ReadCapacityUnits: 5
             WriteCapacityUnits: 5
@@ -92,7 +92,7 @@ Resources:
         SSEEnabled: true
         SSEType: KMS
         KMSMasterKeyId: !GetAtt DatabaseKmsKey.Arn
-          
+
   DatabaseKmsKey:
     Type: AWS::KMS::Key
     Properties:
