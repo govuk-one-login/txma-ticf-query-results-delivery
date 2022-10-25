@@ -24,6 +24,9 @@ export const createOrUpdateDbHashRecord = (
       },
       s3ResultsBucket: {
         S: getIntegrationTestEnvironmentVariable('S3_RESULTS_BUCKET')
+      },
+      createdDate: {
+        N: Date.now().toString()
       }
     }
   } as PutItemCommandInput
