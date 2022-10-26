@@ -23,9 +23,9 @@ export const handler = async (
       return notFoundResponse()
     }
 
-    // if (!downloadAvailabilityResult.createdDate) {
-    //   return notFoundResponse()
-    // }
+    if (!downloadAvailabilityResult.createdDate) {
+      return notFoundResponse()
+    }
 
     console.log(
       `downloadAvailabilityResult: ${JSON.stringify(
