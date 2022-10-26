@@ -22,6 +22,12 @@ export const handler = async (
       return notFoundResponse()
     }
 
+    console.log(
+      `downloadAvailabilityResult: ${JSON.stringify(
+        downloadAvailabilityResult
+      )}`
+    )
+
     return downloadConfirmResponse(
       downloadAvailabilityResult.downloadsRemaining as number
     )
