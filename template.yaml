@@ -61,18 +61,38 @@ Resources:
               - kms:Decrypt
             Resource: '*'
 
-  SecureFraudSiteData:
-    Type: AWS::Serverless::SimpleTable
+  SecureFraudSiteData: 
+    Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub ${AWS::StackName}-secure-fraud-site-data
-      PrimaryKey:
-        Name: downloadHash
-        Type: String
+      AttributeDefinitions: 
+        - AttributeName: downloadHash
+          AttributeType: S
+        - AttributeName: zendeskId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: downloadHash
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: zendeskIdAndDownloadHashIndex
+          KeySchema:
+            - AttributeName: zendeskId
+              KeyType: HASH
+          Projection:
+            ProjectionType: "KEYS_ONLY"
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
       SSESpecification:
         SSEEnabled: true
         SSEType: KMS
         KMSMasterKeyId: !GetAtt DatabaseKmsKey.Arn
-  
+
   DatabaseKmsKey:
     Type: AWS::KMS::Key
     Properties:
