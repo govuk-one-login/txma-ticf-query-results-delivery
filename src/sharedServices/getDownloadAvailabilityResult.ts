@@ -18,7 +18,7 @@ export const getDownloadAvailabilityResult = async (
   }
 
   const numberOfDays = daysElapsed(
-    parseInt(record.createdDate),
+    record.createdDate,
     currentDateEpochMilliseconds()
   )
 
