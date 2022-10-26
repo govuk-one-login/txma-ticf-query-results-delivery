@@ -124,6 +124,21 @@ Resources:
       Name: !Sub ${AWS::StackName}-secure-fraud-site-api
       StageName: default
       TracingEnabled: true
+      Auth:
+        ResourcePolicy:
+          IpRangeWhitelist:
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_1}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_2}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_3}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_4}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_5}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_6}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_7}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_8}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_9}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_10}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_11}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_12}}'
 
   SecureFraudSiteAccessLogGroup:
     Type: AWS::Logs::LogGroup
