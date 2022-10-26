@@ -17,13 +17,31 @@ export const getDownloadAvailabilityResult = async (
     return Math.floor(diffInMs / (1000 * 3600 * 24))
   }
 
+  console.log(`daysLimit: ${daysLimit}`)
+  console.log(`currentDateEpochMilliseconds: ${currentDateEpochMilliseconds()}`)
+  console.log(`daysElapsed: ${daysElapsed}`)
+
   const numberOfDays = daysElapsed(
     record.createdDate,
     currentDateEpochMilliseconds()
   )
 
+  console.log(`numberOfDays: ${numberOfDays}`)
+
+  console.log(
+    `${
+      numberOfDays > daysLimit &&
+      record.downloadsRemaining > 0 &&
+      !record.createdDate
+    }`
+  )
+
   // When elapsed days is greater than allowed days
-  if (numberOfDays > daysLimit && !record.createdDate) {
+  if (
+    numberOfDays > daysLimit &&
+    record.downloadsRemaining > 0 &&
+    !record.createdDate
+  ) {
     return {
       hasAvailableDownload: false,
       createdDate: undefined
