@@ -3,4 +3,5 @@ export interface DownloadAvailabilityResult {
   s3ResultsKey?: string
   s3ResultsBucket?: string
   downloadsRemaining?: number
+  createdDate?: string
 }

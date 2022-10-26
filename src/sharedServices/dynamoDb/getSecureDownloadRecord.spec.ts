@@ -7,7 +7,8 @@ import {
 import {
   DOWNLOAD_HASH,
   TEST_S3_OBJECT_BUCKET,
-  TEST_S3_OBJECT_KEY
+  TEST_S3_OBJECT_KEY,
+  TEST_CREATED_DATE
 } from '../../utils/tests/setup/testConstants'
 import { getSecureDownloadRecord } from './getSecureDownloadRecord'
 import { mockClient } from 'aws-sdk-client-mock'
@@ -25,7 +26,8 @@ describe('dynamoDBGet', () => {
       downloadHash: { S: DOWNLOAD_HASH },
       downloadsRemaining: { N: '3' },
       s3ResultsBucket: { S: TEST_S3_OBJECT_BUCKET },
-      s3ResultsKey: { S: TEST_S3_OBJECT_KEY }
+      s3ResultsKey: { S: TEST_S3_OBJECT_KEY },
+      createdDate: { N: TEST_CREATED_DATE }
     }
   }
 
@@ -36,7 +38,8 @@ describe('dynamoDBGet', () => {
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 3,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
-      s3ResultsKey: TEST_S3_OBJECT_KEY
+      s3ResultsKey: TEST_S3_OBJECT_KEY,
+      createdDate: TEST_CREATED_DATE
     })
   })
 
