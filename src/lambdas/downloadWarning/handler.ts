@@ -18,9 +18,14 @@ export const handler = async (
     const downloadAvailabilityResult = await getDownloadAvailabilityResult(
       event.pathParameters.downloadHash as string
     )
+
     if (!downloadAvailabilityResult.hasAvailableDownload) {
       return notFoundResponse()
     }
+
+    // if (!downloadAvailabilityResult.createdDate) {
+    //   return notFoundResponse()
+    // }
 
     console.log(
       `downloadAvailabilityResult: ${JSON.stringify(
