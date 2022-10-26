@@ -33,11 +33,15 @@ export const getDownloadAvailabilityResult = async (
   )
 
   // When elapsed days is greater than allowed days
-  // if (numberOfDays > daysLimit) {
-  //   return {
-  //     hasAvailableDownload: false
-  //   }
-  // }
+  if (numberOfDays > daysLimit && record.downloadsRemaining > 0) {
+    return {
+      hasAvailableDownload: record.downloadsRemaining > 0,
+      downloadsRemaining: record.downloadsRemaining,
+      s3ResultsBucket: record.s3ResultsBucket,
+      s3ResultsKey: record.s3ResultsKey,
+      createdDate: undefined
+    }
+  }
 
   return {
     hasAvailableDownload: record.downloadsRemaining > 0,
