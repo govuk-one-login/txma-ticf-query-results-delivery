@@ -29,6 +29,9 @@ export const getDownloadAvailabilityResult = async (
     currentDateEpochMilliseconds()
   )
 
+  console.log('numberOfDays: ', numberOfDays)
+  console.log('daysLimit: ', daysLimit)
+
   if (numberOfDays > daysLimit && record.downloadsRemaining > 0) {
     return {
       ...resultProps
