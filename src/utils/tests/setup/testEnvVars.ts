@@ -1,4 +1,9 @@
-import { TEST_AWS_REGION, TEST_FRAUD_TABLE } from './testConstants'
+import {
+  TEST_AWS_REGION,
+  TEST_FRAUD_TABLE,
+  TEST_DAYS_LIMIT
+} from './testConstants'
 
 process.env.SECURE_DOWNLOAD_TABLE_NAME = TEST_FRAUD_TABLE
 process.env.AWS_REGION = TEST_AWS_REGION
+process.env.DAYS_LIMIT = TEST_DAYS_LIMIT.toString()

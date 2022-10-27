@@ -1,5 +1,6 @@
 import { DownloadAvailabilityResult } from '../types/downloadAvailabilityResult'
 import { currentDateEpochMilliseconds } from '../utils/currentDateEpochMilliseconds'
+import { getEnv } from '../utils/getEnv'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 export const getDownloadAvailabilityResult = async (
   downloadHash: string
@@ -11,7 +12,7 @@ export const getDownloadAvailabilityResult = async (
     }
   }
 
-  const daysLimit = 7 // <- will this come from an environment variable?
+  const daysLimit = parseInt(getEnv('DAYS_LIMIT'))
   const resultProps = {
     hasAvailableDownload: record.downloadsRemaining > 0,
     downloadsRemaining: record.downloadsRemaining,
