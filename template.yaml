@@ -124,6 +124,10 @@ Resources:
       Name: !Sub ${AWS::StackName}-secure-fraud-site-api
       StageName: default
       TracingEnabled: true
+      GatewayResponses:
+        ACCESS_DENIED:
+           ResponseTemplates: 
+              application/json: '{"message": "Access Denied: if you think you should have access to this URL, make sure you are connected to the VPN"}'
       Auth:
         ResourcePolicy:
           IpRangeWhitelist:
