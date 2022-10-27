@@ -1,9 +1,9 @@
 import {
   TEST_AWS_REGION,
   TEST_FRAUD_TABLE,
-  TEST_DAYS_LIMIT
+  TEST_LINK_EXPIRY_TIME
 } from './testConstants'
 
 process.env.SECURE_DOWNLOAD_TABLE_NAME = TEST_FRAUD_TABLE
 process.env.AWS_REGION = TEST_AWS_REGION
-process.env.DAYS_LIMIT = TEST_DAYS_LIMIT.toString()
+process.env.LINK_EXPIRY_TIME = TEST_LINK_EXPIRY_TIME.toString()

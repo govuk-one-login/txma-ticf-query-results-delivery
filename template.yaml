@@ -177,7 +177,7 @@ Resources:
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
-          DAYS_LIMIT: '{{resolve:ssm:DAYS_LIMIT}}'
+          LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
       FunctionName: !Sub ${AWS::StackName}-confirm-download-page
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
@@ -220,7 +220,7 @@ Resources:
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
-          DAYS_LIMIT: '{{resolve:ssm:DAYS_LIMIT}}'
+          LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         DownloadWarning:

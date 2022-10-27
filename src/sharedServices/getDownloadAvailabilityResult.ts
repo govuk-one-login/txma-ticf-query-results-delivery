@@ -12,7 +12,7 @@ export const getDownloadAvailabilityResult = async (
     }
   }
 
-  const daysLimit = parseInt(getEnv('DAYS_LIMIT'))
+  const daysLimit = parseInt(getEnv('LINK_EXPIRY_TIME'))
   const resultProps = {
     hasAvailableDownload: record.downloadsRemaining > 0,
     downloadsRemaining: record.downloadsRemaining,
@@ -28,9 +28,6 @@ export const getDownloadAvailabilityResult = async (
     record.createdDate,
     currentDateEpochMilliseconds()
   )
-
-  console.log('numberOfDays: ', numberOfDays)
-  console.log('daysLimit: ', daysLimit)
 
   if (numberOfDays > daysLimit && record.downloadsRemaining > 0) {
     return {
