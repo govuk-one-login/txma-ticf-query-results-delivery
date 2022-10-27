@@ -1,4 +1,5 @@
 import { DownloadAvailabilityResult } from '../types/downloadAvailabilityResult'
+import { currentDateEpochMilliseconds } from '../utils/currentDateEpochMilliseconds'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 export const getDownloadAvailabilityResult = async (
   downloadHash: string
@@ -10,10 +11,13 @@ export const getDownloadAvailabilityResult = async (
     }
   }
 
-  const daysLimit = 7 // <- this will come from an environment variable?
-
-  const currentDateEpochMilliseconds = (): number => Date.now()
-
+  const daysLimit = 7 // <- will this come from an environment variable?
+  const resultProps = {
+    hasAvailableDownload: record.downloadsRemaining > 0,
+    downloadsRemaining: record.downloadsRemaining,
+    s3ResultsBucket: record.s3ResultsBucket,
+    s3ResultsKey: record.s3ResultsKey
+  }
   const daysElapsed = (startDate: number, endDate: number) => {
     const diffInMs = endDate - startDate
     return Math.floor(diffInMs / (1000 * 3600 * 24))
@@ -26,18 +30,12 @@ export const getDownloadAvailabilityResult = async (
 
   if (numberOfDays > daysLimit && record.downloadsRemaining > 0) {
     return {
-      hasAvailableDownload: record.downloadsRemaining > 0,
-      downloadsRemaining: record.downloadsRemaining,
-      s3ResultsBucket: record.s3ResultsBucket,
-      s3ResultsKey: record.s3ResultsKey
+      ...resultProps
     }
   }
 
   return {
-    hasAvailableDownload: record.downloadsRemaining > 0,
-    downloadsRemaining: record.downloadsRemaining,
-    s3ResultsBucket: record.s3ResultsBucket,
-    s3ResultsKey: record.s3ResultsKey,
+    ...resultProps,
     createdDate: record.createdDate
   }
 }

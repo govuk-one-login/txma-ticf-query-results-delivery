@@ -27,7 +27,7 @@ describe('dynamoDBGet', () => {
       downloadsRemaining: { N: '3' },
       s3ResultsBucket: { S: TEST_S3_OBJECT_BUCKET },
       s3ResultsKey: { S: TEST_S3_OBJECT_KEY },
-      createdDate: { N: '1661007600000' }
+      createdDate: { N: TEST_CREATED_DATE.toString() }
     }
   }
 

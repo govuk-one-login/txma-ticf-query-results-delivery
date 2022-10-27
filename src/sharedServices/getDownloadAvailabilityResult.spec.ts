@@ -7,8 +7,13 @@ import {
 } from '../utils/tests/setup/testConstants'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 import { getDownloadAvailabilityResult } from './getDownloadAvailabilityResult'
+import { currentDateEpochMilliseconds } from '../utils/currentDateEpochMilliseconds'
+
 jest.mock('./dynamoDb/getSecureDownloadRecord', () => ({
   getSecureDownloadRecord: jest.fn()
+}))
+jest.mock('../utils/currentDateEpochMilliseconds', () => ({
+  currentDateEpochMilliseconds: jest.fn()
 }))
 
 describe('getDownloadAvailabilityResult', () => {
@@ -61,6 +66,24 @@ describe('getDownloadAvailabilityResult', () => {
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
     expect(response.hasAvailableDownload).toEqual(false)
     expect(response.downloadsRemaining).toEqual(0)
+    expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
+  })
+
+  it('should not include the createdDate prop when day limit has elapsed', async () => {
+    givenDownloadRecordAvailable(3)
+    when(currentDateEpochMilliseconds).mockReturnValue(1666393200000)
+    const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
+    expect(response.hasAvailableDownload).toEqual(true)
+    expect(response.downloadsRemaining).toEqual(3)
+    expect(response.createdDate).toBeUndefined()
+    expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
+  })
+
+  it('should include the createdDate prop when within the day limit', async () => {
+    givenDownloadRecordAvailable(3)
+    when(currentDateEpochMilliseconds).mockReturnValue(1665301600000)
+    const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
+    expect(response.createdDate).toEqual(TEST_CREATED_DATE)
     expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 })
