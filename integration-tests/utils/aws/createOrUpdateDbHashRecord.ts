@@ -7,7 +7,8 @@ import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvi
 
 export const createOrUpdateDbHashRecord = (
   downloadHash: string,
-  downloadsRemaining = 3
+  downloadsRemaining = 3,
+  daysOld = 0
 ) => {
   const ddbClient = new DynamoDBClient({
     region: getIntegrationTestEnvironmentVariable('AWS_REGION')
@@ -26,7 +27,7 @@ export const createOrUpdateDbHashRecord = (
         S: getIntegrationTestEnvironmentVariable('S3_RESULTS_BUCKET')
       },
       createdDate: {
-        N: Date.now().toString()
+        N: (Date.now() - daysOld * 1000 * 3600 * 24).toString()
       }
     }
   } as PutItemCommandInput
