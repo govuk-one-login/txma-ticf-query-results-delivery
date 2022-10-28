@@ -31,6 +31,10 @@ process.env.DOWNLOAD_PAGE_BASE_URL="https://YOUR-LAMBDA-URL.amazonaws.com/defaul
 process.env.DOWNLOAD_DYNAMODB_TABLE_NAME="<Dynamo DB table, look in SECURE_DOWNLOAD_TABLE_NAME env variable in lambda>"
 
 process.env.AWS_REGION="eu-west-2"
+
+process.env.S3_RESULTS_KEY="key of CSV PII data request results file"
+
+process.env.S3_RESULTS_BUCKET="bucket name for location of results. This should be the bucket that the ConfirmDownloadFunction lambda has access to"
 ```
 
 You also need permissions to access AWS resources, which
