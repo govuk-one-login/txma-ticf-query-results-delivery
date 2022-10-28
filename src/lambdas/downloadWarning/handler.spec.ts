@@ -5,8 +5,7 @@ import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
   TEST_S3_OBJECT_BUCKET,
-  TEST_S3_OBJECT_KEY,
-  TEST_CREATED_DATE
+  TEST_S3_OBJECT_KEY
 } from '../../utils/tests/setup/testConstants'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
@@ -30,8 +29,7 @@ describe('downloadWarning.handler', () => {
       downloadsRemaining,
       hasAvailableDownload: true,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
-      s3ResultsKey: TEST_S3_OBJECT_KEY,
-      createdDate: TEST_CREATED_DATE
+      s3ResultsKey: TEST_S3_OBJECT_KEY
     })
   }
 
