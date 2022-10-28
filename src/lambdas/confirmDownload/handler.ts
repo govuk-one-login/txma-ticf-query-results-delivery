@@ -23,7 +23,7 @@ export const handler = async (
       downloadHash
     )
 
-    if (!downloadAvailabilityResult.hasAvailableDownload) {
+    if (!downloadAvailabilityResult.canDownload) {
       return notFoundResponse()
     }
     const temporaryS3Link = await createTemporaryS3Link({

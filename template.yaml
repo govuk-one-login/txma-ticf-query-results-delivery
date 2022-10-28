@@ -189,7 +189,7 @@ Resources:
   ConfirmDownloadFunction:
     #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
     #checkov:skip=CKV_AWS_117:VPC not required
-    Type: AWS::Serverless::Function 
+    Type: AWS::Serverless::Function
     Properties:
       Handler: confirmDownload.handler
       Policies:
@@ -216,17 +216,18 @@ Resources:
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
+          LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
       FunctionName: !Sub ${AWS::StackName}-confirm-download-page
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         ConfirmDownload:
-          Type: Api 
+          Type: Api
           Properties:
             RestApiId: !Ref SecureFraudSiteApi
             Method: post
             Path: /secure/{downloadHash}
       ReservedConcurrentExecutions: 10
-  
+
   ConfirmDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -237,7 +238,7 @@ Resources:
   DownloadWarningFunction:
     #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
     #checkov:skip=CKV_AWS_117:VPC not required
-    Type: AWS::Serverless::Function 
+    Type: AWS::Serverless::Function
     Properties:
       Handler: downloadWarning.handler
       Policies:
@@ -258,10 +259,11 @@ Resources:
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
+          LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
       KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         DownloadWarning:
-          Type: Api 
+          Type: Api
           Properties:
             RestApiId: !Ref SecureFraudSiteApi
             Method: get

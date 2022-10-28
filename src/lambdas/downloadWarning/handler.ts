@@ -18,7 +18,8 @@ export const handler = async (
     const downloadAvailabilityResult = await getDownloadAvailabilityResult(
       event.pathParameters.downloadHash as string
     )
-    if (!downloadAvailabilityResult.hasAvailableDownload) {
+
+    if (!downloadAvailabilityResult.canDownload) {
       return notFoundResponse()
     }
 
@@ -38,6 +39,7 @@ const downloadConfirmResponse = (downloadsRemaining: number) => {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="https://design-system.service.gov.uk/assets/images/favicon.ico" type="image/x-icon" />
       <title>Data request</title>
       <style>
         :root {

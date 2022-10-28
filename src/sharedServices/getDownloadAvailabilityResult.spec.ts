@@ -2,12 +2,22 @@ import { resetAllWhenMocks, when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
   TEST_S3_OBJECT_BUCKET,
-  TEST_S3_OBJECT_KEY
+  TEST_S3_OBJECT_KEY,
+  TEST_CREATED_DATE,
+  TEST_LINK_EXPIRY_TIME
 } from '../utils/tests/setup/testConstants'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 import { getDownloadAvailabilityResult } from './getDownloadAvailabilityResult'
+import { isDateOverDaysLimit } from './isDateOverDaysLimit'
+jest.mock('./isDateOverDaysLimit', () => ({
+  isDateOverDaysLimit: jest.fn()
+}))
+
 jest.mock('./dynamoDb/getSecureDownloadRecord', () => ({
   getSecureDownloadRecord: jest.fn()
+}))
+jest.mock('../utils/currentDateEpochMilliseconds', () => ({
+  currentDateEpochMilliseconds: jest.fn()
 }))
 
 describe('getDownloadAvailabilityResult', () => {
@@ -20,7 +30,8 @@ describe('getDownloadAvailabilityResult', () => {
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
-      s3ResultsKey: TEST_S3_OBJECT_KEY
+      s3ResultsKey: TEST_S3_OBJECT_KEY,
+      createdDate: TEST_CREATED_DATE
     })
   }
 
@@ -28,13 +39,22 @@ describe('getDownloadAvailabilityResult', () => {
     when(getSecureDownloadRecord).mockResolvedValue(null)
   }
 
+  const givenDateOverDateLimit = () => {
+    when(isDateOverDaysLimit).mockReturnValue(true)
+  }
+
+  const givenDateWithinDateLimit = () => {
+    when(isDateOverDaysLimit).mockReturnValue(false)
+  }
+
   it.each([3, 2, 1])(
     'should return download details when available and there are %p downloads available',
     async (downloadsAvailable: number) => {
+      givenDateWithinDateLimit()
       givenDownloadRecordAvailable(downloadsAvailable)
       const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
       expect(response.downloadsRemaining).toEqual(downloadsAvailable)
-      expect(response.hasAvailableDownload).toEqual(true)
+      expect(response.canDownload).toEqual(true)
       expect(response.s3ResultsBucket).toEqual(TEST_S3_OBJECT_BUCKET)
       expect(response.s3ResultsKey).toEqual(TEST_S3_OBJECT_KEY)
       expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
@@ -42,22 +62,38 @@ describe('getDownloadAvailabilityResult', () => {
   )
 
   it('should indicate when no download can be found for a hash', async () => {
+    givenDateWithinDateLimit()
     givenNoDownloadRecordAvailable()
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
-    expect(response.hasAvailableDownload).toEqual(false)
+    expect(response.canDownload).toEqual(false)
     expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 
-  it('should indicate when the maximum number of downloads has been exceeded', async () => {
+  it('should return no available download result when the maximum number of downloads has been exceeded', async () => {
+    givenDateWithinDateLimit()
     when(getSecureDownloadRecord).mockResolvedValue({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 0,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
-      s3ResultsKey: TEST_S3_OBJECT_KEY
+      s3ResultsKey: TEST_S3_OBJECT_KEY,
+      createdDate: TEST_CREATED_DATE
     })
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
-    expect(response.hasAvailableDownload).toEqual(false)
+    expect(response.canDownload).toEqual(false)
     expect(response.downloadsRemaining).toEqual(0)
     expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
+  })
+
+  it('should return no available download result when the created date is over the date limit', async () => {
+    givenDateOverDateLimit()
+    givenDownloadRecordAvailable(3)
+    const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
+    expect(response.canDownload).toEqual(false)
+    expect(response.downloadsRemaining).toEqual(3)
+    expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
+    expect(isDateOverDaysLimit).toHaveBeenCalledWith(
+      TEST_CREATED_DATE,
+      TEST_LINK_EXPIRY_TIME
+    )
   })
 })

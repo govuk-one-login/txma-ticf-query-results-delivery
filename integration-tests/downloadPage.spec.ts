@@ -29,12 +29,15 @@ const sendRequest = (url: string, method: string) => {
 
 const NON_EXISTENT_HASH = 'aHashThatShouldNotExist'
 const VALID_HASH = 'integrationTestHash'
+const EXPIRED_HASH = 'lapsed'
 const HASH_WITH_NO_DOWNLOADS_REMAINING =
   'integrationTest-noDownloadsRemainingHash'
+
 describe('Download pages', () => {
   const resetDatabase = async () => {
     await createOrUpdateDbHashRecord(VALID_HASH)
     await createOrUpdateDbHashRecord(HASH_WITH_NO_DOWNLOADS_REMAINING, 0)
+    await createOrUpdateDbHashRecord(EXPIRED_HASH, 3, 8)
   }
 
   const assertDownloadNotFoundResponse = (response: AxiosResponse) => {
@@ -60,6 +63,11 @@ describe('Download pages', () => {
       assertDownloadNotFoundResponse(response)
     })
 
+    it('should return a 404 when created date is lapsed from today', async () => {
+      const response = await sendRequestForHash('GET', EXPIRED_HASH)
+      assertDownloadNotFoundResponse(response)
+    })
+
     it('should return a success response with correct number of downloads when there is a record for the provided hash', async () => {
       const response = await sendRequestForHash('GET', VALID_HASH)
       expect(response.status).toEqual(200)
@@ -79,6 +87,11 @@ describe('Download pages', () => {
 
     it('should return a 404 when no record is available for the provided hash', async () => {
       const response = await sendRequestForHash('POST', NON_EXISTENT_HASH)
+      assertDownloadNotFoundResponse(response)
+    })
+
+    it('should return a 404 when created date is lapsed from today', async () => {
+      const response = await sendRequestForHash('POST', EXPIRED_HASH)
       assertDownloadNotFoundResponse(response)
     })
 
