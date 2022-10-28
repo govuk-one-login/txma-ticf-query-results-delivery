@@ -19,7 +19,7 @@ export const handler = async (
       event.pathParameters.downloadHash as string
     )
 
-    if (!downloadAvailabilityResult.hasAvailableDownload) {
+    if (!downloadAvailabilityResult.canDownload) {
       return notFoundResponse()
     }
 

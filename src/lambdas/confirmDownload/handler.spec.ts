@@ -27,13 +27,13 @@ describe('confirmDownload.handler', () => {
   beforeEach(() => jest.resetAllMocks())
   const givenNoDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
-      hasAvailableDownload: false
+      canDownload: false
     })
   }
 
   const givenDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
-      hasAvailableDownload: true,
+      canDownload: true,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
       s3ResultsKey: TEST_S3_OBJECT_KEY
     })

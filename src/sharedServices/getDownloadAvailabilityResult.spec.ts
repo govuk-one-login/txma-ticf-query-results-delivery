@@ -54,7 +54,7 @@ describe('getDownloadAvailabilityResult', () => {
       givenDownloadRecordAvailable(downloadsAvailable)
       const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
       expect(response.downloadsRemaining).toEqual(downloadsAvailable)
-      expect(response.hasAvailableDownload).toEqual(true)
+      expect(response.canDownload).toEqual(true)
       expect(response.s3ResultsBucket).toEqual(TEST_S3_OBJECT_BUCKET)
       expect(response.s3ResultsKey).toEqual(TEST_S3_OBJECT_KEY)
       expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
@@ -65,7 +65,7 @@ describe('getDownloadAvailabilityResult', () => {
     givenDateWithinDateLimit()
     givenNoDownloadRecordAvailable()
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
-    expect(response.hasAvailableDownload).toEqual(false)
+    expect(response.canDownload).toEqual(false)
     expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 
@@ -79,7 +79,7 @@ describe('getDownloadAvailabilityResult', () => {
       createdDate: TEST_CREATED_DATE
     })
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
-    expect(response.hasAvailableDownload).toEqual(false)
+    expect(response.canDownload).toEqual(false)
     expect(response.downloadsRemaining).toEqual(0)
     expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
@@ -88,7 +88,7 @@ describe('getDownloadAvailabilityResult', () => {
     givenDateOverDateLimit()
     givenDownloadRecordAvailable(3)
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
-    expect(response.hasAvailableDownload).toEqual(false)
+    expect(response.canDownload).toEqual(false)
     expect(response.downloadsRemaining).toEqual(3)
     expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(isDateOverDaysLimit).toHaveBeenCalledWith(
