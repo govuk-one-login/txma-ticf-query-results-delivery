@@ -61,13 +61,33 @@ Resources:
               - kms:Decrypt
             Resource: '*'
 
-  SecureFraudSiteData:
-    Type: AWS::Serverless::SimpleTable
+  SecureFraudSiteData: 
+    Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub ${AWS::StackName}-secure-fraud-site-data
-      PrimaryKey:
-        Name: downloadHash
-        Type: String
+      AttributeDefinitions: 
+        - AttributeName: downloadHash
+          AttributeType: S
+        - AttributeName: zendeskId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: downloadHash
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: zendeskIdAndDownloadHashIndex
+          KeySchema:
+            - AttributeName: zendeskId
+              KeyType: HASH
+          Projection:
+            ProjectionType: "KEYS_ONLY"
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
       SSESpecification:
         SSEEnabled: true
         SSEType: KMS
@@ -104,6 +124,25 @@ Resources:
       Name: !Sub ${AWS::StackName}-secure-fraud-site-api
       StageName: default
       TracingEnabled: true
+      GatewayResponses:
+        ACCESS_DENIED:
+           ResponseTemplates: 
+              application/json: '{"message": "Access Denied: if you think you should have access to this URL, make sure you are connected to the VPN"}'
+      Auth:
+        ResourcePolicy:
+          IpRangeWhitelist:
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_1}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_2}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_3}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_4}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_5}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_6}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_7}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_8}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_9}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_10}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_11}}'
+             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_12}}'
 
   SecureFraudSiteAccessLogGroup:
     Type: AWS::Logs::LogGroup
