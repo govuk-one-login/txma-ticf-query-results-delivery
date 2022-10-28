@@ -63,7 +63,7 @@ describe('Download pages', () => {
       assertDownloadNotFoundResponse(response)
     })
 
-    it('should not show when created date is lapsed from today', async () => {
+    it('should return a 404 when created date is lapsed from today', async () => {
       const response = await sendRequestForHash('GET', EXPIRED_HASH)
       assertDownloadNotFoundResponse(response)
     })
@@ -90,7 +90,7 @@ describe('Download pages', () => {
       assertDownloadNotFoundResponse(response)
     })
 
-    it('should not show when created date is lapsed from today', async () => {
+    it('should return a 404 when created date is lapsed from today', async () => {
       const response = await sendRequestForHash('POST', EXPIRED_HASH)
       assertDownloadNotFoundResponse(response)
     })

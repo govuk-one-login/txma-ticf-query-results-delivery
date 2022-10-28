@@ -3,11 +3,15 @@ import {
   DOWNLOAD_HASH,
   TEST_S3_OBJECT_BUCKET,
   TEST_S3_OBJECT_KEY,
-  TEST_CREATED_DATE
+  TEST_CREATED_DATE,
+  TEST_LINK_EXPIRY_TIME
 } from '../utils/tests/setup/testConstants'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 import { getDownloadAvailabilityResult } from './getDownloadAvailabilityResult'
-import { currentDateEpochMilliseconds } from '../utils/currentDateEpochMilliseconds'
+import { isDateOverDaysLimit } from './isDateOverDaysLimit'
+jest.mock('./isDateOverDaysLimit', () => ({
+  isDateOverDaysLimit: jest.fn()
+}))
 
 jest.mock('./dynamoDb/getSecureDownloadRecord', () => ({
   getSecureDownloadRecord: jest.fn()
@@ -35,9 +39,18 @@ describe('getDownloadAvailabilityResult', () => {
     when(getSecureDownloadRecord).mockResolvedValue(null)
   }
 
+  const givenDateOverDateLimit = () => {
+    when(isDateOverDaysLimit).mockReturnValue(true)
+  }
+
+  const givenDateWithinDateLimit = () => {
+    when(isDateOverDaysLimit).mockReturnValue(false)
+  }
+
   it.each([3, 2, 1])(
     'should return download details when available and there are %p downloads available',
     async (downloadsAvailable: number) => {
+      givenDateWithinDateLimit()
       givenDownloadRecordAvailable(downloadsAvailable)
       const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
       expect(response.downloadsRemaining).toEqual(downloadsAvailable)
@@ -49,13 +62,15 @@ describe('getDownloadAvailabilityResult', () => {
   )
 
   it('should indicate when no download can be found for a hash', async () => {
+    givenDateWithinDateLimit()
     givenNoDownloadRecordAvailable()
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
     expect(response.hasAvailableDownload).toEqual(false)
     expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 
-  it('should indicate when the maximum number of downloads has been exceeded', async () => {
+  it('should return no available download result when the maximum number of downloads has been exceeded', async () => {
+    givenDateWithinDateLimit()
     when(getSecureDownloadRecord).mockResolvedValue({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 0,
@@ -69,21 +84,16 @@ describe('getDownloadAvailabilityResult', () => {
     expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 
-  it('should not include the createdDate prop when day limit has elapsed', async () => {
+  it('should return no available download result when the created date is over the date limit', async () => {
+    givenDateOverDateLimit()
     givenDownloadRecordAvailable(3)
-    when(currentDateEpochMilliseconds).mockReturnValue(1666393200000)
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
-    expect(response.hasAvailableDownload).toEqual(true)
+    expect(response.hasAvailableDownload).toEqual(false)
     expect(response.downloadsRemaining).toEqual(3)
-    expect(response.createdDate).toBeUndefined()
     expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
-  })
-
-  it('should include the createdDate prop when within the day limit', async () => {
-    givenDownloadRecordAvailable(3)
-    when(currentDateEpochMilliseconds).mockReturnValue(1665301600000)
-    const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
-    expect(response.createdDate).toEqual(TEST_CREATED_DATE)
-    expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
+    expect(isDateOverDaysLimit).toHaveBeenCalledWith(
+      TEST_CREATED_DATE,
+      TEST_LINK_EXPIRY_TIME
+    )
   })
 })

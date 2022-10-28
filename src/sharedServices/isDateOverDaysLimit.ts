@@ -5,5 +5,12 @@ const daysElapsed = (startDate: number, endDate: number) => {
   return Math.floor(diffInMs / (1000 * 3600 * 24))
 }
 
-export const getExpiredDays = (createdDate: number) =>
+const getExpiredDays = (createdDate: number): number =>
   daysElapsed(createdDate, currentDateEpochMilliseconds())
+
+export const isDateOverDaysLimit = (
+  date: number,
+  daysLimit: number
+): boolean => {
+  return getExpiredDays(date) > daysLimit
+}

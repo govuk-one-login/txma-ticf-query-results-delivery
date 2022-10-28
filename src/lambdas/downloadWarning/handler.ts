@@ -23,10 +23,6 @@ export const handler = async (
       return notFoundResponse()
     }
 
-    if (!downloadAvailabilityResult.createdDate) {
-      return notFoundResponse()
-    }
-
     return downloadConfirmResponse(
       downloadAvailabilityResult.downloadsRemaining as number
     )
