@@ -84,6 +84,19 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: confirmDownload.handler
+      Environment:
+        Variables:
+          SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
+          LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
+      FunctionName: !Sub ${AWS::StackName}-confirm-download-page
+      KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Events:
+        ConfirmDownload:
+          Type: Api
+          Properties:
+            RestApiId: !Ref SecureFraudSiteApi
+            Method: post
+            Path: /secure/{downloadHash}
       Policies:
         - Statement:
           - Sid: SecureFraudSiteDataTableReadWrite
@@ -109,18 +122,6 @@ Resources:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: !GetAtt ConfirmDownloadFunctionLogs.Arn
-      Environment:
-        Variables:
-          SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
-      FunctionName: !Sub ${AWS::StackName}-confirm-download-page
-      KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
-      Events:
-        ConfirmDownload:
-          Type: Api
-          Properties:
-            RestApiId: !Ref SecureFraudSiteApi
-            Method: post
-            Path: /secure/{downloadHash}
   
   ConfirmDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
@@ -139,6 +140,7 @@ Resources:
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
+          LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
       Events:
         DownloadWarning:
           Type: Api

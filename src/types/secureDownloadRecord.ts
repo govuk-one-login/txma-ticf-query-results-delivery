@@ -3,6 +3,7 @@ export interface SecureDownloadRecord {
   downloadsRemaining: number
   s3ResultsKey: string
   s3ResultsBucket: string
+  createdDate: number
 }
 
 export const isSecureDownloadRecord = (
@@ -14,6 +15,7 @@ export const isSecureDownloadRecord = (
     typeof test?.downloadsRemaining === 'number' &&
     typeof test?.s3ResultsKey === 'string' &&
     typeof test?.s3ResultsBucket === 'string' &&
+    typeof test?.createdDate === 'number' &&
     test?.downloadsRemaining >= 0
   )
 }
