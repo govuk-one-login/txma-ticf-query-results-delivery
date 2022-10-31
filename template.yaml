@@ -33,87 +33,13 @@ Globals:
       Variables:
         NODE_OPTIONS: --enable-source-maps
     PermissionsBoundary: !If [UsePermissionsBoundary, !Ref PermissionsBoundary, !Ref AWS::NoValue]
+    ReservedConcurrentExecutions: 10
     Runtime: nodejs16.x
     Timeout: 15
   Api:
     OpenApiVersion: 3.0.1
 
 Resources:
-
-  LambdaKmsKey:
-    Type: AWS::KMS::Key
-    Properties:
-      EnableKeyRotation: true
-      KeyPolicy:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
-            Action:
-              - kms:*
-            Resource:
-              - '*'
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action:
-              - kms:Decrypt
-            Resource: '*'
-
-  SecureFraudSiteData: 
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: !Sub ${AWS::StackName}-secure-fraud-site-data
-      AttributeDefinitions: 
-        - AttributeName: downloadHash
-          AttributeType: S
-        - AttributeName: zendeskId
-          AttributeType: S
-      KeySchema:
-        - AttributeName: downloadHash
-          KeyType: HASH
-      GlobalSecondaryIndexes:
-        - IndexName: zendeskIdAndDownloadHashIndex
-          KeySchema:
-            - AttributeName: zendeskId
-              KeyType: HASH
-          Projection:
-            ProjectionType: "KEYS_ONLY"
-          ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
-      PointInTimeRecoverySpecification:
-        PointInTimeRecoveryEnabled: true
-      SSESpecification:
-        SSEEnabled: true
-        SSEType: KMS
-        KMSMasterKeyId: !GetAtt DatabaseKmsKey.Arn
-
-  DatabaseKmsKey:
-    Type: AWS::KMS::Key
-    Properties:
-      EnableKeyRotation: true
-      KeyPolicy:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
-            Action:
-              - kms:*
-            Resource:
-              - '*'
-
-  DatabaseKmsKeyAlias:
-    Type: AWS::KMS::Alias
-    Properties:
-      AliasName: !Sub alias/${AWS::StackName}/${Environment}/secure-fraud-site-database-kms-key
-      TargetKeyId: !Ref DatabaseKmsKey
-
   SecureFraudSiteApi:
     #checkov:skip=CKV_AWS_120:We explicitly don't want caching
     Type: AWS::Serverless::Api
@@ -147,78 +73,23 @@ Resources:
   SecureFraudSiteAccessLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      KmsKeyId: !GetAtt LogsKmsKey.Arn
+      KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
       LogGroupName: !Sub /aws/apigateway/${SecureFraudSiteApi}-access-logs
-      RetentionInDays: 7
-
-  LogsKmsKey:
-    Type: AWS::KMS::Key
-    Properties:
-      EnableKeyRotation: true
-      KeyPolicy:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
-            Action:
-              - kms:*
-            Resource:
-              - '*'
-          - Effect: Allow
-            Principal:
-              Service: !Sub logs.${AWS::Region}.amazonaws.com
-            Action:
-              - kms:Decrypt*
-              - kms:Describe*
-              - kms:Encrypt*
-              - kms:GenerateDataKey*
-              - kms:ReEncrypt*
-            Resource:
-              - '*'
-            Condition:
-              ArnLike:
-                kms:EncryptionContext:aws:logs:arn: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*
-
-  LogsKmsKeyAlias:
-    Type: AWS::KMS::Alias
-    Properties:
-      AliasName: !Sub alias/${AWS::StackName}/${Environment}/secure-fraud-site-logs-kms-key
-      TargetKeyId: !Ref LogsKmsKey
+      RetentionInDays: 30
 
   ConfirmDownloadFunction:
+    #checkov:skip=CKV_AWS_115:Defined in Globals
     #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
     #checkov:skip=CKV_AWS_117:VPC not required
     Type: AWS::Serverless::Function
     Properties:
       Handler: confirmDownload.handler
-      Policies:
-        - Statement:
-          - Sid: DynamoDBReadWrite
-            Effect: Allow
-            Action:
-              - dynamodb:GetItem
-              - dynamodb:UpdateItem
-            Resource:
-              - !GetAtt SecureFraudSiteData.Arn
-          - Sid: KmsDatabaseDecryptionKey
-            Effect: Allow
-            Action:
-              - kms:Decrypt
-            Resource:
-              - !GetAtt DatabaseKmsKey.Arn
-          - Sid: S3ResultsBucketRead
-            Effect: Allow
-            Action:
-              - s3:GetObject
-            Resource:
-              - !Sub arn:aws:s3:::ticf-integration-${Environment}-query-results-bucket/*
       Environment:
         Variables:
-          SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
+          SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
           LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
       FunctionName: !Sub ${AWS::StackName}-confirm-download-page
-      KmsKeyArn: !GetAtt LambdaKmsKey.Arn
+      KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Events:
         ConfirmDownload:
           Type: Api
@@ -226,41 +97,50 @@ Resources:
             RestApiId: !Ref SecureFraudSiteApi
             Method: post
             Path: /secure/{downloadHash}
-      ReservedConcurrentExecutions: 10
-
+      Policies:
+        - Statement:
+          - Sid: SecureFraudSiteDataTableReadWrite
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+            Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
+          - Sid: DecryptKmsKeys
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
+          - Sid: S3ResultsBucketRead
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
+          - Sid: Logs
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: !GetAtt ConfirmDownloadFunctionLogs.Arn
+  
   ConfirmDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
     Properties:
-      KmsKeyId: !GetAtt LogsKmsKey.Arn
-      LogGroupName: !Join ['', ['/aws/lambda/', !Ref ConfirmDownloadFunction]]
+      KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-confirm-download-page'
       RetentionInDays: 30
 
   DownloadWarningFunction:
+    #checkov:skip=CKV_AWS_115:Defined in Globals
     #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
     #checkov:skip=CKV_AWS_117:VPC not required
     Type: AWS::Serverless::Function
     Properties:
       Handler: downloadWarning.handler
-      Policies:
-        - Statement:
-          - Sid: DynamoDBRead
-            Effect: Allow
-            Action:
-              - dynamodb:GetItem
-            Resource:
-              - !GetAtt SecureFraudSiteData.Arn
-          - Sid: KmsDatabaseDecryptionKey
-            Effect: Allow
-            Action:
-              - kms:Decrypt
-            Resource:
-              - !GetAtt DatabaseKmsKey.Arn
-      FunctionName: !Sub ${AWS::StackName}-download-warning-page
       Environment:
         Variables:
-          SECURE_DOWNLOAD_TABLE_NAME: !Ref SecureFraudSiteData
+          SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
           LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
-      KmsKeyArn: !GetAtt LambdaKmsKey.Arn
       Events:
         DownloadWarning:
           Type: Api
@@ -268,11 +148,38 @@ Resources:
             RestApiId: !Ref SecureFraudSiteApi
             Method: get
             Path: /secure/{downloadHash}
-      ReservedConcurrentExecutions: 10
+      FunctionName: !Sub ${AWS::StackName}-download-warning-page
+      KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Policies:
+        - Statement:
+          - Sid: SecureFraudSiteDataTableRead
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+            Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
+          - Sid: DecryptDatabaseKmsKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
+          - Sid: Logs
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: !GetAtt DownloadWarningFunctionLogs.Arn
 
   DownloadWarningFunctionLogs:
     Type: AWS::Logs::LogGroup
     Properties:
-      KmsKeyId: !GetAtt LogsKmsKey.Arn
-      LogGroupName: !Join ['', ['/aws/lambda/', !Ref DownloadWarningFunction]]
+      KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-download-warning-page'
       RetentionInDays: 30
+
+  SecureFraudSiteApiStageUrlParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: SecureFraudSiteApiStageUrl
+      Type: String
+      Value: !Sub https://${SecureFraudSiteApi}.execute-api.${AWS::Region}.amazonaws.com/default
