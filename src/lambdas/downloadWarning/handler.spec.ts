@@ -67,7 +67,7 @@ describe('downloadWarning.handler', () => {
     expect(result.statusCode).toEqual(200)
     expect(result.body).toContain('Download the report')
     expect(result.body).toContain(
-      `You have ${TEST_DOWNLOADS_REMAINING} attempts before the link expires.`
+      `You have ${TEST_DOWNLOADS_REMAINING} downloads remaining.`
     )
   })
 
@@ -79,6 +79,6 @@ describe('downloadWarning.handler', () => {
         downloadHash: DOWNLOAD_HASH
       }
     })
-    expect(result.body).toContain(`You have 1 attempt before the link expires.`)
+    expect(result.body).toContain(`You have 1 download remaining.`)
   })
 })

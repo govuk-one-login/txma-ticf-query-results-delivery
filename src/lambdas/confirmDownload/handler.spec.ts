@@ -75,13 +75,24 @@ describe('confirmDownload.handler', () => {
     expect(result.body).toContain(
       `<meta http-equiv="refresh" content="0; url=${TEST_SIGNED_URL}">`
     )
-    expect(result.body).toContain(
-      `<a href="${TEST_SIGNED_URL}" class="govuk-link">`
-    )
     expect(createTemporaryS3Link).toHaveBeenCalledWith({
       bucket: TEST_S3_OBJECT_BUCKET,
       key: TEST_S3_OBJECT_KEY
     })
     expect(decrementDownloadCount).toHaveBeenCalledWith(DOWNLOAD_HASH)
+  })
+
+  it('should show the headline and body text on page when download is available', async () => {
+    givenDownloadAvailable()
+    const result = await handler({
+      ...defaultApiRequest,
+      pathParameters: {
+        downloadHash: DOWNLOAD_HASH
+      }
+    })
+    expect(result.body).toContain('Fraud secure page')
+    expect(result.body).toContain(
+      'Your data will automatically download in CSV format.'
+    )
   })
 })
