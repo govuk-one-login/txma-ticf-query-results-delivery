@@ -176,10 +176,3 @@ Resources:
       KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
       LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-download-warning-page'
       RetentionInDays: 30
-
-  SecureFraudSiteApiStageUrlParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: SecureFraudSiteApiStageUrl
-      Type: String
-      Value: !Sub https://${SecureFraudSiteApi}.execute-api.${AWS::Region}.amazonaws.com/default
