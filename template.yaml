@@ -77,6 +77,12 @@ Resources:
       LogGroupName: !Sub /aws/apigateway/${SecureFraudSiteApi}-access-logs
       RetentionInDays: 30
 
+  SecureFraudApiWafAssociation:
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties: 
+      ResourceArn: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}::/restapis/${SecureFraudSiteApi}/stages/${SecureFraudSiteApi.Stage}
+      WebACLArn: '{{resolve:ssm:SecureFraudApiWafAclArn}}'
+
   ConfirmDownloadFunction:
     #checkov:skip=CKV_AWS_115:Defined in Globals
     #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
