@@ -52,7 +52,7 @@ Resources:
       TracingEnabled: true
       GatewayResponses:
         ACCESS_DENIED:
-           ResponseTemplates: 
+           ResponseTemplates:
               application/json: '{"message": "Access Denied: if you think you should have access to this URL, make sure you are connected to the VPN"}'
       Auth:
         ResourcePolicy:
@@ -122,7 +122,7 @@ Resources:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: !GetAtt ConfirmDownloadFunctionLogs.Arn
-  
+
   ConfirmDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -176,10 +176,3 @@ Resources:
       KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
       LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-download-warning-page'
       RetentionInDays: 30
-
-  SecureFraudSiteApiStageUrlParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: SecureFraudSiteApiStageUrl
-      Type: String
-      Value: !Sub https://${SecureFraudSiteApi}.execute-api.${AWS::Region}.amazonaws.com/default
