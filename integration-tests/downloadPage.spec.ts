@@ -74,9 +74,7 @@ describe('Download pages', () => {
       const contentType = response.headers['content-type']
       expect(contentType).toEqual('text/html')
       expect(response.data).toContain('Download the report')
-      expect(response.data).toContain(
-        'You have 3 attempts before the link expires.'
-      )
+      expect(response.data).toContain('You have 3 downloads remaining.')
     })
   })
 
@@ -120,7 +118,7 @@ describe('Download pages', () => {
       )
       expect(getResponseAfterDownload.status).toEqual(200)
       expect(getResponseAfterDownload.data).toContain(
-        'You have 2 attempts before the link expires'
+        'You have 2 downloads remaining.'
       )
     })
 

@@ -116,10 +116,6 @@ export const createDownloadPageResponse = (temporaryS3Link: string): string =>
         margin-top: 0;
         margin-bottom: 15px;
       }
-      .govuk-loader {
-        margin-bottom: 20px;
-      }
-
       @media (min-width: 1020px) {
         .govuk-width-container {
           margin-right: auto;
@@ -173,38 +169,11 @@ export const createDownloadPageResponse = (temporaryS3Link: string): string =>
       <main>
         <div class="govuk-container">
           <h1 class="govuk-heading-l">Fraud secure page</h1>
-          <div class="govuk-loader">
-            <svg
-              width="38"
-              height="38"
-              viewBox="0 0 38 38"
-              xmlns="http://www.w3.org/2000/svg"
-              stroke="#0b0c0c4d"
-              aria-h
-            >
-              <g fill="none" fill-rule="evenodd">
-                <g transform="translate(1 1)" stroke-width="2">
-                  <circle stroke-opacity=".5" cx="18" cy="18" r="18" />
-                  <path d="M36 18c0-9.94-8.06-18-18-18">
-                    <animateTransform
-                      attributeName="transform"
-                      type="rotate"
-                      from="0 18 18"
-                      to="360 18 18"
-                      dur="1s"
-                      repeatCount="indefinite"
-                    />
-                  </path>
-                </g>
-              </g>
-            </svg>
-          </div>
           <p class="govuk-body">
             Retrieving your data and will automatically download in CSV format.
           </p>
           <p class="govuk-body">
-            If the download doesn't start in 50 seconds, please
-            <a href="${temporaryS3Link}" class="govuk-link">click</a> to start again.
+            Your data will automatically download in CSV format.
           </p>
         </div>
       </main>

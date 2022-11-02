@@ -307,9 +307,9 @@ const downloadConfirmResponse = (downloadsRemaining: number) => {
               </button>
             </form>
             <p class="govuk-body">
-              You have ${downloadsRemaining} attempt${
+              You have ${downloadsRemaining} download${
     downloadsRemaining > 1 ? 's' : ''
-  } before the link expires.
+  } remaining.
             </p>
           </div>
         </main>
