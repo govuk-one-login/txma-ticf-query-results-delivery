@@ -8,7 +8,8 @@ import {
   DOWNLOAD_HASH,
   TEST_S3_OBJECT_BUCKET,
   TEST_S3_OBJECT_KEY,
-  TEST_CREATED_DATE
+  TEST_CREATED_DATE,
+  TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
 import { getSecureDownloadRecord } from './getSecureDownloadRecord'
 import { mockClient } from 'aws-sdk-client-mock'
@@ -21,25 +22,29 @@ describe('dynamoDBGet', () => {
     jest.resetAllMocks()
   })
 
-  const mockDbContents = {
+  const createMockDbContents = () => ({
     Item: {
       downloadHash: { S: DOWNLOAD_HASH },
       downloadsRemaining: { N: '3' },
       s3ResultsBucket: { S: TEST_S3_OBJECT_BUCKET },
       s3ResultsKey: { S: TEST_S3_OBJECT_KEY },
-      createdDate: { N: TEST_CREATED_DATE.toString() }
+      createdDate: { N: TEST_CREATED_DATE.toString() },
+      zendeskId: { S: TEST_ZENDESK_TICKET_ID }
     }
-  }
+  })
 
   it('Returns result if value found in database', async () => {
-    dynamoMock.on(GetItemCommand).resolves(mockDbContents as GetItemOutput)
+    dynamoMock
+      .on(GetItemCommand)
+      .resolves(createMockDbContents() as GetItemOutput)
     const result = await getSecureDownloadRecord(DOWNLOAD_HASH)
     expect(result).toEqual({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 3,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
       s3ResultsKey: TEST_S3_OBJECT_KEY,
-      createdDate: TEST_CREATED_DATE
+      createdDate: TEST_CREATED_DATE,
+      zendeskId: TEST_ZENDESK_TICKET_ID
     })
   })
 
@@ -64,10 +69,17 @@ describe('dynamoDBGet', () => {
     )
   })
 
-  it.each(['downloadHash', 'downloadsRemaining', 's3ResultsArn'])(
+  it.each([
+    'downloadHash',
+    'downloadsRemaining',
+    's3ResultsBucket',
+    's3ResultsKey',
+    'createdDate',
+    'zendeskId'
+  ])(
     'Finds download record id but property %p missing',
     async (propertyName: string) => {
-      const testDbContents = { ...mockDbContents } as GetItemOutput
+      const testDbContents = createMockDbContents()
       delete (testDbContents.Item as Record<string, AttributeValue>)[
         propertyName
       ]

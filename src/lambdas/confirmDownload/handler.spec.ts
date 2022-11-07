@@ -3,12 +3,14 @@ import { handler } from './handler'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
+import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
   TEST_S3_OBJECT_BUCKET,
   TEST_S3_OBJECT_KEY,
-  TEST_SIGNED_URL
+  TEST_SIGNED_URL,
+  TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
@@ -23,6 +25,10 @@ jest.mock('../../sharedServices/dynamoDb/decrementDownloadCount', () => ({
   decrementDownloadCount: jest.fn()
 }))
 
+jest.mock('./auditTemporaryS3LinkCreated', () => ({
+  auditTemporaryS3LinkCreated: jest.fn()
+}))
+
 describe('confirmDownload.handler', () => {
   beforeEach(() => jest.resetAllMocks())
   const givenNoDownloadAvailable = () => {
@@ -35,7 +41,8 @@ describe('confirmDownload.handler', () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
       canDownload: true,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
-      s3ResultsKey: TEST_S3_OBJECT_KEY
+      s3ResultsKey: TEST_S3_OBJECT_KEY,
+      zendeskId: TEST_ZENDESK_TICKET_ID
     })
   }
 
@@ -60,7 +67,7 @@ describe('confirmDownload.handler', () => {
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
   })
 
-  it('should redirect to signed S3 URL if hash corresponds to a valid download entry', async () => {
+  it('should return a refresh tag with a signed S3 URL if hash corresponds to a valid download entry', async () => {
     givenDownloadAvailable()
     when(createTemporaryS3Link).mockResolvedValue(TEST_SIGNED_URL)
 
@@ -80,6 +87,9 @@ describe('confirmDownload.handler', () => {
       key: TEST_S3_OBJECT_KEY
     })
     expect(decrementDownloadCount).toHaveBeenCalledWith(DOWNLOAD_HASH)
+    expect(auditTemporaryS3LinkCreated).toHaveBeenCalledWith(
+      TEST_ZENDESK_TICKET_ID
+    )
   })
 
   it('should show the headline and body text on page when download is available', async () => {

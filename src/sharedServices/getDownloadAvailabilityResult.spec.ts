@@ -4,7 +4,8 @@ import {
   TEST_S3_OBJECT_BUCKET,
   TEST_S3_OBJECT_KEY,
   TEST_CREATED_DATE,
-  TEST_LINK_EXPIRY_TIME
+  TEST_LINK_EXPIRY_TIME,
+  TEST_ZENDESK_TICKET_ID
 } from '../utils/tests/setup/testConstants'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 import { getDownloadAvailabilityResult } from './getDownloadAvailabilityResult'
@@ -31,7 +32,8 @@ describe('getDownloadAvailabilityResult', () => {
       downloadsRemaining,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
       s3ResultsKey: TEST_S3_OBJECT_KEY,
-      createdDate: TEST_CREATED_DATE
+      createdDate: TEST_CREATED_DATE,
+      zendeskId: TEST_ZENDESK_TICKET_ID
     })
   }
 
@@ -76,7 +78,8 @@ describe('getDownloadAvailabilityResult', () => {
       downloadsRemaining: 0,
       s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
       s3ResultsKey: TEST_S3_OBJECT_KEY,
-      createdDate: TEST_CREATED_DATE
+      createdDate: TEST_CREATED_DATE,
+      zendeskId: TEST_ZENDESK_TICKET_ID
     })
     const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
     expect(response.canDownload).toEqual(false)
