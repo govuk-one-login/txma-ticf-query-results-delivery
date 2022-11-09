@@ -134,13 +134,13 @@ Resources:
             Action:
               - sqs:SendMessage
             Resource: '{{resolve:ssm:AuditDataRequestEventsQueueArn}}'
-          - Sid: UseSqsKmsKey
+          - Sid: AllowQueueKmsKeyAccess
             Effect: Allow
             Action:
               - kms:Decrypt
               - kms:GenerateDataKey*
               - kms:ReEncrypt*
-            Resource: '{{resolve:ssm:SqsKmsKeyArn}}'
+            Resource: '{{resolve:ssm:AuditDataRequestEventsQueueKmsKeyArn}}'
   
   ConfirmDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
