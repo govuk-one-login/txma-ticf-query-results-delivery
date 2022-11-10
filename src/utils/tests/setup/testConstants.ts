@@ -16,3 +16,4 @@ export const ALL_NOTIFY_SECRETS = {
   notifyApiKey: 'myNotifyApiKey',
   notifyTemplateId: 'myNotifyTemplateId'
 }
+export const TEST_NOTIFY_API_SECRETS_ARN = 'myNotifySecretName'
