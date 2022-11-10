@@ -231,12 +231,12 @@ Resources:
             Condition:
               StringEquals:
                 'kms:RequestAlias': !Sub 'arn:aws:kms:{$AWS:Region}:{{resolve:ssm:AuditAccountNumber}}:alias/${AWS::StackName}/${Environment}/query-completed-queue-kms-key'
-          - Sid: Allow access to items in Athena output bucket for copy
+          - Sid: AllowAccessAthenaOutputBucket
             Effect: Allow
             Action:
               - s3:GetObject
             Resource: 'arn:aws:s3:::txma-data-analysis-dev-athena-query-output-bucket/*'
-          - Sid: Allow decrypt with athena output bucket KMS key
+          - Sid: AllowDecryptOfAthenaOutput
             Effect: Allow
             Action:
               - kms:Decrypt
