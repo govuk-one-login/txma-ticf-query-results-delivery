@@ -6,10 +6,6 @@ import 'aws-sdk-client-mock-jest'
 
 const sqsMock = mockClient(SQSClient)
 
-jest.mock('../../utils/helpers', () => ({
-  getEnv: jest.fn()
-}))
-
 const MOCK_QUEUE_URL = 'http://my_queue_url'
 const MOCK_MESSAGE_ID = 'MyMessageId'
 describe('sendSqsMessage', () => {
