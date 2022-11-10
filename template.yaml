@@ -182,3 +182,60 @@ Resources:
       KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
       LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-download-warning-page'
       RetentionInDays: 30
+    
+  GenerateDownloadFunction:
+    #checkov:skip=CKV_AWS_117:VPC not required
+    #checkov:skip=CKV_AWS_115:Defined in Globals section
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: generateDownload.handler
+      Environment:
+        Variables:
+          SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
+      Events:
+        QueryCompleteEvent:
+          Type: SQS
+          Properties:
+            Queue: !Sub 'arn:aws:sqs:{$AWS:Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
+            BatchSize: 1
+      FunctionName: !Sub ${AWS::StackName}-generate-download
+      KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Policies:
+        - Statement:
+          - Sid: SecureFraudSiteDataTableRead
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+            Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
+          - Sid: DecryptDatabaseKmsKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
+          - Sid: Logs
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: !GetAtt DownloadWarningFunctionLogs.Arn
+          - Sid: UseQueryCompletedQueueKmsKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+              - kms:GenerateDataKey*
+              - kms:ReEncrypt*
+            Resource: '*'
+            Condition:
+              StringEquals:
+                'kms:RequestAlias': !Sub 'arn:aws:kms:{$AWS:Region}:{{resolve:ssm:AuditAccountNumber}}:alias/${AWS::StackName}/${Environment}/query-completed-queue-kms-key'
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !Sub 'arn:aws:sqs:{$AWS:Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-dead-letter-queue'
+
+  GenerateDownloadFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-generate-download'
+      RetentionInDays: 30
