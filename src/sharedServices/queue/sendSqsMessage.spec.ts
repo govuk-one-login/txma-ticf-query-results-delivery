@@ -1,6 +1,6 @@
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs'
 import { sendSqsMessage, sendSqsMessageWithStringBody } from './sendSqsMessage'
-import { testDataRequest } from '../../utils/tests/setup/testDataRequest'
+import { testSqsMessageBody } from '../../utils/tests/setup/testSqsMessageBody'
 import { mockClient } from 'aws-sdk-client-mock'
 import 'aws-sdk-client-mock-jest'
 
@@ -16,11 +16,11 @@ describe('sendSqsMessage', () => {
   it('sends message to correct queue', async () => {
     sqsMock.on(SendMessageCommand).resolves({ MessageId: MOCK_MESSAGE_ID })
 
-    const messageId = await sendSqsMessage(testDataRequest, MOCK_QUEUE_URL)
+    const messageId = await sendSqsMessage(testSqsMessageBody, MOCK_QUEUE_URL)
     expect(messageId).toEqual(MOCK_MESSAGE_ID)
     expect(sqsMock).toHaveReceivedCommandWith(SendMessageCommand, {
       QueueUrl: MOCK_QUEUE_URL,
-      MessageBody: JSON.stringify(testDataRequest)
+      MessageBody: JSON.stringify(testSqsMessageBody)
     })
   })
 
@@ -28,14 +28,14 @@ describe('sendSqsMessage', () => {
     sqsMock.on(SendMessageCommand).resolves({ MessageId: MOCK_MESSAGE_ID })
     const delaySendInSeconds = 60
     const messageId = await sendSqsMessage(
-      testDataRequest,
+      testSqsMessageBody,
       MOCK_QUEUE_URL,
       delaySendInSeconds
     )
     expect(messageId).toEqual(MOCK_MESSAGE_ID)
     expect(sqsMock).toHaveReceivedCommandWith(SendMessageCommand, {
       QueueUrl: MOCK_QUEUE_URL,
-      MessageBody: JSON.stringify(testDataRequest),
+      MessageBody: JSON.stringify(testSqsMessageBody),
       DelaySeconds: delaySendInSeconds
     })
   })
