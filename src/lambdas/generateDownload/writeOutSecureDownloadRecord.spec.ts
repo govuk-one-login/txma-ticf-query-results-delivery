@@ -8,7 +8,7 @@ import {
   TEST_ATHENA_QUERY_ID,
   DOWNLOAD_HASH,
   TEST_FRAUD_TABLE,
-  TEST_S3_OBJECT_BUCKET,
+  TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
 import { currentDateEpochMilliseconds } from '../../utils/currentDateEpochMilliseconds'
@@ -29,7 +29,7 @@ describe('writeOutSecureDownloadRecord', () => {
     Item: {
       downloadHash: { S: DOWNLOAD_HASH },
       downloadsRemaining: { N: '2' },
-      s3ResultsBucket: { S: TEST_S3_OBJECT_BUCKET },
+      s3ResultsBucket: { S: TEST_QUERY_RESULTS_BUCKET_NAME },
       s3ResultsKey: { S: `${TEST_ATHENA_QUERY_ID}.csv` },
       zendeskId: { S: TEST_ZENDESK_TICKET_ID },
       createdDate: { N: TEST_EPOCH_MILLISECONDS.toString() }

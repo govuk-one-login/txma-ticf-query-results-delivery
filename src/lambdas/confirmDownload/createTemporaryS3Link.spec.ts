@@ -3,7 +3,7 @@ import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import {
   TEST_AWS_REGION,
-  TEST_S3_OBJECT_BUCKET,
+  TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_S3_OBJECT_KEY,
   TEST_SIGNED_URL
 } from '../../utils/tests/setup/testConstants'
@@ -20,13 +20,13 @@ jest.mock('@aws-sdk/s3-request-presigner', () => ({
 }))
 
 const testGetObjectCommandInput = {
-  Bucket: TEST_S3_OBJECT_BUCKET,
+  Bucket: TEST_QUERY_RESULTS_BUCKET_NAME,
   Key: TEST_S3_OBJECT_KEY
 }
 
 describe('createTemporaryS3Link', () => {
   const s3BucketDetails = {
-    bucket: TEST_S3_OBJECT_BUCKET,
+    bucket: TEST_QUERY_RESULTS_BUCKET_NAME,
     key: TEST_S3_OBJECT_KEY
   }
 
