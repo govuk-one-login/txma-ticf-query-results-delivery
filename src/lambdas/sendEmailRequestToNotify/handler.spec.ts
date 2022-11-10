@@ -1,4 +1,5 @@
 import {
+  TEST_CLOSE_TICKET_QUEUE_URL,
   TEST_NOTIFY_EMAIL,
   TEST_NOTIFY_NAME,
   TEST_SECURE_DOWNLOAD_URL,
@@ -7,10 +8,13 @@ import {
 import { handler } from './handler'
 import { sendEmailToNotify } from './sendEmailToNotify'
 import { constructSqsEvent } from '../../utils/tests/events/sqsEvent'
-// import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
+import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
 
 jest.mock('./sendEmailToNotify', () => ({
   sendEmailToNotify: jest.fn()
+}))
+jest.mock('../../sharedServices/queue/sendSqsMessage', () => ({
+  sendSqsMessage: jest.fn()
 }))
 jest.mock('../../sharedServices/queue/sendSqsMessage', () => ({
   sendSqsMessage: jest.fn()
@@ -52,10 +56,13 @@ describe('initiate sendEmailRequest handler', () => {
       zendeskId: ZENDESK_TICKET_ID,
       secureDownloadUrl: TEST_SECURE_DOWNLOAD_URL
     })
-    // expect(sendSqsMessage).toHaveBeenCalledWith({
-    //   zendeskId: ZENDESK_TICKET_ID,
-    //   commentCopyText: 'A link to your results has been sent to you.'
-    // })
+    expect(sendSqsMessage).toHaveBeenCalledWith(
+      {
+        zendeskId: ZENDESK_TICKET_ID,
+        commentCopyText: 'A link to your results has been sent to you.'
+      },
+      TEST_CLOSE_TICKET_QUEUE_URL
+    )
   })
 
   it('throws an error when no event records are in the SQSEvent object', async () => {
@@ -95,7 +102,7 @@ describe('initiate sendEmailRequest handler', () => {
     )
   })
   it.each(['firstName', 'email', 'secureDownloadUrl'])(
-    'throws an error when %p is missing from the event body',
+    'logs an error when %p is missing from the event body',
     async (missingPropertyName: string) => {
       const eventBodyParams = {
         email: TEST_NOTIFY_EMAIL,
@@ -111,10 +118,17 @@ describe('initiate sendEmailRequest handler', () => {
         'Could not send a request to Notify: ',
         Error('Required details were not all present in event body')
       )
+      expect(sendSqsMessage).toHaveBeenCalledWith(
+        {
+          zendeskId: ZENDESK_TICKET_ID,
+          commentCopyText: 'Your results could not be emailed.'
+        },
+        TEST_CLOSE_TICKET_QUEUE_URL
+      )
     }
   )
   it.each(['firstName', 'email', 'secureDownloadUrl'])(
-    'updates Zendesk ticket, and throws an error when %p is an empty string',
+    'logs an error when %p is an empty string',
     async (emptyStringPropertyName: string) => {
       const eventBodyParams = {
         email: TEST_NOTIFY_EMAIL,
@@ -130,6 +144,13 @@ describe('initiate sendEmailRequest handler', () => {
         'Could not send a request to Notify: ',
         Error('Required details were not all present in event body')
       )
+      expect(sendSqsMessage).toHaveBeenCalledWith(
+        {
+          zendeskId: ZENDESK_TICKET_ID,
+          commentCopyText: 'Your results could not be emailed.'
+        },
+        TEST_CLOSE_TICKET_QUEUE_URL
+      )
     }
   )
   it('given a valid event body, when sendEmailToNotify fails, logs an error', async () => {
@@ -140,6 +161,13 @@ describe('initiate sendEmailRequest handler', () => {
     expect(console.error).toHaveBeenCalledWith(
       'Could not send a request to Notify: ',
       Error('A Notify related error')
+    )
+    expect(sendSqsMessage).toHaveBeenCalledWith(
+      {
+        zendeskId: ZENDESK_TICKET_ID,
+        commentCopyText: 'Your results could not be emailed.'
+      },
+      TEST_CLOSE_TICKET_QUEUE_URL
     )
   })
 })

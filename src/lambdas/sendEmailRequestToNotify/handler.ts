@@ -74,12 +74,12 @@ const isEventBodyInvalid = (requestDetails: PersonalisationOptions) => {
 
 const sendMessageToCloseTicketQueue = async (
   zendeskId: string,
-  commentCopyText: string
+  commentCopyReference: string
 ) => {
   sendSqsMessage(
     {
       zendeskId,
-      commentCopyText: interpolateTemplate(commentCopyText, notifyCopy)
+      commentCopyText: interpolateTemplate(commentCopyReference, notifyCopy)
     },
     getEnv('CLOSE_TICKET_QUEUE_URL')
   )
