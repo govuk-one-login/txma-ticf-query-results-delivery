@@ -5,8 +5,7 @@ import { tryParseJSON } from '../../utils/tryParseJson'
 import { interpolateTemplate } from '../../utils/interpolateTemplate'
 import { notifyCopy } from '../../constants/notifyCopy'
 import { NotifyError } from '../../types/notify/notifyError'
-import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
-import { getEnv } from '../../utils/getEnv'
+import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
 
 export const handler = async (event: SQSEvent) => {
   console.log('received event', JSON.stringify(event, null, 2))
@@ -69,18 +68,5 @@ const isEventBodyInvalid = (requestDetails: PersonalisationOptions) => {
     requestDetails.zendeskId &&
     requestDetails.secureDownloadUrl &&
     requestDetails.email
-  )
-}
-
-const sendMessageToCloseTicketQueue = async (
-  zendeskId: string,
-  commentCopyReference: string
-) => {
-  sendSqsMessage(
-    {
-      zendeskId,
-      commentCopyText: interpolateTemplate(commentCopyReference, notifyCopy)
-    },
-    getEnv('CLOSE_TICKET_QUEUE_URL')
   )
 }

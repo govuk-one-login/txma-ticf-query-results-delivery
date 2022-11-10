@@ -1,5 +1,4 @@
 import {
-  TEST_CLOSE_TICKET_QUEUE_URL,
   TEST_NOTIFY_EMAIL,
   TEST_NOTIFY_NAME,
   TEST_SECURE_DOWNLOAD_URL,
@@ -8,16 +7,14 @@ import {
 import { handler } from './handler'
 import { sendEmailToNotify } from './sendEmailToNotify'
 import { constructSqsEvent } from '../../utils/tests/events/sqsEvent'
-import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
+import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
 
 jest.mock('./sendEmailToNotify', () => ({
   sendEmailToNotify: jest.fn()
 }))
-jest.mock('../../sharedServices/queue/sendSqsMessage', () => ({
-  sendSqsMessage: jest.fn()
-}))
-jest.mock('../../sharedServices/queue/sendSqsMessage', () => ({
-  sendSqsMessage: jest.fn()
+
+jest.mock('./sendMessageToCloseTicketQueue', () => ({
+  sendMessageToCloseTicketQueue: jest.fn()
 }))
 
 const mockSendEmailToNotify = sendEmailToNotify as jest.Mock
@@ -38,6 +35,8 @@ const validEventBody = `{
 const callHandlerWithBody = async (customBody: string) => {
   await handler(constructSqsEvent(customBody))
 }
+const successfulCommentCopyReference = 'linkToResults'
+const unsuccessfulCommentCopyReference = 'resultNotEmailed'
 
 describe('initiate sendEmailRequest handler', () => {
   beforeEach(() => {
@@ -56,12 +55,9 @@ describe('initiate sendEmailRequest handler', () => {
       zendeskId: ZENDESK_TICKET_ID,
       secureDownloadUrl: TEST_SECURE_DOWNLOAD_URL
     })
-    expect(sendSqsMessage).toHaveBeenCalledWith(
-      {
-        zendeskId: ZENDESK_TICKET_ID,
-        commentCopyText: 'A link to your results has been sent to you.'
-      },
-      TEST_CLOSE_TICKET_QUEUE_URL
+    expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
+      ZENDESK_TICKET_ID,
+      successfulCommentCopyReference
     )
   })
 
@@ -118,12 +114,9 @@ describe('initiate sendEmailRequest handler', () => {
         'Could not send a request to Notify: ',
         Error('Required details were not all present in event body')
       )
-      expect(sendSqsMessage).toHaveBeenCalledWith(
-        {
-          zendeskId: ZENDESK_TICKET_ID,
-          commentCopyText: 'Your results could not be emailed.'
-        },
-        TEST_CLOSE_TICKET_QUEUE_URL
+      expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
+        ZENDESK_TICKET_ID,
+        unsuccessfulCommentCopyReference
       )
     }
   )
@@ -144,12 +137,9 @@ describe('initiate sendEmailRequest handler', () => {
         'Could not send a request to Notify: ',
         Error('Required details were not all present in event body')
       )
-      expect(sendSqsMessage).toHaveBeenCalledWith(
-        {
-          zendeskId: ZENDESK_TICKET_ID,
-          commentCopyText: 'Your results could not be emailed.'
-        },
-        TEST_CLOSE_TICKET_QUEUE_URL
+      expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
+        ZENDESK_TICKET_ID,
+        unsuccessfulCommentCopyReference
       )
     }
   )
@@ -162,12 +152,9 @@ describe('initiate sendEmailRequest handler', () => {
       'Could not send a request to Notify: ',
       Error('A Notify related error')
     )
-    expect(sendSqsMessage).toHaveBeenCalledWith(
-      {
-        zendeskId: ZENDESK_TICKET_ID,
-        commentCopyText: 'Your results could not be emailed.'
-      },
-      TEST_CLOSE_TICKET_QUEUE_URL
+    expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
+      ZENDESK_TICKET_ID,
+      unsuccessfulCommentCopyReference
     )
   })
 })
