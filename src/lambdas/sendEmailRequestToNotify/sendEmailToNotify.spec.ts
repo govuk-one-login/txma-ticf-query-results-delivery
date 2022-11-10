@@ -7,8 +7,8 @@ import {
   TEST_NOTIFY_NAME,
   TEST_SECURE_DOWNLOAD_URL,
   ZENDESK_TICKET_ID
-} from '../../utils/tests/testConstants'
-import { testSuccessfulNotifyResponse } from '../../utils/tests/testNotifyResponses'
+} from '../../utils/tests/setup/testConstants'
+import { testSuccessfulNotifyResponse } from '../../utils/tests/setup/testNotifyResponses'
 
 jest.mock('notifications-node-client', () => ({
   NotifyClient: jest.fn().mockImplementation(() => {

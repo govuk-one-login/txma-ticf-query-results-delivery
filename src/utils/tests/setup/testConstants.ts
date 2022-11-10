@@ -11,3 +11,7 @@ export const TEST_NOTIFY_NAME = 'TestName'
 export const TEST_SECURE_DOWNLOAD_URL = 'secureDownload.url.com'
 export const ZENDESK_TICKET_ID = '123'
 export const TEST_CLOSE_TICKET_QUEUE_URL = 'https://close_ticket_queue'
+export const ALL_NOTIFY_SECRETS = {
+  notifyApiKey: 'myNotifyApiKey',
+  notifyTemplateId: 'myNotifyTemplateId'
+}
