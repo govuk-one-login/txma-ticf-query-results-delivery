@@ -231,6 +231,19 @@ Resources:
             Condition:
               StringEquals:
                 'kms:RequestAlias': !Sub 'arn:aws:kms:{$AWS:Region}:{{resolve:ssm:AuditAccountNumber}}:alias/${AWS::StackName}/${Environment}/query-completed-queue-kms-key'
+          - Sid: Allow access to items in Athena output bucket for copy
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: 'arn:aws:s3:::txma-data-analysis-dev-athena-query-output-bucket/*'
+          - Sid: Allow decrypt with athena output bucket KMS key
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: '*'
+            Condition:
+              StringEquals:
+                'kms:RequestAlias': !Sub 'arn:aws:kms:{$AWS:Region}:{{resolve:ssm:AuditAccountNumber}}:alias/${AWS::StackName}/${Environment}/athena-query-output-bucket-kms-key'
       DeadLetterQueue:
         Type: SQS
         TargetArn: !Sub 'arn:aws:sqs:{$AWS:Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-dead-letter-queue'
