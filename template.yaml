@@ -195,7 +195,7 @@ Resources:
           SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
           QUERY_RESULTS_BUCKET_NAME: '{{resolve:ssm:QueryResultsBucketName}}'
           ATHENA_OUTPUT_BUCKET_NAME: !Sub txma-data-analysis-${Environment}-athena-query-output-bucket
-          SECURE_DOWNLOAD_LINK_BASE_URL: !Sub https://${SecureFraudSiteApi.Arn}.execute-api.eu-west-2.amazonaws.com/default/secure
+          SECURE_DOWNLOAD_LINK_BASE_URL: !Join ['', ['https://', !Ref SecureFraudSiteApi, '.execute-api.eu-west-2.amazonaws.com/default/secure']]
       Events:
         QueryCompleteEvent:
           Type: SQS
