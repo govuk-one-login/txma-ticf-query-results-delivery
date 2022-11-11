@@ -224,7 +224,6 @@ Resources:
               - secretsmanager:GetSecretValue
             Resource:
               - '{{resolve:ssm:NotifySecretSetArn}}'
-              - '{{resolve:ssm:ZendeskSecretSetArn}}'
           - Sid: DecryptKmsKeys
             Effect: Allow
             Action:
