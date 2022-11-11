@@ -2,7 +2,7 @@ import {
   TEST_NOTIFY_EMAIL,
   TEST_NOTIFY_NAME,
   TEST_SECURE_DOWNLOAD_URL,
-  ZENDESK_TICKET_ID
+  TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
 import { handler } from './handler'
 import { sendEmailToNotify } from './sendEmailToNotify'
@@ -28,7 +28,7 @@ const givenUnsuccessfulSendEmailToNotify = () => {
 const validEventBody = `{
       "email": "${TEST_NOTIFY_EMAIL}",
       "firstName": "${TEST_NOTIFY_NAME}",
-      "zendeskId": "${ZENDESK_TICKET_ID}",
+      "zendeskId": "${TEST_ZENDESK_TICKET_ID}",
       "secureDownloadUrl": "${TEST_SECURE_DOWNLOAD_URL}"
     }`
 
@@ -52,11 +52,11 @@ describe('initiate sendEmailRequest handler', () => {
     expect(mockSendEmailToNotify).toHaveBeenCalledWith({
       email: TEST_NOTIFY_EMAIL,
       firstName: TEST_NOTIFY_NAME,
-      zendeskId: ZENDESK_TICKET_ID,
+      zendeskId: TEST_ZENDESK_TICKET_ID,
       secureDownloadUrl: TEST_SECURE_DOWNLOAD_URL
     })
     expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
-      ZENDESK_TICKET_ID,
+      TEST_ZENDESK_TICKET_ID,
       successfulCommentCopyReference
     )
   })
@@ -104,7 +104,7 @@ describe('initiate sendEmailRequest handler', () => {
         email: TEST_NOTIFY_EMAIL,
         firstName: TEST_NOTIFY_NAME,
         secureDownloadUrl: TEST_SECURE_DOWNLOAD_URL,
-        zendeskId: ZENDESK_TICKET_ID
+        zendeskId: TEST_ZENDESK_TICKET_ID
       } as { [key: string]: string }
       delete eventBodyParams[missingPropertyName]
 
@@ -115,7 +115,7 @@ describe('initiate sendEmailRequest handler', () => {
         Error('Required details were not all present in event body')
       )
       expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
-        ZENDESK_TICKET_ID,
+        TEST_ZENDESK_TICKET_ID,
         unsuccessfulCommentCopyReference
       )
     }
@@ -127,7 +127,7 @@ describe('initiate sendEmailRequest handler', () => {
         email: TEST_NOTIFY_EMAIL,
         firstName: TEST_NOTIFY_NAME,
         secureDownloadUrl: TEST_SECURE_DOWNLOAD_URL,
-        zendeskId: ZENDESK_TICKET_ID
+        zendeskId: TEST_ZENDESK_TICKET_ID
       } as { [key: string]: string }
       eventBodyParams[emptyStringPropertyName] = ''
 
@@ -138,7 +138,7 @@ describe('initiate sendEmailRequest handler', () => {
         Error('Required details were not all present in event body')
       )
       expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
-        ZENDESK_TICKET_ID,
+        TEST_ZENDESK_TICKET_ID,
         unsuccessfulCommentCopyReference
       )
     }
@@ -153,7 +153,7 @@ describe('initiate sendEmailRequest handler', () => {
       Error('A Notify related error')
     )
     expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
-      ZENDESK_TICKET_ID,
+      TEST_ZENDESK_TICKET_ID,
       unsuccessfulCommentCopyReference
     )
   })
