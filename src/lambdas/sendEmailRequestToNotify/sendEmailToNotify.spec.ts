@@ -6,7 +6,7 @@ import {
   TEST_NOTIFY_EMAIL,
   TEST_NOTIFY_NAME,
   TEST_SECURE_DOWNLOAD_URL,
-  ZENDESK_TICKET_ID
+  TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
 import { testSuccessfulNotifyResponse } from '../../utils/tests/setup/testNotifyResponses'
 
@@ -41,7 +41,7 @@ const givenUnsuccessfulSendEmailRequest = () => {
 const requestDetails = {
   email: TEST_NOTIFY_EMAIL,
   firstName: TEST_NOTIFY_NAME,
-  zendeskId: ZENDESK_TICKET_ID,
+  zendeskId: TEST_ZENDESK_TICKET_ID,
   secureDownloadUrl: TEST_SECURE_DOWNLOAD_URL
 }
 
@@ -64,7 +64,7 @@ describe('sendEmailToNotify', () => {
       {
         personalisation: {
           firstName: TEST_NOTIFY_NAME,
-          zendeskId: ZENDESK_TICKET_ID,
+          zendeskId: TEST_ZENDESK_TICKET_ID,
           secureDownloadUrl: TEST_SECURE_DOWNLOAD_URL
         }
       }

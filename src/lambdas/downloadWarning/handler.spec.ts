@@ -4,7 +4,7 @@ import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadA
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
-  TEST_S3_OBJECT_BUCKET,
+  TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_S3_OBJECT_KEY
 } from '../../utils/tests/setup/testConstants'
 
@@ -28,7 +28,7 @@ describe('downloadWarning.handler', () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
       downloadsRemaining,
       canDownload: true,
-      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsBucket: TEST_QUERY_RESULTS_BUCKET_NAME,
       s3ResultsKey: TEST_S3_OBJECT_KEY
     })
   }

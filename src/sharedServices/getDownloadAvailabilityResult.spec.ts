@@ -1,7 +1,7 @@
 import { resetAllWhenMocks, when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
-  TEST_S3_OBJECT_BUCKET,
+  TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_S3_OBJECT_KEY,
   TEST_CREATED_DATE,
   TEST_LINK_EXPIRY_TIME
@@ -29,7 +29,7 @@ describe('getDownloadAvailabilityResult', () => {
     when(getSecureDownloadRecord).mockResolvedValue({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining,
-      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsBucket: TEST_QUERY_RESULTS_BUCKET_NAME,
       s3ResultsKey: TEST_S3_OBJECT_KEY,
       createdDate: TEST_CREATED_DATE
     })
@@ -55,7 +55,7 @@ describe('getDownloadAvailabilityResult', () => {
       const response = await getDownloadAvailabilityResult(DOWNLOAD_HASH)
       expect(response.downloadsRemaining).toEqual(downloadsAvailable)
       expect(response.canDownload).toEqual(true)
-      expect(response.s3ResultsBucket).toEqual(TEST_S3_OBJECT_BUCKET)
+      expect(response.s3ResultsBucket).toEqual(TEST_QUERY_RESULTS_BUCKET_NAME)
       expect(response.s3ResultsKey).toEqual(TEST_S3_OBJECT_KEY)
       expect(getSecureDownloadRecord).toHaveBeenCalledWith(DOWNLOAD_HASH)
     }
@@ -74,7 +74,7 @@ describe('getDownloadAvailabilityResult', () => {
     when(getSecureDownloadRecord).mockResolvedValue({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 0,
-      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsBucket: TEST_QUERY_RESULTS_BUCKET_NAME,
       s3ResultsKey: TEST_S3_OBJECT_KEY,
       createdDate: TEST_CREATED_DATE
     })

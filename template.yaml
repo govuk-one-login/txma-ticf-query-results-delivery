@@ -243,3 +243,80 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       KmsMasterKeyId: '{{resolve:ssm:SqsKmsKeyArn}}'
+
+  GenerateDownloadFunction:
+      #checkov:skip=CKV_AWS_117:VPC not required
+      #checkov:skip=CKV_AWS_115:Defined in Globals section
+      #checkov:skip=CKV_AWS_116:Queue we read from has DLQ set up
+      Type: AWS::Serverless::Function
+      Properties:
+        Handler: generateDownload.handler
+        Environment:
+          Variables:
+            SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
+            QUERY_RESULTS_BUCKET_NAME: '{{resolve:ssm:QueryResultsBucketName}}'
+            ATHENA_OUTPUT_BUCKET_NAME: !Sub txma-data-analysis-${Environment}-athena-query-output-bucket
+            SECURE_DOWNLOAD_LINK_BASE_URL: !Sub https://${SecureFraudSiteApi}.execute-api.eu-west-2.amazonaws.com/default/secure
+        Events:
+          QueryCompleteEvent:
+            Type: SQS
+            Properties:
+              Queue: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
+              BatchSize: 1
+        FunctionName: !Sub ${AWS::StackName}-generate-download
+        KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+        Policies:
+          - Statement:
+            - Sid: SecureFraudSiteDataTableWrite
+              Effect: Allow
+              Action:
+                - dynamodb:PutItem
+              Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
+            - Sid: DecryptDatabaseKmsKey
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+              Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
+            - Sid: Logs
+              Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: !GetAtt DownloadWarningFunctionLogs.Arn
+            - Sid: AllowQueueRead
+              Effect: Allow
+              Action:
+                - sqs:ReceiveMessage
+                - sqs:DeleteMessage
+                - sqs:GetQueueAttributes
+              Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
+            - Sid: UseQueryCompletedQueueKmsKey
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+              Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
+            - Sid: AllowAccessAthenaOutputBucket
+              Effect: Allow
+              Action:
+                - s3:GetObject
+              Resource: 'arn:aws:s3:::txma-data-analysis-dev-athena-query-output-bucket/*'
+            - Sid: AllowDecryptOfAthenaOutput
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+              Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
+            - Sid: S3ResultsBucketWrite
+              Effect: Allow
+              Action:
+                - s3:PutObject
+              Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
+
+  GenerateDownloadFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-generate-download'
+      RetentionInDays: 30

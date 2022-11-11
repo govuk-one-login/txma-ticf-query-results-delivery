@@ -6,7 +6,7 @@ import {
 } from '@aws-sdk/client-dynamodb'
 import {
   DOWNLOAD_HASH,
-  TEST_S3_OBJECT_BUCKET,
+  TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_S3_OBJECT_KEY,
   TEST_CREATED_DATE
 } from '../../utils/tests/setup/testConstants'
@@ -25,7 +25,7 @@ describe('dynamoDBGet', () => {
     Item: {
       downloadHash: { S: DOWNLOAD_HASH },
       downloadsRemaining: { N: '3' },
-      s3ResultsBucket: { S: TEST_S3_OBJECT_BUCKET },
+      s3ResultsBucket: { S: TEST_QUERY_RESULTS_BUCKET_NAME },
       s3ResultsKey: { S: TEST_S3_OBJECT_KEY },
       createdDate: { N: TEST_CREATED_DATE.toString() }
     }
@@ -37,7 +37,7 @@ describe('dynamoDBGet', () => {
     expect(result).toEqual({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 3,
-      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsBucket: TEST_QUERY_RESULTS_BUCKET_NAME,
       s3ResultsKey: TEST_S3_OBJECT_KEY,
       createdDate: TEST_CREATED_DATE
     })
