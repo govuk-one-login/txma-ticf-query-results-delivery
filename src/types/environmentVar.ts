@@ -5,4 +5,5 @@ export interface EnvironmentVar {
     | 'LINK_EXPIRY_TIME'
     | 'QUERY_RESULTS_BUCKET_NAME'
     | 'ATHENA_OUTPUT_BUCKET_NAME'
+    | 'SECURE_DOWNLOAD_LINK_BASE_URL'
 }
