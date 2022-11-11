@@ -199,7 +199,7 @@ Resources:
         SendEmailEvent:
           Type: SQS
           Properties:
-            Queue: !GetAtt SendEmailQueueArn
+            Queue: !GetAtt SendEmailQueue.Arn
             BatchSize: 1
       Policies:
         - Statement:
