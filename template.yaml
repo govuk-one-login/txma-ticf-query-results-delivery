@@ -40,14 +40,6 @@ Globals:
     OpenApiVersion: 3.0.1
 
 Resources:
-
-  SqsResources:
-    Type: AWS::Serverless::Application
-    Properties:
-      Location: ./infrastructure/sqs.yaml
-      Parameters:
-        Environment: !Ref Environment
-
   SecureFraudSiteApi:
     #checkov:skip=CKV_AWS_120:We explicitly don't want caching
     Type: AWS::Serverless::Api
@@ -207,7 +199,7 @@ Resources:
         SendEmailEvent:
           Type: SQS
           Properties:
-            Queue: !GetAtt SqsResources.Outputs.SendEmailQueueArn
+            Queue: !GetAtt SendEmailQueueArn
             BatchSize: 1
       Policies:
         - Statement:
@@ -238,3 +230,16 @@ Resources:
       KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
       LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-send-email-request-to-notify'
       RetentionInDays: 30
+
+  SendEmailQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      KmsMasterKeyId: '{{resolve:ssm:SqsKmsKeyArn}}'
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt SendEmailDeadLetterQueue.Arn
+        maxReceiveCount: 5
+
+  SendEmailDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      KmsMasterKeyId: '{{resolve:ssm:SqsKmsKeyArn}}'

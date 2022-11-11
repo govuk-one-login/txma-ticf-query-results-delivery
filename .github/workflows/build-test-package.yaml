@@ -54,7 +54,6 @@ jobs:
           name: sam-build
           path: |
             dist/
-            infrastructure/
             samconfig.toml
             template.yaml
 
