@@ -228,10 +228,7 @@ Resources:
               - kms:Decrypt
               - kms:GenerateDataKey*
               - kms:ReEncrypt*
-            Resource: '*'
-            Condition:
-              StringEquals:
-                kms:ResourceAliases: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:alias/txma-data-analysis/${Environment}/query-completed-queue-kms-key'
+            Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
           - Sid: AllowAccessAthenaOutputBucket
             Effect: Allow
             Action:
@@ -241,10 +238,7 @@ Resources:
             Effect: Allow
             Action:
               - kms:Decrypt
-            Resource: '*'
-            Condition:
-              StringEquals:
-                kms:ResourceAliases: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:alias/txma-data-analysis/${Environment}/athena-query-output-bucket-kms-key'
+            Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
           - Sid: S3ResultsBucketWrite
             Effect: Allow
             Action:
