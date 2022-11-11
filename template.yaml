@@ -204,7 +204,15 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-generate-download
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Policies:
-        - Statement:
+        - !Ref GenerateDownloadFunctionPolicy
+
+  GenerateDownloadFunctionPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: !Sub ${AWS::StackName}-generate-download-policy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
           - Sid: SecureFraudSiteDataTableWrite
             Effect: Allow
             Action:
@@ -244,10 +252,7 @@ Resources:
             Action:
               - s3:PutObject
             Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
-      # DeadLetterQueue:
-      #   Type: SQS
-      #   TargetArn: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-dead-letter-queue'
-
+          
   GenerateDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
     Properties:
