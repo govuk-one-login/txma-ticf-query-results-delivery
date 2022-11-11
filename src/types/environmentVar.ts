@@ -6,4 +6,6 @@ export interface EnvironmentVar {
     | 'QUERY_RESULTS_BUCKET_NAME'
     | 'ATHENA_OUTPUT_BUCKET_NAME'
     | 'SECURE_DOWNLOAD_LINK_BASE_URL'
+    | 'CLOSE_TICKET_QUEUE_URL'
+    | 'NOTIFY_API_SECRETS_ARN'
 }
