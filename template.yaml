@@ -205,10 +205,10 @@ Resources:
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Policies:
         - Statement:
-          - Sid: SecureFraudSiteDataTableRead
+          - Sid: SecureFraudSiteDataTableWrite
             Effect: Allow
             Action:
-              - dynamodb:GetItem
+              - dynamodb:PutItem
             Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
           - Sid: DecryptDatabaseKmsKey
             Effect: Allow
