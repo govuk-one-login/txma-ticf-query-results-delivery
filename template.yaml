@@ -203,70 +203,54 @@ Resources:
             BatchSize: 1
       FunctionName: !Sub ${AWS::StackName}-generate-download
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
-      Role: !GetAtt GenerateDownloadFunctionRole.Arn
-
-  GenerateDownloadFunctionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: ${AWS::StackName}-generate-download-role
-      PermissionsBoundary: !If [UsePermissionsBoundary, !Ref PermissionsBoundary, !Ref AWS::NoValue]
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Resource: !GetAtt GenerateDownloadFunction.Arn
-            Action: sts:AssumeRole
       Policies:
-        - PolicyName: AllowLambdaActions
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-            - Sid: SecureFraudSiteDataTableWrite
-              Effect: Allow
-              Action:
-                - dynamodb:PutItem
-              Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
-            - Sid: DecryptDatabaseKmsKey
-              Effect: Allow
-              Action:
-                - kms:Decrypt
-              Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
-            - Sid: Logs
-              Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource: !GetAtt DownloadWarningFunctionLogs.Arn
-            - Sid: AllowQueueRead
-              Effect: Allow
-              Action:
-                - sqs:ReceiveMessage
-                - sqs:DeleteMessage
-                - sqs:GetQueueAttributes
-              Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
-            - Sid: UseQueryCompletedQueueKmsKey
-              Effect: Allow
-              Action:
-                - kms:Decrypt
-                - kms:GenerateDataKey*
-                - kms:ReEncrypt*
-              Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
-            - Sid: AllowAccessAthenaOutputBucket
-              Effect: Allow
-              Action:
-                - s3:GetObject
-              Resource: 'arn:aws:s3:::txma-data-analysis-dev-athena-query-output-bucket/*'
-            - Sid: AllowDecryptOfAthenaOutput
-              Effect: Allow
-              Action:
-                - kms:Decrypt
-              Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
-            - Sid: S3ResultsBucketWrite
-              Effect: Allow
-              Action:
-                - s3:PutObject
-              Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
+        - Statement:
+          - Sid: SecureFraudSiteDataTableWrite
+            Effect: Allow
+            Action:
+              - dynamodb:PutItem
+            Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
+          - Sid: DecryptDatabaseKmsKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
+          - Sid: Logs
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: !GetAtt DownloadWarningFunctionLogs.Arn
+          - Sid: AllowQueueRead
+            Effect: Allow
+            Action:
+              - sqs:ReceiveMessage
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+            Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
+          - Sid: UseQueryCompletedQueueKmsKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+              - kms:GenerateDataKey*
+              - kms:ReEncrypt*
+            Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
+          - Sid: AllowAccessAthenaOutputBucket
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: 'arn:aws:s3:::txma-data-analysis-dev-athena-query-output-bucket/*'
+          - Sid: AllowDecryptOfAthenaOutput
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
+          - Sid: S3ResultsBucketWrite
+            Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
           
   GenerateDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
