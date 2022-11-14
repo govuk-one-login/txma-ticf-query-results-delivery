@@ -3,6 +3,7 @@
 declare module 'notifications-node-client' {
   interface Options {
     personalisation: import('./personalisationOptions')
+    reference: string
   }
   export class NotifyClient {
     constructor(apiKey: string)
