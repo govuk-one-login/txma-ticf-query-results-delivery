@@ -239,6 +239,7 @@ Resources:
   SendEmailQueue:
     Type: AWS::SQS::Queue
     Properties:
+      QueueName: !Sub ${AWS::StackName}-${Environment}-send-email-queue
       KmsMasterKeyId: '{{resolve:ssm:SqsKmsKeyArn}}'
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt SendEmailDeadLetterQueue.Arn
@@ -247,6 +248,7 @@ Resources:
   SendEmailDeadLetterQueue:
     Type: AWS::SQS::Queue
     Properties:
+      QueueName: !Sub ${AWS::StackName}-${Environment}-send-email-dead-letter-queue
       KmsMasterKeyId: '{{resolve:ssm:SqsKmsKeyArn}}'
 
   GenerateDownloadFunction:
