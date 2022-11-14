@@ -294,7 +294,7 @@ Resources:
               Effect: Allow
               Action:
                 - s3:GetObject
-              Resource: 'arn:aws:s3:::txma-data-analysis-dev-athena-query-output-bucket/*'
+              Resource: 'arn:aws:s3:::txma-data-analysis-${Environment}-athena-query-output-bucket/*'
             - Sid: AllowDecryptOfAthenaOutput
               Effect: Allow
               Action:
