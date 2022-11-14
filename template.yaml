@@ -184,6 +184,7 @@ Resources:
       Environment:
         Variables:
           NOTIFY_API_SECRETS_ARN: '{{resolve:ssm:NotifySecretSetArn}}'
+          CLOSE_TICKET_QUEUE_URL: '{{resolve:ssm:CloseZendeskTicketQueueUrl}}'
       FunctionName: !Sub ${AWS::StackName}-send-email-request-to-notify
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Events:
@@ -207,6 +208,19 @@ Resources:
               - secretsmanager:GetSecretValue
             Resource:
               - '{{resolve:ssm:NotifySecretSetArn}}'
+          - Sid: AllowCloseTicketQueueSend
+            Effect: Allow
+            Action: 
+              - sqs:SendMessage
+            Resource: '{{resolve:ssm:CloseZendeskTicketQueueArn}}'
+          - Sid: UseSqsKmsKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+              - kms:GenerateDataKey*
+              - kms:ReEncrypt*
+            Resource: 
+              - '{{resolve:ssm:CloseZendeskTicketQueueKmsKeyArn}}'
           - Sid: DecryptKmsKeys
             Effect: Allow
             Action:
