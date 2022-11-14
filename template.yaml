@@ -128,7 +128,7 @@ Resources:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: !GetAtt ConfirmDownloadFunctionLogs.Arn
-  
+
   ConfirmDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -256,6 +256,7 @@ Resources:
             SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
             QUERY_RESULTS_BUCKET_NAME: '{{resolve:ssm:QueryResultsBucketName}}'
             ATHENA_OUTPUT_BUCKET_NAME: !Sub txma-data-analysis-${Environment}-athena-query-output-bucket
+            SEND_TO_EMAIL_QUEUE_URL: !Ref SendEmailQueue 
             SECURE_DOWNLOAD_LINK_BASE_URL: !Sub https://${SecureFraudSiteApi}.execute-api.eu-west-2.amazonaws.com/default/secure
         Events:
           QueryCompleteEvent:
@@ -313,7 +314,19 @@ Resources:
               Action:
                 - s3:PutObject
               Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
-
+            - Sid: AllowSqsSend
+              Effect: Allow
+              Action:
+                - sqs:SendMessage
+              Resource:
+                - !GetAtt SendEmailQueue.Arn
+            - Sid: UseSqsKmsKey
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+              Resource: '{{resolve:ssm:SqsKmsKeyArn}}'
   GenerateDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
     Properties:

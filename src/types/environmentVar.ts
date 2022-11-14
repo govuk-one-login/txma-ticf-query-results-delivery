@@ -8,4 +8,6 @@ export interface EnvironmentVar {
     | 'SECURE_DOWNLOAD_LINK_BASE_URL'
     | 'CLOSE_TICKET_QUEUE_URL'
     | 'NOTIFY_API_SECRETS_ARN'
+    | 'SEND_TO_EMAIL_QUEUE_URL'
+    | 'SECURE_DOWNLOAD_LINK_BASE_URL'
 }
