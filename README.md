@@ -23,7 +23,7 @@ This is an API Gateway, 2 AWS Lambda functions, a DynamoDB table and an S3 bucke
 
 As well as the usual unit tests, we have some tests which hit the deployed Lambdas, and also set up some test data so that those tests have what they need.
 
-To get started with those, you need to create a file called `.integration.test.env` at the root, with the following contents (adjust as necessary)
+To get started with those, you need to create a file called `.integration.test-<<environment>>.env` (where `environment` is the desired test environment - one of `dev`, `build`, and `staging`) at the root, with the following contents (adjust as necessary)
 
 ```
 process.env.DOWNLOAD_PAGE_BASE_URL="https://YOUR-LAMBDA-URL.amazonaws.com/default/"

@@ -20,6 +20,9 @@ Parameters:
     Description: The ARN of the permissions boundary to apply to any role created by the template
     Type: String
     Default: none
+  SecureDownloadWebsiteAllowedIps:
+    Type: AWS::SSM::Parameter::Value<List<String>>
+    Default: SecureDownloadWebsiteAllowedIps
 
 Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
@@ -56,19 +59,7 @@ Resources:
               application/json: '{"message": "Access Denied: if you think you should have access to this URL, make sure you are connected to the VPN"}'
       Auth:
         ResourcePolicy:
-          IpRangeWhitelist:
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_1}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_2}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_3}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_4}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_5}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_6}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_7}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_8}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_9}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_10}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_11}}'
-             - '{{resolve:ssm:SECURE_DOWNLOAD_WEBSITE_ALLOWED_IP_12}}'
+          IpRangeWhitelist: !Ref SecureDownloadWebsiteAllowedIps
 
   SecureFraudSiteAccessLogGroup:
     Type: AWS::Logs::LogGroup
@@ -142,6 +133,7 @@ Resources:
               - kms:ReEncrypt*
             Resource: '{{resolve:ssm:AuditDataRequestEventsQueueKmsKeyArn}}'
   
+
   ConfirmDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -194,4 +186,171 @@ Resources:
     Properties:
       KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
       LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-download-warning-page'
+      RetentionInDays: 30
+
+  SendEmailRequestToNotifyFunction:
+    #checkov:skip=CKV_AWS_115:Defined in Globals section
+    #checkov:skip=CKV_AWS_116:Unsure of what will call the function currently - need revision at a later point
+    #checkov:skip=CKV_AWS_117:VPC not required
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: sendEmailRequestToNotify.handler
+      Environment:
+        Variables:
+          NOTIFY_API_SECRETS_ARN: '{{resolve:ssm:NotifySecretSetArn}}'
+          CLOSE_TICKET_QUEUE_URL: '{{resolve:ssm:CloseZendeskTicketQueueUrl}}'
+      FunctionName: !Sub ${AWS::StackName}-send-email-request-to-notify
+      KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Events:
+        SendEmailEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SendEmailQueue.Arn
+            BatchSize: 1
+      Policies:
+        - Statement:
+          - Sid: Logs
+            Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: !GetAtt SendEmailRequestToNotifyLogs.Arn
+          - Sid: ReadSecrets
+            Effect: Allow
+            Action:
+              - secretsmanager:GetSecretValue
+            Resource:
+              - '{{resolve:ssm:NotifySecretSetArn}}'
+          - Sid: AllowCloseTicketQueueSend
+            Effect: Allow
+            Action: 
+              - sqs:SendMessage
+            Resource: '{{resolve:ssm:CloseZendeskTicketQueueArn}}'
+          - Sid: UseSqsKmsKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+              - kms:GenerateDataKey*
+              - kms:ReEncrypt*
+            Resource: 
+              - '{{resolve:ssm:CloseZendeskTicketQueueKmsKeyArn}}'
+          - Sid: DecryptKmsKeys
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource:
+              - '{{resolve:ssm:SecretsKmsKeyArn}}'
+              - '{{resolve:ssm:SqsKmsKeyArn}}'
+
+  SendEmailRequestToNotifyLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-send-email-request-to-notify'
+      RetentionInDays: 30
+
+  SendEmailQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${Environment}-send-email-queue
+      KmsMasterKeyId: '{{resolve:ssm:SqsKmsKeyArn}}'
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt SendEmailDeadLetterQueue.Arn
+        maxReceiveCount: 5
+
+  SendEmailDeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${Environment}-send-email-dead-letter-queue
+      KmsMasterKeyId: '{{resolve:ssm:SqsKmsKeyArn}}'
+
+  GenerateDownloadFunction:
+      #checkov:skip=CKV_AWS_117:VPC not required
+      #checkov:skip=CKV_AWS_115:Defined in Globals section
+      #checkov:skip=CKV_AWS_116:Queue we read from has DLQ set up
+      Type: AWS::Serverless::Function
+      Properties:
+        Handler: generateDownload.handler
+        Environment:
+          Variables:
+            SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
+            QUERY_RESULTS_BUCKET_NAME: '{{resolve:ssm:QueryResultsBucketName}}'
+            ATHENA_OUTPUT_BUCKET_NAME: !Sub txma-data-analysis-${Environment}-athena-query-output-bucket
+            SEND_TO_EMAIL_QUEUE_URL: !Ref SendEmailQueue 
+            SECURE_DOWNLOAD_LINK_BASE_URL: !Sub https://${SecureFraudSiteApi}.execute-api.eu-west-2.amazonaws.com/default/secure
+        Events:
+          QueryCompleteEvent:
+            Type: SQS
+            Properties:
+              Queue: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
+              BatchSize: 1
+        FunctionName: !Sub ${AWS::StackName}-generate-download
+        KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+        Policies:
+          - Statement:
+            - Sid: SecureFraudSiteDataTableWrite
+              Effect: Allow
+              Action:
+                - dynamodb:PutItem
+              Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
+            - Sid: DecryptDatabaseKmsKey
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+              Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
+            - Sid: Logs
+              Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: !GetAtt DownloadWarningFunctionLogs.Arn
+            - Sid: AllowQueueRead
+              Effect: Allow
+              Action:
+                - sqs:ReceiveMessage
+                - sqs:DeleteMessage
+                - sqs:GetQueueAttributes
+              Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
+            - Sid: UseQueryCompletedQueueKmsKey
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+              Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
+            - Sid: AllowAccessAthenaOutputBucket
+              Effect: Allow
+              Action:
+                - s3:GetObject
+              Resource: !Sub 'arn:aws:s3:::txma-data-analysis-${Environment}-athena-query-output-bucket/*'
+            - Sid: AllowDecryptOfAthenaOutput
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+              Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
+            - Sid: S3ResultsBucketWrite
+              Effect: Allow
+              Action:
+                - s3:PutObject
+              Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
+            - Sid: AllowSqsSend
+              Effect: Allow
+              Action:
+                - sqs:SendMessage
+              Resource:
+                - !GetAtt SendEmailQueue.Arn
+            - Sid: UseSqsKmsKey
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+              Resource: '{{resolve:ssm:SqsKmsKeyArn}}'
+  GenerateDownloadFunctionLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
+      LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-generate-download'
       RetentionInDays: 30

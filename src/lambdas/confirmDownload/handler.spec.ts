@@ -7,7 +7,7 @@ import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
-  TEST_S3_OBJECT_BUCKET,
+  TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_S3_OBJECT_KEY,
   TEST_SIGNED_URL,
   TEST_ZENDESK_TICKET_ID
@@ -40,7 +40,7 @@ describe('confirmDownload.handler', () => {
   const givenDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
       canDownload: true,
-      s3ResultsBucket: TEST_S3_OBJECT_BUCKET,
+      s3ResultsBucket: TEST_QUERY_RESULTS_BUCKET_NAME,
       s3ResultsKey: TEST_S3_OBJECT_KEY,
       zendeskId: TEST_ZENDESK_TICKET_ID
     })
@@ -83,7 +83,7 @@ describe('confirmDownload.handler', () => {
       `<meta http-equiv="refresh" content="0; url=${TEST_SIGNED_URL}">`
     )
     expect(createTemporaryS3Link).toHaveBeenCalledWith({
-      bucket: TEST_S3_OBJECT_BUCKET,
+      bucket: TEST_QUERY_RESULTS_BUCKET_NAME,
       key: TEST_S3_OBJECT_KEY
     })
     expect(decrementDownloadCount).toHaveBeenCalledWith(DOWNLOAD_HASH)
