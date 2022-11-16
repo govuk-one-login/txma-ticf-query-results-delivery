@@ -77,7 +77,7 @@ Resources:
           ResponseTemplates:
             application/json: '{"message": "Access Denied: if you think you should have access to this URL, make sure you are connected to the VPN"}'
       Name: !Sub ${AWS::StackName}-secure-fraud-site-api
-      StageName: !Ref $Environment
+      StageName: !Ref Environment
       TracingEnabled: true
 
   ResultsApiBasePathMapping:
