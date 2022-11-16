@@ -86,7 +86,7 @@ Resources:
     Properties:
       DomainName: '{{resolve:ssm:ResultsApiDomainName}}'
       RestApiId: !Ref ResultsApi
-      Stage: !Ref Environment
+      Stage: !Ref ResultsApi.Stage
 
   ResultsApiAccessLogs:
     Type: AWS::Logs::LogGroup
