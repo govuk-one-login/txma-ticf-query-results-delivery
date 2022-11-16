@@ -27,7 +27,8 @@ export const getSecureDownloadRecord = async (
     ),
     s3ResultsKey: responseObject?.s3ResultsKey?.S,
     s3ResultsBucket: responseObject?.s3ResultsBucket?.S,
-    createdDate: parseInt(responseObject?.createdDate?.N as string)
+    createdDate: parseInt(responseObject?.createdDate?.N as string),
+    zendeskId: responseObject?.zendeskId?.S
   }
 
   if (!isSecureDownloadRecord(record)) {
@@ -36,5 +37,5 @@ export const getSecureDownloadRecord = async (
     )
   }
 
-  return record
+  return record as SecureDownloadRecord
 }

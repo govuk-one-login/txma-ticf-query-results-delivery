@@ -23,6 +23,7 @@ export const getDownloadAvailabilityResult = async (
     canDownload,
     downloadsRemaining: record.downloadsRemaining,
     s3ResultsBucket: record.s3ResultsBucket,
-    s3ResultsKey: record.s3ResultsKey
+    s3ResultsKey: record.s3ResultsKey,
+    zendeskId: record.zendeskId
   }
 }

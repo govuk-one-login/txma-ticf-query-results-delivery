@@ -9,6 +9,7 @@ import {
 import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
 import { createDownloadPageResponse } from './createDownloadPageResponse'
+import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 
 export const handler = async (
   event: APIGatewayProxyEvent
@@ -30,8 +31,11 @@ export const handler = async (
       bucket: downloadAvailabilityResult.s3ResultsBucket as string,
       key: downloadAvailabilityResult.s3ResultsKey as string
     })
-
     await decrementDownloadCount(downloadHash)
+
+    await auditTemporaryS3LinkCreated(
+      downloadAvailabilityResult.zendeskId as string
+    )
 
     return htmlResponse(200, createDownloadPageResponse(temporaryS3Link))
   } catch (err) {

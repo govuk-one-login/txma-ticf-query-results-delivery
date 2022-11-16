@@ -85,6 +85,7 @@ Resources:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
           LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
+          AUDIT_DATA_REQUEST_EVENTS_QUEUE_URL: '{{resolve:ssm:AuditDataRequestEventsQueueUrl}}'
       FunctionName: !Sub ${AWS::StackName}-confirm-download-page
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Events:
@@ -119,6 +120,19 @@ Resources:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: !GetAtt ConfirmDownloadFunctionLogs.Arn
+          - Sid: AllowSqsAuditEventsSend
+            Effect: Allow
+            Action:
+              - sqs:SendMessage
+            Resource: '{{resolve:ssm:AuditDataRequestEventsQueueArn}}'
+          - Sid: AllowQueueKmsKeyAccess
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+              - kms:GenerateDataKey*
+              - kms:ReEncrypt*
+            Resource: '{{resolve:ssm:AuditDataRequestEventsQueueKmsKeyArn}}'
+  
 
   ConfirmDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
