@@ -288,7 +288,7 @@ Resources:
               BatchSize: 1
         FunctionName: !Sub ${AWS::StackName}-generate-download
         KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
-
+                  
   GenerateDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -299,7 +299,7 @@ Resources:
   GenerateDownloadFunctionRole:
       Type: AWS::IAM::Role
       Properties:
-        RoleName: !Sub ${AWS::StackName}-generate-download-role
+        RoleName: !Sub ${AWS::StackName}-${Environment}-generate-download-role
         PermissionsBoundary:
           !If [
             UsePermissionsBoundary,
@@ -315,7 +315,7 @@ Resources:
                   - lambda.amazonaws.com
               Action: sts:AssumeRole
         Policies:
-          - PolicyName: AllowRequiredLambdaActions
+          - PolicyName: AllowGenerateDownloadActions
             PolicyDocument:
               Version: '2012-10-17'
               Statement:
@@ -335,7 +335,7 @@ Resources:
                     - logs:CreateLogGroup
                     - logs:CreateLogStream
                     - logs:PutLogEvents
-                  Resource: !GetAtt DownloadWarningFunctionLogs.Arn
+                  Resource: !GetAtt GenerateDownloadFunctionLogs.Arn
                 - Sid: AllowQueueRead
                   Effect: Allow
                   Action:
