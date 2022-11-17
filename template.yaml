@@ -23,11 +23,16 @@ Parameters:
   SecureDownloadWebsiteAllowedIps:
     Type: AWS::SSM::Parameter::Value<List<String>>
     Default: SecureDownloadWebsiteAllowedIps
+  TestRoleArn:
+    Type: String
+    Description: The ARN of the role that will used for integration tests
+    Default: none
 
 Conditions:
   ApiCustomDomain: !Not [!Equals [!Ref Environment, dev]]
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
+  TestRolePolicy: !Not [!Equals [!Ref TestRoleArn, none]]
 
 Globals:
   Function:
