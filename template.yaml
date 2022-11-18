@@ -372,7 +372,7 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: !GetAtt GenerateDownloadFunctionLogs.Arn
-              - Sid: AllowQueueRead
+              - Sid: AllowQueryCompletedQueueRead
                 Effect: Allow
                 Action:
                   - sqs:ReceiveMessage
@@ -394,13 +394,13 @@ Resources:
                 Action:
                   - s3:PutObject
                 Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
-              - Sid: AllowSqsSend
+              - Sid: AllowSqsSendToEmailQueue
                 Effect: Allow
                 Action:
                   - sqs:SendMessage
                 Resource:
                   - !GetAtt SendEmailQueue.Arn
-              - Sid: UseSqsKmsKey
+              - Sid: UseSQSKmsKeyForSendToEmailQueue
                 Effect: Allow
                 Action:
                   - kms:Decrypt
