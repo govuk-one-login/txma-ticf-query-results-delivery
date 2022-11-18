@@ -379,19 +379,12 @@ Resources:
                   - sqs:DeleteMessage
                   - sqs:GetQueueAttributes
                 Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
-              - Sid: UseQueryCompletedQueueKmsKey
-                Effect: Allow
-                Action:
-                  - kms:Decrypt
-                  - kms:GenerateDataKey*
-                  - kms:ReEncrypt*
-                Resource: !Sub 'arn:aws:kms:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:*'
               - Sid: AllowAccessAthenaOutputBucket
                 Effect: Allow
                 Action:
                   - s3:GetObject
                 Resource: !Sub 'arn:aws:s3:::txma-data-analysis-${Environment}-athena-query-output-bucket/*'
-              - Sid: AllowDecryptOfAthenaOutput
+              - Sid: AllowDecryptOfAuditAccountKmsKeys
                 Effect: Allow
                 Action:
                   - kms:Decrypt
@@ -411,6 +404,5 @@ Resources:
                 Effect: Allow
                 Action:
                   - kms:Decrypt
-                  - kms:GenerateDataKey*
-                  - kms:ReEncrypt*
+                  - kms:GenerateDataKey
                 Resource: '{{resolve:ssm:SqsKmsKeyArn}}'
