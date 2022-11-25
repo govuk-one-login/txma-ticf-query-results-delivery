@@ -15,10 +15,6 @@ export const handler = async (event: SQSEvent) => {
       throw Error(interpolateTemplate('requiredDetailsMissing', notifyCopy))
     }
     await sendEmailToNotify(requestDetails)
-    await sendMessageToCloseTicketQueue(
-      requestDetails.zendeskId,
-      'linkToResults'
-    )
   } catch (error) {
     console.error(
       `${interpolateTemplate(
@@ -31,7 +27,10 @@ export const handler = async (event: SQSEvent) => {
       requestDetails.zendeskId,
       'resultNotEmailed'
     )
+    throw error
   }
+
+  await sendMessageToCloseTicketQueue(requestDetails.zendeskId, 'linkToResults')
 }
 
 const formatNotifyErrors = (error: unknown): string => {

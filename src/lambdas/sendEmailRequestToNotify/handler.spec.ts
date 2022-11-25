@@ -18,10 +18,18 @@ jest.mock('./sendMessageToCloseTicketQueue', () => ({
 }))
 
 const mockSendEmailToNotify = sendEmailToNotify as jest.Mock
+const mockSendMessageToCloseTicketQueue =
+  sendMessageToCloseTicketQueue as jest.Mock
 
 const givenUnsuccessfulSendEmailToNotify = () => {
   mockSendEmailToNotify.mockImplementation(() => {
     throw new Error('A Notify related error')
+  })
+}
+
+const givenUnsuccessfulSendMessageToCloseTicketQueue = () => {
+  mockSendMessageToCloseTicketQueue.mockImplementation(() => {
+    throw new Error('A close ticket SQS related error')
   })
 }
 
@@ -43,7 +51,7 @@ describe('initiate sendEmailRequest handler', () => {
     jest.spyOn(global.console, 'error')
   })
   afterEach(() => {
-    jest.clearAllMocks()
+    jest.resetAllMocks()
   })
 
   it('creates a NotifyClient and calls sendEmail with correct parameters', async () => {
@@ -108,7 +116,9 @@ describe('initiate sendEmailRequest handler', () => {
       } as { [key: string]: string }
       delete eventBodyParams[missingPropertyName]
 
-      await callHandlerWithBody(JSON.stringify(eventBodyParams))
+      await expect(
+        callHandlerWithBody(JSON.stringify(eventBodyParams))
+      ).rejects.toThrow('Required details were not all present in event body')
 
       expect(console.error).toHaveBeenCalledWith(
         'Could not send a request to Notify: ',
@@ -131,7 +141,9 @@ describe('initiate sendEmailRequest handler', () => {
       } as { [key: string]: string }
       eventBodyParams[emptyStringPropertyName] = ''
 
-      await callHandlerWithBody(JSON.stringify(eventBodyParams))
+      await expect(
+        callHandlerWithBody(JSON.stringify(eventBodyParams))
+      ).rejects.toThrow('Required details were not all present in event body')
 
       expect(console.error).toHaveBeenCalledWith(
         'Could not send a request to Notify: ',
@@ -146,7 +158,9 @@ describe('initiate sendEmailRequest handler', () => {
   it('given a valid event body, when sendEmailToNotify fails, logs an error', async () => {
     givenUnsuccessfulSendEmailToNotify()
 
-    await callHandlerWithBody(validEventBody)
+    await expect(callHandlerWithBody(validEventBody)).rejects.toThrow(
+      'A Notify related error'
+    )
 
     expect(console.error).toHaveBeenCalledWith(
       'Could not send a request to Notify: ',
@@ -155,6 +169,18 @@ describe('initiate sendEmailRequest handler', () => {
     expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
       TEST_ZENDESK_TICKET_ID,
       unsuccessfulCommentCopyReference
+    )
+  })
+
+  it('given a valid event body, when the call to the close ticket queue fails, logs an error', async () => {
+    givenUnsuccessfulSendMessageToCloseTicketQueue()
+    await expect(callHandlerWithBody(validEventBody)).rejects.toThrow(
+      'A close ticket SQS related error'
+    )
+    expect(sendMessageToCloseTicketQueue).toHaveBeenCalledTimes(1)
+    expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
+      TEST_ZENDESK_TICKET_ID,
+      successfulCommentCopyReference
     )
   })
 })
