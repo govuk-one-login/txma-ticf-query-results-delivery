@@ -18,10 +18,18 @@ jest.mock('./sendMessageToCloseTicketQueue', () => ({
 }))
 
 const mockSendEmailToNotify = sendEmailToNotify as jest.Mock
+const mockSendMessageToCloseTicketQueue =
+  sendMessageToCloseTicketQueue as jest.Mock
 
 const givenUnsuccessfulSendEmailToNotify = () => {
   mockSendEmailToNotify.mockImplementation(() => {
     throw new Error('A Notify related error')
+  })
+}
+
+const givenUnsuccessfulSendMessageToCloseTicketQueue = () => {
+  mockSendMessageToCloseTicketQueue.mockImplementation(() => {
+    throw new Error('A close ticket SQS related error')
   })
 }
 
@@ -43,7 +51,7 @@ describe('initiate sendEmailRequest handler', () => {
     jest.spyOn(global.console, 'error')
   })
   afterEach(() => {
-    jest.clearAllMocks()
+    jest.resetAllMocks()
   })
 
   it('creates a NotifyClient and calls sendEmail with correct parameters', async () => {
@@ -161,6 +169,18 @@ describe('initiate sendEmailRequest handler', () => {
     expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
       TEST_ZENDESK_TICKET_ID,
       unsuccessfulCommentCopyReference
+    )
+  })
+
+  it('given a valid event body, when the call to the close ticket queue fails, logs an error', async () => {
+    givenUnsuccessfulSendMessageToCloseTicketQueue()
+    await expect(callHandlerWithBody(validEventBody)).rejects.toThrow(
+      'A close ticket SQS related error'
+    )
+    expect(sendMessageToCloseTicketQueue).toHaveBeenCalledTimes(1)
+    expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
+      TEST_ZENDESK_TICKET_ID,
+      successfulCommentCopyReference
     )
   })
 })
