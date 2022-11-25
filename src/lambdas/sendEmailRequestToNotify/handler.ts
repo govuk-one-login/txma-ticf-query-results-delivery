@@ -31,6 +31,7 @@ export const handler = async (event: SQSEvent) => {
       requestDetails.zendeskId,
       'resultNotEmailed'
     )
+    throw error
   }
 }
 

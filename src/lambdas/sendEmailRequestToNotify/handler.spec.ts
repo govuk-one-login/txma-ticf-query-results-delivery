@@ -108,7 +108,9 @@ describe('initiate sendEmailRequest handler', () => {
       } as { [key: string]: string }
       delete eventBodyParams[missingPropertyName]
 
-      await callHandlerWithBody(JSON.stringify(eventBodyParams))
+      await expect(
+        callHandlerWithBody(JSON.stringify(eventBodyParams))
+      ).rejects.toThrow('Required details were not all present in event body')
 
       expect(console.error).toHaveBeenCalledWith(
         'Could not send a request to Notify: ',
@@ -131,7 +133,9 @@ describe('initiate sendEmailRequest handler', () => {
       } as { [key: string]: string }
       eventBodyParams[emptyStringPropertyName] = ''
 
-      await callHandlerWithBody(JSON.stringify(eventBodyParams))
+      await expect(
+        callHandlerWithBody(JSON.stringify(eventBodyParams))
+      ).rejects.toThrow('Required details were not all present in event body')
 
       expect(console.error).toHaveBeenCalledWith(
         'Could not send a request to Notify: ',
@@ -146,7 +150,9 @@ describe('initiate sendEmailRequest handler', () => {
   it('given a valid event body, when sendEmailToNotify fails, logs an error', async () => {
     givenUnsuccessfulSendEmailToNotify()
 
-    await callHandlerWithBody(validEventBody)
+    await expect(callHandlerWithBody(validEventBody)).rejects.toThrow(
+      'A Notify related error'
+    )
 
     expect(console.error).toHaveBeenCalledWith(
       'Could not send a request to Notify: ',
