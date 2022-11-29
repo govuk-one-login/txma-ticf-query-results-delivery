@@ -73,7 +73,8 @@ Resources:
           }
       Auth: !If
         - IsProd
-        - ResourcePolicy:
+        - 
+          ResourcePolicy:
             IpRangeWhitelist: !Ref SecureDownloadWebsiteAllowedIps
         - !Ref AWS::NoValue
       Description: API used by TICF analysts to access the results of Athena queries on the raw audit data
