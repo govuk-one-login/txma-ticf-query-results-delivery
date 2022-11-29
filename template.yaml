@@ -30,6 +30,7 @@ Parameters:
 
 Conditions:
   ApiCustomDomain: !Not [!Equals [!Ref Environment, dev]]
+  IsProd: !Equals [!Ref Environment, prod]
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
   TestRolePolicy: !Not [!Equals [!Ref TestRoleArn, none]]
@@ -70,9 +71,11 @@ Resources:
           "responseLatency": "$context.responseLatency",
           "responseLength": "$context.responseLength"
           }
-      Auth:
-        ResourcePolicy:
-          IpRangeWhitelist: !Ref SecureDownloadWebsiteAllowedIps
+      Auth: !If
+        - IsProd
+        - ResourcePolicy:
+            IpRangeWhitelist: !Ref SecureDownloadWebsiteAllowedIps
+        - !Ref AWS::NoValue
       Description: API used by TICF analysts to access the results of Athena queries on the raw audit data
       DisableExecuteApiEndpoint: !If [ApiCustomDomain, true, false]
       EndpointConfiguration:
