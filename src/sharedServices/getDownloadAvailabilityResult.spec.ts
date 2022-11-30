@@ -17,7 +17,7 @@ jest.mock('./isDateOverDaysLimit', () => ({
 jest.mock('./dynamoDb/getSecureDownloadRecord', () => ({
   getSecureDownloadRecord: jest.fn()
 }))
-jest.mock('../utils/currentDateEpochMilliseconds', () => ({
+jest.mock('../utils/currentDateEpoch', () => ({
   currentDateEpochMilliseconds: jest.fn()
 }))
 

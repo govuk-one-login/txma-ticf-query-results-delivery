@@ -1,4 +1,4 @@
-import { currentDateEpochMilliseconds } from '../utils/currentDateEpochMilliseconds'
+import { currentDateEpochMilliseconds } from '../utils/currentDateEpoch'
 
 export const isDateOverDaysLimit = (
   date: number,

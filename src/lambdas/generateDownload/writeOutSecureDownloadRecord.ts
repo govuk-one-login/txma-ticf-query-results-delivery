@@ -1,6 +1,6 @@
 import { PutItemCommand, PutItemCommandInput } from '@aws-sdk/client-dynamodb'
 import { ddbClient } from '../../sharedServices/dynamoDb/dynamoDbClient'
-import { currentDateEpochMilliseconds } from '../../utils/currentDateEpochMilliseconds'
+import { currentDateEpochMilliseconds } from '../../utils/currentDateEpoch'
 import { getEnv } from '../../utils/getEnv'
 
 export const writeOutSecureDownloadRecord = async (parameters: {

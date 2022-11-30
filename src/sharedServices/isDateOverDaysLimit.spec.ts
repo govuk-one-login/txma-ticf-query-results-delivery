@@ -1,7 +1,7 @@
 import { isDateOverDaysLimit } from './isDateOverDaysLimit'
-import { currentDateEpochMilliseconds } from '../utils/currentDateEpochMilliseconds'
+import { currentDateEpochMilliseconds } from '../utils/currentDateEpoch'
 import { when } from 'jest-when'
-jest.mock('../utils/currentDateEpochMilliseconds', () => ({
+jest.mock('../utils/currentDateEpoch', () => ({
   currentDateEpochMilliseconds: jest.fn()
 }))
 
