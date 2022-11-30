@@ -11,12 +11,12 @@ import {
   TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
-import { currentDateEpochMilliseconds } from '../../utils/currentDateEpochMilliseconds'
+import { currentDateEpochMilliseconds } from '../../utils/currentDateEpoch'
 import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
 import { when } from 'jest-when'
 import 'aws-sdk-client-mock-jest'
 
-jest.mock('../../utils/currentDateEpochMilliseconds', () => ({
+jest.mock('../../utils/currentDateEpoch', () => ({
   currentDateEpochMilliseconds: jest.fn()
 }))
 

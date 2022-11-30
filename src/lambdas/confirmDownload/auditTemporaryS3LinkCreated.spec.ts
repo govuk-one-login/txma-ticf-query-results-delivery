@@ -1,8 +1,8 @@
 import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
-import { currentDateEpochMilliseconds } from '../../utils/currentDateEpochMilliseconds'
+import { currentDateEpochSeconds } from '../../utils/currentDateEpoch'
 import {
   TEST_AUDIT_DATA_REQUEST_EVENTS_QUEUE_URL,
-  TEST_CURRENT_TIME_EPOCH_MILLISECONDS,
+  TEST_CURRENT_TIME_EPOCH_SECONDS,
   TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
@@ -12,8 +12,8 @@ jest.mock('../../sharedServices/queue/sendSqsMessage', () => ({
   sendSqsMessage: jest.fn()
 }))
 
-jest.mock('../../utils/currentDateEpochMilliseconds', () => ({
-  currentDateEpochMilliseconds: jest.fn()
+jest.mock('../../utils/currentDateEpoch', () => ({
+  currentDateEpochSeconds: jest.fn()
 }))
 
 describe('auditTemporaryS3LinkCreated', () => {
@@ -21,15 +21,13 @@ describe('auditTemporaryS3LinkCreated', () => {
     jest.spyOn(global.console, 'error')
   })
 
-  when(currentDateEpochMilliseconds).mockReturnValue(
-    TEST_CURRENT_TIME_EPOCH_MILLISECONDS
-  )
+  when(currentDateEpochSeconds).mockReturnValue(TEST_CURRENT_TIME_EPOCH_SECONDS)
 
   it('should send an audit message in the right format', async () => {
     await auditTemporaryS3LinkCreated(TEST_ZENDESK_TICKET_ID)
     expect(sendSqsMessage).toHaveBeenCalledWith(
       {
-        timestamp: TEST_CURRENT_TIME_EPOCH_MILLISECONDS,
+        timestamp: TEST_CURRENT_TIME_EPOCH_SECONDS,
         event_name: 'TXMA_AUDIT_QUERY_OUTPUT_ACCESSED',
         component_id: 'TXMA',
         extensions: {

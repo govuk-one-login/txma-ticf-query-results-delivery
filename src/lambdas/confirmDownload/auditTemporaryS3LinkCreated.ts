@@ -1,12 +1,12 @@
 import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
-import { currentDateEpochMilliseconds } from '../../utils/currentDateEpochMilliseconds'
+import { currentDateEpochSeconds } from '../../utils/currentDateEpoch'
 import { getEnv } from '../../utils/getEnv'
 
 export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
   try {
     await sendSqsMessage(
       {
-        timestamp: currentDateEpochMilliseconds(),
+        timestamp: currentDateEpochSeconds(),
         event_name: 'TXMA_AUDIT_QUERY_OUTPUT_ACCESSED',
         component_id: 'TXMA',
         extensions: {
