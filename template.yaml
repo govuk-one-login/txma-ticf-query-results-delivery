@@ -20,9 +20,6 @@ Parameters:
     Description: The ARN of the permissions boundary to apply to any role created by the template
     Type: String
     Default: none
-  SecureDownloadWebsiteAllowedIps:
-    Type: AWS::SSM::Parameter::Value<List<String>>
-    Default: SecureDownloadWebsiteAllowedIps
   TestRoleArn:
     Type: String
     Description: The ARN of the role that will used for integration tests
@@ -70,9 +67,6 @@ Resources:
           "responseLatency": "$context.responseLatency",
           "responseLength": "$context.responseLength"
           }
-      Auth:
-        ResourcePolicy:
-          IpRangeWhitelist: !Ref SecureDownloadWebsiteAllowedIps
       Description: API used by TICF analysts to access the results of Athena queries on the raw audit data
       DisableExecuteApiEndpoint: !If [ApiCustomDomain, true, false]
       EndpointConfiguration:
