@@ -33,6 +33,8 @@ Conditions:
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
   TestRolePolicy: !Not [!Equals [!Ref TestRoleArn, none]]
+  IsStubbedEnvironment:
+    !Or [!Equals [!Ref Environment, dev], !Equals [!Ref Environment, build]]
 
 Globals:
   Function:
@@ -228,8 +230,11 @@ Resources:
       Handler: sendEmailRequestToNotify.handler
       Environment:
         Variables:
+          ENVIRONMENT: !Ref Environment
           NOTIFY_API_SECRETS_ARN: '{{resolve:ssm:NotifySecretSetArn}}'
           CLOSE_TICKET_QUEUE_URL: '{{resolve:ssm:CloseZendeskTicketQueueUrl}}'
+          USE_NOTIFY_MOCK_SERVER: !If [IsStubbedEnvironment, 'true', 'false']
+          MOCK_SERVER_BASE_URL: 'https://mockserver.transaction.build.account.gov.uk'
       FunctionName: !Sub ${AWS::StackName}-send-email-request-to-notify
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Events:

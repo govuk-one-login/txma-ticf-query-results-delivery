@@ -11,4 +11,7 @@ export interface EnvironmentVar {
     | 'NOTIFY_API_SECRETS_ARN'
     | 'SEND_TO_EMAIL_QUEUE_URL'
     | 'SECURE_DOWNLOAD_LINK_BASE_URL'
+    | 'MOCK_SERVER_URL'
+    | 'MOCK_SERVER_BASE_URL'
+    | 'USE_NOTIFY_MOCK_SERVER'
 }
