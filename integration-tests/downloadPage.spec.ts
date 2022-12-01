@@ -2,6 +2,12 @@ import axios, { AxiosPromise, AxiosResponse } from 'axios'
 import { createOrUpdateDbHashRecord } from './utils/aws/createOrUpdateDbHashRecord'
 import { getIntegrationTestEnvironmentVariable } from './utils/getIntegrationTestEnvironmentVariable'
 import { parse } from 'node-html-parser'
+import { copyDataFromAthenaOutputBucket } from '../src/lambdas/generateDownload/copyDataFromAthenaOutputBucket'
+import { copyOverResultsFileWithAthenaQueryId } from './utils/aws/copyOverResultsFileWithAthenaQueryId'
+import {
+  addMessageToQueryCompletedQueue,
+  addMessageToQueue
+} from './utils/aws/addMessageToQueryCompletedQueue'
 
 const sendRequestForHash = (method: string, hash: string): AxiosPromise => {
   return sendRequest(
@@ -73,7 +79,19 @@ describe('Download pages', () => {
     })
 
     it('should return a success response with correct number of downloads when there is a record for the provided hash', async () => {
+      // TODO: copy over the file from the test folder
+      const athenaQueryId = await copyOverResultsFileWithAthenaQueryId()
+
       // TODO: trigger the queue
+      const message = {
+        athenaQueryId: athenaQueryId,
+        recipientEmail:
+          getIntegrationTestEnvironmentVariable('RECIPIENT_EMAIL'),
+        recipientName: getIntegrationTestEnvironmentVariable('RECIPIENT_NAME'),
+        zendeskTicketId: Date.now.toString()
+      }
+      await addMessageToQueryCompletedQueue(message)
+
       // TODO: get the download hash from the notify mock
       // TODO: send the request for the hash
       const response = await sendRequestForHash('GET', VALID_HASH)

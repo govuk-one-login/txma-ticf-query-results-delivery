@@ -6,4 +6,7 @@ export type IntegrationTestEnvironmentVariable = {
     | 'S3_RESULTS_KEY'
     | 'S3_RESULTS_BUCKET'
     | 'ATHENA_OUTPUT_BUCKET'
+    | 'QUERY_COMPLETED_QUEUE_URL'
+    | 'RECIPIENT_EMAIL'
+    | 'RECIPIENT_NAME'
 }
