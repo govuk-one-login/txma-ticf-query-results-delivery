@@ -47,10 +47,14 @@ describe('Download pages', () => {
 
   describe('Download warning page', () => {
     beforeAll(async () => {
+      // PUT A TEST CSV IN A TEST SUBFOLDER
+      // COPY THE CSV INTO ATHENA OUTPUT BUCKET AND RENAME THE CSV WITH CURRENT TIMESTAMP/RANDOM
+      // GUID WHICH WOULD BE THE ATHENA QUERY ID
       await resetDatabase()
     })
 
     it('should return a 404 when no record is available for the provided hash', async () => {
+      // NO SETUP. GENERATE RANDOM GUID AND CALL THE LINK IN NOTIFY
       const response = await sendRequestForHash('GET', NON_EXISTENT_HASH)
       assertDownloadNotFoundResponse(response)
     })
@@ -69,6 +73,9 @@ describe('Download pages', () => {
     })
 
     it('should return a success response with correct number of downloads when there is a record for the provided hash', async () => {
+      // TODO: trigger the queue
+      // TODO: get the download hash from the notify mock
+      // TODO: send the request for the hash
       const response = await sendRequestForHash('GET', VALID_HASH)
       expect(response.status).toEqual(200)
       const contentType = response.headers['content-type']

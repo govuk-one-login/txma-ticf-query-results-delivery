@@ -5,4 +5,5 @@ export type IntegrationTestEnvironmentVariable = {
     | 'DOWNLOAD_DYNAMODB_TABLE_NAME'
     | 'S3_RESULTS_KEY'
     | 'S3_RESULTS_BUCKET'
+    | 'ATHENA_OUTPUT_BUCKET'
 }
