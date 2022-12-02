@@ -27,7 +27,7 @@ export const sendEmailToNotify = async (
 
   const responseInfo = {
     status: response.status,
-    emailSentTo: JSON.parse(response.config.data).email_address,
+    emailSentTo: requestDetails.email,
     subjectLine: response.data.content.subject
   }
   console.log(responseInfo)
