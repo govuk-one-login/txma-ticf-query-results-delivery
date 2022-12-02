@@ -92,7 +92,7 @@ describe('Download pages', () => {
       }
       await addMessageToQueryCompletedQueue(message)
 
-      // TODO: get the download hash from the notify mock
+      // TODO: get the download hash generated from above from the notify mock
       // TODO: send the request for the hash
       const response = await sendRequestForHash('GET', VALID_HASH)
       expect(response.status).toEqual(200)
