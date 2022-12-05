@@ -4,7 +4,8 @@ const config: Config.InitialOptions = {
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
   testPathIgnorePatterns: ['/src/'],
   preset: 'ts-jest',
-  verbose: true
+  verbose: true,
+  setupFiles: ['<rootDir/setup/setup.ts>']
 }
 
 export default config

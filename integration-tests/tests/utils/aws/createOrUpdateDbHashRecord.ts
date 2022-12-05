@@ -3,7 +3,7 @@ import {
   PutItemCommand,
   PutItemCommandInput
 } from '@aws-sdk/client-dynamodb'
-import { TEST_ZENDESK_TICKET_ID } from '../../../src/utils/tests/setup/testConstants'
+import { TEST_ZENDESK_TICKET_ID } from '../../../../src/utils/tests/setup/testConstants'
 import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
 
 export const createOrUpdateDbHashRecord = (

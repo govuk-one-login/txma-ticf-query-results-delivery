@@ -1,10 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { getIntegrationTestEnvironmentVariable } from './utils/getIntegrationTestEnvironmentVariable'
 import crypto from 'crypto'
-import {
-  CreateResultFileSQSPayload,
-  QueryCompleteSQSPayload
-} from './utils/types/sqsPayload'
+import { TriggerEndOfFlowSQSPayload } from './utils/types/sqsPayload'
 import { invokeSQSOperationsLambda } from './utils/aws/invokeSQSOperationsLambdaFunction'
 import { sendRequestForHash } from './utils/request/sendRequest'
 
@@ -19,28 +16,13 @@ describe('Download pages', () => {
 
     beforeEach(async () => {
       athenaQueryId = crypto.randomUUID()
-      const createResultsFilePayload: CreateResultFileSQSPayload = {
-        message: athenaQueryId,
+      const payload: TriggerEndOfFlowSQSPayload = {
+        message: `${athenaQueryId}.csv`,
         queueUrl: getIntegrationTestEnvironmentVariable(
           'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
         )
       }
-      await invokeSQSOperationsLambda(createResultsFilePayload)
-
-      const message = {
-        athenaQueryId: athenaQueryId,
-        recipientEmail:
-          getIntegrationTestEnvironmentVariable('RECIPIENT_EMAIL'),
-        recipientName: getIntegrationTestEnvironmentVariable('RECIPIENT_NAME'),
-        zendeskTicketId: athenaQueryId
-      }
-      const queryCompletePayload: QueryCompleteSQSPayload = {
-        message: message,
-        queueUrl: getIntegrationTestEnvironmentVariable(
-          'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
-        )
-      }
-      await invokeSQSOperationsLambda(queryCompletePayload)
+      await invokeSQSOperationsLambda(payload)
     })
 
     it('should return a success response with correct max downloads when called for the first time', async () => {
@@ -82,6 +64,7 @@ describe('Download pages', () => {
     })
 
     it('should return a 404 when created date is lapsed from today', async () => {
+      //TODO: is this still possible from within tests?
       const EXPIRED_HASH = ''
       const response = await sendRequestForHash('GET', EXPIRED_HASH)
       assertDownloadNotFoundResponse(response)
