@@ -1,5 +1,19 @@
-import { retrieveSSMParameterValue } from './retrieveSSMParameterValues'
+import { retrieveSSMParameterValue } from './retrieveSSMParameterValue'
+const stackName = 'txma-ticf-query-results-delivery'
+const region = 'eu-west-2'
 
-export const readSSMParameters = () => {
-  retrieveSSMParameterValue('') //TODO: what is the queue url parameter called?
+module.exports = async () => {
+  await readEnvVarsFromSSM()
+  setRegionEnvVar()
+}
+
+const readEnvVarsFromSSM = async () => {
+  process.env['INTEGRATION_TESTS_TRIGGER_QUEUE_URL'] =
+    await retrieveSSMParameterValue(
+      `/tests/${stackName}/QRIntegrationTestsTriggerQueueUrl`
+    )
+}
+
+const setRegionEnvVar = () => {
+  process.env['AWS_REGION'] = region
 }
