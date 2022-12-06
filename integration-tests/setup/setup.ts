@@ -1,5 +1,5 @@
 import { retrieveSSMParameterValue } from './retrieveSSMParameterValue'
-const stackName = 'txma-ticf-query-results-delivery'
+const stackName = 'txma-query-results'
 const region = 'eu-west-2'
 
 module.exports = async () => {
