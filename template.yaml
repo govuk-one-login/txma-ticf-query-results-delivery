@@ -503,3 +503,15 @@ Resources:
       Name: !Sub /tests/${AWS::StackName}/QRIntegrationTestsTriggerQueueKmsKeyArn
       Type: String
       Value: !GetAtt QRIntegrationTestsTriggerQueueKmsKey.Arn
+
+  IntegrationTestsSqsOperationsFunctionNameParameter:
+    Condition: TestEnvironment
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub /tests/${AWS::StackName}/SqsOperationsFunctionName
+      Type: String
+      Value: '{{resolve:ssm:/tests/SqsOperationsFunctionName}}'
+
+Outputs:
+  QRIntegrationTestsTriggerQueueUrl:
+    Value: !Ref QRIntegrationTestsTriggerQueue
