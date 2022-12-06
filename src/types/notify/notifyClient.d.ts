@@ -6,6 +6,7 @@ declare module 'notifications-node-client' {
     reference: string
   }
   export class NotifyClient {
+    constructor(url: string, apiKey: string)
     constructor(apiKey: string)
     sendEmail(
       templateId: string,
