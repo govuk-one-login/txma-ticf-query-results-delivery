@@ -1,12 +1,9 @@
 import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
 import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda'
-import {
-  CreateResultFileSQSPayload,
-  QueryCompleteSQSPayload
-} from '../types/sqsPayload'
+import { TriggerEndOfFlowSQSPayload } from '../types/sqsPayload'
 
 export const invokeSQSOperationsLambda = async (
-  payload: CreateResultFileSQSPayload | QueryCompleteSQSPayload
+  payload: TriggerEndOfFlowSQSPayload
 ) => {
   const input = {
     FunctionName: 'txma-qr-dev-tools-sqs-operations',
@@ -19,9 +16,7 @@ export const invokeSQSOperationsLambda = async (
   await lambdaClient.send(new InvokeCommand(input))
 }
 
-const jsonToUint8Array = (
-  json: CreateResultFileSQSPayload | QueryCompleteSQSPayload
-): Uint8Array => {
+const jsonToUint8Array = (json: TriggerEndOfFlowSQSPayload): Uint8Array => {
   const string = JSON.stringify(json, null, 0)
   const uint8Array = new Uint8Array()
 
