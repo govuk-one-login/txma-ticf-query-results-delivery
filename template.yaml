@@ -27,6 +27,7 @@ Parameters:
 
 Conditions:
   ApiCustomDomain: !Not [!Equals [!Ref Environment, dev]]
+  BuildEnvironment: !Equals [!Ref Environment, build]
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
   TestRolePolicy: !Not [!Equals [!Ref TestRoleArn, none]]
@@ -400,3 +401,81 @@ Resources:
                   - kms:Decrypt
                   - kms:GenerateDataKey
                 Resource: '{{resolve:ssm:SqsKmsKeyArn}}'
+
+  # Query results integration test resources
+  # Need a separate KMS key here for the integration tests trigger queue because we need to grant access to the audit account
+  # and our main KMS key definitions are in 'core', which is a shared set of definitions across all stacks.
+  QRIntegrationTestsTriggerQueueKmsKey:
+    Condition: BuildEnvironment
+    Type: AWS::KMS::Key
+    Properties:
+      EnableKeyRotation: true
+      KeyPolicy:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: Enable Root access
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - kms:*
+            Resource: '*'
+          - Sid: Enable Decrypt access for Audit dev account
+            Effect: Allow
+            Principal:
+              AWS: '{{resolve:ssm:AuditAccountRootArn}}'
+            Action:
+              - kms:Decrypt
+            Resource: '*'
+          - Sid: Allow AWS Lambda access
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - kms:GenerateDataKey
+              - kms:Encrypt
+              - kms:Decrypt
+            Resource: '*'
+
+  QRIntegrationTestsTriggerQueueKmsKeyAlias:
+    Condition: BuildEnvironment
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub alias/${AWS::StackName}/${Environment}/qr-integration-test-trigger-queue-kms-key
+      TargetKeyId: !Ref QRIntegrationTestsTriggerQueueKmsKey
+
+  QRIntegrationTestsTriggerQueue:
+    Condition: BuildEnvironment
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${Environment}-qr-integration-tests-trigger-queue
+      KmsMasterKeyId: !GetAtt QRIntegrationTestsTriggerQueueKmsKey.Arn
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt QRIntegrationTestsTriggerDeadLetterQueue.Arn
+        maxReceiveCount: 5
+
+  QRIntegrationTestsTriggerQueuePolicy:
+    Condition: BuildEnvironment
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref QRIntegrationTestsTriggerQueue
+      PolicyDocument:
+        Statement:
+          - Sid: AllowQRIntegrationTestsTriggerQueueReadForAuditAccount
+            Action:
+              - 'sqs:ChangeMessageVisibility'
+              - 'sqs:DeleteMessage'
+              - 'sqs:GetQueueAttributes'
+              - 'sqs:ReceiveMessage'
+            Effect: 'Allow'
+            Resource: !GetAtt QRIntegrationTestsTriggerQueue.Arn
+            Principal:
+              AWS: '{{resolve:ssm:AuditAccountRootArn}}'
+
+  QRIntegrationTestsTriggerDeadLetterQueue:
+    Condition: BuildEnvironment
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub ${AWS::StackName}-${Environment}-close-zendesk-ticket-dead-letter-queue
+      KmsMasterKeyId: !GetAtt CloseZendeskTicketQueueKmsKey.Arn
