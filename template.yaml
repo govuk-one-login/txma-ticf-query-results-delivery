@@ -479,3 +479,27 @@ Resources:
     Properties:
       QueueName: !Sub ${AWS::StackName}-${Environment}-close-zendesk-ticket-dead-letter-queue
       KmsMasterKeyId: !GetAtt CloseZendeskTicketQueueKmsKey.Arn
+
+  QRIntegrationTestsTriggerQueueArnParameter:
+    Condition: BuildEnvironment
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: QRIntegrationTestsTriggerQueueArn
+      Type: String
+      Value: !GetAtt QRIntegrationTestsTriggerQueue.Arn
+
+  QRIntegrationTestsTriggerQueueUrlParameter:
+    Condition: BuildEnvironment
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: QRIntegrationTestsTriggerQueueUrl
+      Type: String
+      Value: !Ref QRIntegrationTestsTriggerQueue
+
+  QRIntegrationTestsTriggerQueueKmsKeyArnParameter:
+    Condition: BuildEnvironment
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: QRIntegrationTestsTriggerQueueKmsKeyArn
+      Type: String
+      Value: !GetAtt QRIntegrationTestsTriggerQueueKmsKey.Arn
