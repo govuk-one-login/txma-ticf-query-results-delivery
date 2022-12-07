@@ -5,6 +5,7 @@ import crypto from 'crypto'
 import { TriggerEndOfFlowSQSPayload } from './utils/types/sqsPayload'
 import { getIntegrationTestEnvironmentVariable } from './utils/getIntegrationTestEnvironmentVariable'
 import { invokeSQSOperationsLambda } from './utils/aws/invokeSQSOperationsLambdaFunction'
+import { pollNotifyMockForDownloadUrl } from './utils/notify/pollNotifyMockForDownloadUrl'
 
 describe('Confirm download page', () => {
   let athenaQueryId = ''
@@ -21,8 +22,7 @@ describe('Confirm download page', () => {
   })
 
   it('should return a success response when download url is valid', async () => {
-    // TODO: get the downloadurl from the notify mock
-    const downloadUrl = ''
+    const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
 
     const response = await sendRequest(downloadUrl, 'POST')
     expect(response.status).toEqual(200)
@@ -41,8 +41,7 @@ describe('Confirm download page', () => {
   })
 
   it('should return a 404 when there are no downloads remaining', async () => {
-    // TODO: get the download hash generated from above from the notify mock
-    const downloadUrl = ''
+    const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
 
     const response = await sendRequest(downloadUrl, 'POST')
     expect(response.status).toEqual(200)
@@ -68,7 +67,7 @@ describe('Confirm download page', () => {
   })
 
   it('should return a 404 when no record is available for the provided hash', async () => {
-    const downloadUrl = ''
+    const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
 
     const urlWithNonExistentHash = replaceHashInUrl(
       downloadUrl,

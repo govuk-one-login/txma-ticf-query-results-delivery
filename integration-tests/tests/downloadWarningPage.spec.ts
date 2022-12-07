@@ -4,6 +4,7 @@ import crypto from 'crypto'
 import { TriggerEndOfFlowSQSPayload } from './utils/types/sqsPayload'
 import { invokeSQSOperationsLambda } from './utils/aws/invokeSQSOperationsLambdaFunction'
 import { sendRequest } from './utils/request/sendRequest'
+import { pollNotifyMockForDownloadUrl } from './utils/notify/pollNotifyMockForDownloadUrl'
 
 describe('Download pages', () => {
   const assertDownloadNotFoundResponse = (response: AxiosResponse) => {
@@ -26,8 +27,7 @@ describe('Download pages', () => {
     })
 
     it('should return a success response with correct max downloads when called for the first time', async () => {
-      // TODO: get the downloadurl from the notify mock
-      const downloadUrl = ''
+      const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
 
       const response = await sendRequest(downloadUrl, 'GET')
       expect(response.status).toEqual(200)
@@ -38,7 +38,7 @@ describe('Download pages', () => {
     })
 
     it('should return a 404 when no record is available for the provided hash', async () => {
-      const downloadUrl = ''
+      const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
 
       const urlWithNonExistentHash = replaceHashInUrl(
         downloadUrl,
