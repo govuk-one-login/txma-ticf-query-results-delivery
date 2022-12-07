@@ -1,6 +1,6 @@
-import axios, { AxiosPromise } from 'axios'
-import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
+import axios from 'axios'
 
+/*
 export const sendRequestForHash = (
   method: string,
   hash: string
@@ -12,6 +12,7 @@ export const sendRequestForHash = (
     method
   )
 }
+*/
 
 export const sendRequest = (url: string, method: string) => {
   return axios({
