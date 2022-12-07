@@ -5,9 +5,9 @@ const config: Config.InitialOptions = {
   testPathIgnorePatterns: ['/src/'],
   preset: 'ts-jest',
   verbose: true,
-  setupFiles: ['<rootDir/setup/setup.ts>'],
+  setupFiles: ['<rootDir>/integration-tests/setup/setup.ts'],
   globals: {
-    NOTIFY_MOCK_SERVER_URL:
+    NOTIFY_MOCK_SERVER_BASE_URL:
       'https://mockserver.transaction.build.account.gov.uk'
   }
 }

@@ -13,12 +13,12 @@ describe('Download pages', () => {
   }
 
   describe('Download warning page - successful download', () => {
-    let athenaQueryId = ''
+    let randomId = ''
 
     beforeEach(async () => {
-      athenaQueryId = crypto.randomUUID()
+      randomId = crypto.randomUUID()
       const payload: TriggerEndOfFlowSQSPayload = {
-        message: `${athenaQueryId}.csv`,
+        message: `${randomId}.csv`,
         queueUrl: getIntegrationTestEnvironmentVariable(
           'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
         )
@@ -27,7 +27,7 @@ describe('Download pages', () => {
     })
 
     it('should return a success response with correct max downloads when called for the first time', async () => {
-      const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
+      const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
       const response = await sendRequest(downloadUrl, 'GET')
       expect(response.status).toEqual(200)
@@ -38,7 +38,7 @@ describe('Download pages', () => {
     })
 
     it('should return a 404 when no record is available for the provided hash', async () => {
-      const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
+      const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
       const urlWithNonExistentHash = replaceHashInUrl(
         downloadUrl,

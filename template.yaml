@@ -505,7 +505,7 @@ Resources:
       Value: !GetAtt QRIntegrationTestsTriggerQueueKmsKey.Arn
 
   IntegrationTestsSqsOperationsFunctionNameParameter:
-    Condition: TestEnvironment
+    Condition: BuildEnvironment
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Sub /tests/${AWS::StackName}/SqsOperationsFunctionName
