@@ -29,3 +29,5 @@ export const TEST_NOTIFY_API_SECRETS_ARN = 'myNotifySecretName'
 export const TEST_SEND_TO_EMAIL_QUEUE_URL = 'https://send_to_email_queue'
 export const TEST_SECURE_DOWNLOAD_LINK_BASE_URL =
   'https://my-secure-download/secure'
+
+export const TEST_DATABASE_TTL_HOURS = 120

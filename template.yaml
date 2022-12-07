@@ -315,6 +315,7 @@ Resources:
             ]
           SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
           SEND_TO_EMAIL_QUEUE_URL: !Ref SendEmailQueue
+          DATABASE_TTL_HOURS: '{{resolve:ssm:DatabaseTtlHours}}'
       Events:
         QueryCompleteEvent:
           Type: SQS
