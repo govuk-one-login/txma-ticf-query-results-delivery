@@ -1,6 +1,4 @@
 import { retrieveSSMParameterValue } from './retrieveSSMParameterValue'
-import { retrieveStackOutput } from './retrieveStackOutput'
-const stackName = 'txma-query-results'
 const region = 'eu-west-2'
 
 // eslint-disable-next-line @typescript-eslint/prefer-namespace-keyword, @typescript-eslint/no-namespace
@@ -12,7 +10,6 @@ module.exports = async () => {
   setRegionEnvVar()
   setEnvVarFromJestGlobals()
   await readEnvVarsFromSSM()
-  await setEnvVarFromStackOutput()
 }
 
 const setRegionEnvVar = () => {
@@ -26,17 +23,8 @@ const setEnvVarFromJestGlobals = () => {
 
 const readEnvVarsFromSSM = async () => {
   process.env['SQS_OPERATIONS_FUNCTION_NAME'] = await retrieveSSMParameterValue(
-    `/tests/${stackName}/SqsOperationsFunctionName`
+    `/tests/SqsOperationsFunctionName`
   )
   process.env['INTEGRATION_TESTS_TRIGGER_QUEUE_URL'] =
     await retrieveSSMParameterValue(`QRIntegrationTestsTriggerQueueUrl`)
-}
-
-const setEnvVarFromStackOutput = async () => {
-  const stackOutputs = await retrieveStackOutput(stackName, region)
-  if (!stackOutputs[0].OutputValue) {
-    throw new Error(`Stack output fdr query url not defined`)
-  }
-  process.env['NTEGRATION_TESTS_TRIGGER_QUEUE_URL'] =
-    stackOutputs[0].OutputValue
 }

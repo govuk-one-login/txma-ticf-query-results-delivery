@@ -9,7 +9,8 @@ const config: Config.InitialOptions = {
   globals: {
     NOTIFY_MOCK_SERVER_BASE_URL:
       'https://mockserver.transaction.build.account.gov.uk'
-  }
+  },
+  testTimeout: 60000
 }
 
 export default config

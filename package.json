@@ -16,7 +16,7 @@
     "postinstall": "husky install",
     "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
     "test": "jest -c jest.config.ts",
-    "test:integration": "jest -c jest.integration.config.ts"
+    "test:integration": "jest -c jest.integration.config.ts -i"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.186.0",
