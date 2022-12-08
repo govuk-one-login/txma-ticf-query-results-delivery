@@ -14,11 +14,13 @@ describe('Download pages', () => {
 
   describe('Download warning page - successful download', () => {
     let randomId = ''
+    let fileContents = ''
 
     beforeEach(async () => {
       randomId = crypto.randomUUID()
+      fileContents = crypto.randomUUID()
       const payload: TriggerEndOfFlowSQSPayload = {
-        message: `${randomId}.csv`,
+        message: { fileName: `${randomId}.csv`, fileContents: fileContents },
         queueUrl: getIntegrationTestEnvironmentVariable(
           'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
         )

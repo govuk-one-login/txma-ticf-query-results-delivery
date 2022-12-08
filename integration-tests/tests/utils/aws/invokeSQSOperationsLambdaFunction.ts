@@ -5,6 +5,7 @@ import { TriggerEndOfFlowSQSPayload } from '../types/sqsPayload'
 export const invokeSQSOperationsLambda = async (
   payload: TriggerEndOfFlowSQSPayload
 ) => {
+  //TODO: replace with env var SQS_OPERATIONS_FUNCTION_NAME
   const input = {
     FunctionName: 'txma-qr-dev-tools-sqs-operations',
     Payload: jsonToUint8Array(payload)

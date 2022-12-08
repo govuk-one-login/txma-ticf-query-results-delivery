@@ -8,12 +8,15 @@ import { invokeSQSOperationsLambda } from './utils/aws/invokeSQSOperationsLambda
 import { pollNotifyMockForDownloadUrl } from './utils/notify/pollNotifyMockForDownloadUrl'
 
 describe('Confirm download page', () => {
-  let athenaQueryId = ''
+  let randomId = ''
+  let fileContents = ''
 
   beforeEach(async () => {
-    athenaQueryId = crypto.randomUUID()
+    randomId = crypto.randomUUID()
+    fileContents = crypto.randomUUID()
+
     const payload: TriggerEndOfFlowSQSPayload = {
-      message: `${athenaQueryId}.csv`,
+      message: { fileName: `${randomId}.csv`, fileContents: fileContents },
       queueUrl: getIntegrationTestEnvironmentVariable(
         'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
       )
@@ -22,7 +25,7 @@ describe('Confirm download page', () => {
   })
 
   it('should return a success response when download url is valid', async () => {
-    const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
+    const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
     const response = await sendRequest(downloadUrl, 'POST')
     expect(response.status).toEqual(200)
@@ -32,6 +35,7 @@ describe('Confirm download page', () => {
       'GET'
     )
     expect(fileDownloadResponse.status).toEqual(200)
+    expect(fileDownloadResponse.data as string).toEqual(fileContents)
 
     const getResponseAfterDownload = await sendRequest(downloadUrl, 'GET')
     expect(getResponseAfterDownload.status).toEqual(200)
@@ -41,7 +45,7 @@ describe('Confirm download page', () => {
   })
 
   it('should return a 404 when there are no downloads remaining', async () => {
-    const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
+    const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
     const response = await sendRequest(downloadUrl, 'POST')
     expect(response.status).toEqual(200)
@@ -49,10 +53,11 @@ describe('Confirm download page', () => {
     let fileDownloadResponse = null
     let getResponse = null
     const s3Link = retrieveS3LinkFromHtml(response.data)
+    fileDownloadResponse = await sendRequest(s3Link, 'GET')
+    expect(fileDownloadResponse.status).toEqual(200)
+    expect(fileDownloadResponse.data as string).toEqual(fileContents)
 
-    for (let i = 3; i >= 0; i--) {
-      fileDownloadResponse = await sendRequest(s3Link, 'GET')
-      expect(fileDownloadResponse.status).toEqual(200)
+    for (let i = 2; i >= 0; i--) {
       getResponse = await sendRequest(downloadUrl, 'GET')
 
       if (i > 0) {
@@ -67,7 +72,7 @@ describe('Confirm download page', () => {
   })
 
   it('should return a 404 when no record is available for the provided hash', async () => {
-    const downloadUrl = await pollNotifyMockForDownloadUrl(athenaQueryId)
+    const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
     const urlWithNonExistentHash = replaceHashInUrl(
       downloadUrl,

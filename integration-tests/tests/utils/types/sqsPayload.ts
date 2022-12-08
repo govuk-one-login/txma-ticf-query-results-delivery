@@ -1,4 +1,9 @@
 export type TriggerEndOfFlowSQSPayload = {
-  message: string
+  message: MessageDetail
   queueUrl: string
+}
+
+type MessageDetail = {
+  fileName: string
+  fileContents: string
 }
