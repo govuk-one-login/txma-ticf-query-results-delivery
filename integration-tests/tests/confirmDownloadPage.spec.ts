@@ -24,7 +24,7 @@ describe('Confirm download page', () => {
     await invokeSQSOperationsLambda(payload)
   })
 
-  it('should return a success response when download url is valid', async () => {
+  it('A POST should return a success response when download url is valid', async () => {
     const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
     const response = await sendRequest(downloadUrl, 'POST')
@@ -44,7 +44,7 @@ describe('Confirm download page', () => {
     )
   })
 
-  it('should return a 404 when there are no downloads remaining', async () => {
+  it('A POST should return a 404 when there are no downloads remaining', async () => {
     const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
     const response = await sendRequest(downloadUrl, 'POST')
@@ -71,7 +71,7 @@ describe('Confirm download page', () => {
     }
   })
 
-  it('should return a 404 when no record is available for the provided hash', async () => {
+  it('A POST should return a 404 when no record is available for the provided hash', async () => {
     const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
     const urlWithNonExistentHash = replaceHashInUrl(

@@ -21,7 +21,7 @@ describe('Download pages', () => {
       fileContents = crypto.randomUUID()
 
       const payload: TriggerEndOfFlowSQSPayload = {
-        message: { fileName: `${randomId}.csv`, fileContents: fileContents },
+        message: { athenaQueryId: randomId, fileContents: fileContents },
         queueUrl: getIntegrationTestEnvironmentVariable(
           'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
         )
@@ -29,7 +29,7 @@ describe('Download pages', () => {
       await invokeSQSOperationsLambda(payload)
     })
 
-    it('should return a success response with correct max downloads when called for the first time', async () => {
+    it('A GET should return a success response with correct max downloads when called for the first time', async () => {
       const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
       const response = await sendRequest(downloadUrl, 'GET')
@@ -40,7 +40,7 @@ describe('Download pages', () => {
       expect(response.data).toContain('You have 3 downloads remaining.')
     })
 
-    it('should return a 404 when no record is available for the provided hash', async () => {
+    it('A GET should return a 404 when no record is available for the provided hash', async () => {
       const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
 
       const urlWithNonExistentHash = replaceHashInUrl(
