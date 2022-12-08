@@ -511,7 +511,3 @@ Resources:
       Name: !Sub /tests/${AWS::StackName}/SqsOperationsFunctionName
       Type: String
       Value: '{{resolve:ssm:/tests/SqsOperationsFunctionName}}'
-
-Outputs:
-  QRIntegrationTestsTriggerQueueUrl:
-    Value: !Ref QRIntegrationTestsTriggerQueue
