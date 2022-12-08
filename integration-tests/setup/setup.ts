@@ -11,7 +11,7 @@ declare module global {
 module.exports = async () => {
   setRegionEnvVar()
   setEnvVarFromJestGlobals()
-  await readEnvVarFromSSM()
+  await readEnvVarsFromSSM()
   await setEnvVarFromStackOutput()
 }
 
@@ -24,10 +24,12 @@ const setEnvVarFromJestGlobals = () => {
     global['NOTIFY_MOCK_SERVER_BASE_URL' as keyof typeof global]
 }
 
-const readEnvVarFromSSM = async () => {
+const readEnvVarsFromSSM = async () => {
   process.env['SQS_OPERATIONS_FUNCTION_NAME'] = await retrieveSSMParameterValue(
     `/tests/${stackName}/SqsOperationsFunctionName`
   )
+  process.env['INTEGRATION_TESTS_TRIGGER_QUEUE_URL'] =
+    await retrieveSSMParameterValue(`QRIntegrationTestsTriggerQueueUrl`)
 }
 
 const setEnvVarFromStackOutput = async () => {
