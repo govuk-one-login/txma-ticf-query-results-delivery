@@ -417,3 +417,11 @@ Resources:
       Name: !Sub /tests/${AWS::StackName}/SqsOperationsFunctionName
       Type: String
       Value: '{{resolve:ssm:/tests/SqsOperationsFunctionName}}'
+
+  IntegrationTestsWriteTestDataToAthenaBucketQueueUrlParameter:
+    Condition: TestEnvironment
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub /tests/${AWS::StackName}/WriteTestDataToAthenaBucketQueueUrl
+      Type: String
+      Value: '{{resolve:ssm:WriteTestDataToAthenaBucketQueueUrl}}'
