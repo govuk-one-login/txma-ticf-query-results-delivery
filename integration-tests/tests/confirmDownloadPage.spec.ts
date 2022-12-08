@@ -16,7 +16,7 @@ describe('Confirm download page', () => {
     fileContents = crypto.randomUUID()
 
     const payload: TriggerEndOfFlowSQSPayload = {
-      message: { fileName: `${randomId}.csv`, fileContents: fileContents },
+      message: { athenaQueryId: randomId, fileContents: fileContents },
       queueUrl: getIntegrationTestEnvironmentVariable(
         'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
       )

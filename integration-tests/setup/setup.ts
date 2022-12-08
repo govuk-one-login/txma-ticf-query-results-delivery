@@ -1,6 +1,6 @@
 import { retrieveSSMParameterValue } from './retrieveSSMParameterValue'
 const region = 'eu-west-2'
-const stackName = 'txma-query-results'
+// const stackName = 'txma-query-results'
 
 // eslint-disable-next-line @typescript-eslint/prefer-namespace-keyword, @typescript-eslint/no-namespace
 declare module global {
@@ -24,10 +24,8 @@ const setEnvVarFromJestGlobals = () => {
 
 const readEnvVarsFromSSM = async () => {
   process.env['SQS_OPERATIONS_FUNCTION_NAME'] = await retrieveSSMParameterValue(
-    `/tests/${stackName}/SqsOperationsFunctionName`
+    `/tests/SqsOperationsFunctionName`
   )
   process.env['INTEGRATION_TESTS_TRIGGER_QUEUE_URL'] =
-    await retrieveSSMParameterValue(
-      `/tests/${stackName}/WriteTestDataToAthenaBucketQueueUrl`
-    )
+    await retrieveSSMParameterValue('WriteTestDataToAthenaBucketQueueUrl')
 }
