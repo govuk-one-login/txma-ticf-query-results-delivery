@@ -424,4 +424,4 @@ Resources:
     Properties:
       Name: !Sub /tests/${AWS::StackName}/WriteTestDataToAthenaBucketQueueUrl
       Type: String
-      Value: '{{resolve:ssm:WriteTestDataToAthenaBucketQueueUrl}}'
+      Value: '{{resolve:ssm:/tests/WriteTestDataToAthenaBucketQueueUrl}}'

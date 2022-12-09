@@ -28,5 +28,7 @@ const readEnvVarsFromSSM = async () => {
   )
 
   process.env['INTEGRATION_TESTS_TRIGGER_QUEUE_URL'] =
-    await retrieveSSMParameterValue('WriteTestDataToAthenaBucketQueueUrl')
+    await retrieveSSMParameterValue(
+      '/tests/WriteTestDataToAthenaBucketQueueUrl'
+    )
 }
