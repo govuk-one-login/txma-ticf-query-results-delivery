@@ -1,19 +1,5 @@
 import axios from 'axios'
 
-/*
-export const sendRequestForHash = (
-  method: string,
-  hash: string
-): AxiosPromise => {
-  return sendRequest(
-    `${getIntegrationTestEnvironmentVariable(
-      'DOWNLOAD_PAGE_BASE_URL'
-    )}/secure/${hash}`,
-    method
-  )
-}
-*/
-
 export const sendRequest = (url: string, method: string) => {
   return axios({
     // Some of our responses contain a redirect, which we don't want to follow,

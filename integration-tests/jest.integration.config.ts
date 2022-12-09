@@ -5,10 +5,11 @@ const config: Config.InitialOptions = {
   testPathIgnorePatterns: ['/src/'],
   preset: 'ts-jest',
   verbose: true,
-  setupFiles: ['<rootDir>/integration-tests/setup/setup.ts'],
+  setupFiles: ['<rootDir>/setup/setup.ts'],
   globals: {
     NOTIFY_MOCK_SERVER_BASE_URL:
-      'https://mockserver.transaction.build.account.gov.uk'
+      'https://mockserver.transaction.build.account.gov.uk',
+    STACK_NAME: 'txma-query-results'
   },
   testTimeout: 60000
 }
