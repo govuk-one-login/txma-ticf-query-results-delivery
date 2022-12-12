@@ -425,3 +425,16 @@ Resources:
       Name: !Sub /tests/${AWS::StackName}/WriteTestDataToAthenaBucketQueueUrl
       Type: String
       Value: '{{resolve:ssm:/tests/WriteTestDataToAthenaBucketQueueUrl}}'
+
+  IntegrationTestsSecureDownloadWebsiteBaseUrlParameter:
+    Condition: TestEnvironment
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub /tests/${AWS::StackName}/SecureDownloadWebsiteBaseUrl
+      Type: String
+      Value:
+        !If [
+          ApiCustomDomain,
+          'https://{{resolve:ssm:ResultsApiDomainName}}/secure',
+          !Sub 'https://${ResultsApi}.execute-api.${AWS::Region}.amazonaws.com/${ResultsApi.Stage}/secure'
+        ]
