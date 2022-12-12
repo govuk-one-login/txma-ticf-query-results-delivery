@@ -19,11 +19,11 @@ export const invokeSQSOperationsLambda = async (payload: SQSPayload) => {
 }
 
 const jsonToUint8Array = (json: SQSPayload): Uint8Array => {
-  const string = JSON.stringify(json, null, 0)
-  const uint8Array = new Uint8Array()
+  const dataString = JSON.stringify(json, null, 0)
+  const uint8Array = new Uint8Array(dataString.length)
 
-  for (let i = 0; i < string.length; i++) {
-    uint8Array[i] = string.charCodeAt(i)
+  for (let i = 0; i < dataString.length; i++) {
+    uint8Array[i] = dataString.charCodeAt(i)
   }
   return uint8Array
 }

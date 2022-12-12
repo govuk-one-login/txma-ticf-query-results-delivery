@@ -4,11 +4,8 @@ import { parse } from 'node-html-parser'
 import crypto from 'crypto'
 import { getIntegrationTestEnvironmentVariable } from './utils/getIntegrationTestEnvironmentVariable'
 import { pollNotifyMockForDownloadUrl } from './utils/notify/pollNotifyMockForDownloadUrl'
-import {
-  SendMessageCommand,
-  SendMessageRequest,
-  SQSClient
-} from '@aws-sdk/client-sqs'
+import { SQSPayload } from './utils/types/sqsPayload'
+import { invokeSQSOperationsLambda } from './utils/aws/invokeSQSOperationsLambdaFunction'
 
 describe('Download pages', () => {
   let randomId = ''
@@ -20,24 +17,24 @@ describe('Download pages', () => {
     fileContents = crypto.randomUUID()
     zendeskId = Date.now().toString()
 
-    // const payload: SQSPayload = {
-    //   message: JSON.stringify({
-    //     athenaQueryId: randomId,
-    //     fileContents: fileContents,
-    //     zendeskId: zendeskId
-    //   }),
-    //   queueUrl: getIntegrationTestEnvironmentVariable(
-    //     'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
-    //   )
-    // }
-    sendSqsMessageWithStringBody(
-      JSON.stringify({
+    const payload: SQSPayload = {
+      message: JSON.stringify({
         athenaQueryId: randomId,
         fileContents: fileContents,
         zendeskId: zendeskId
-      })
-    )
-    // await invokeSQSOperationsLambda(payload)
+      }),
+      queueUrl: getIntegrationTestEnvironmentVariable(
+        'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
+      )
+    }
+    // sendSqsMessageWithStringBody(
+    //   JSON.stringify({
+    //     athenaQueryId: randomId,
+    //     fileContents: fileContents,
+    //     zendeskId: zendeskId
+    //   })
+    // )
+    await invokeSQSOperationsLambda(payload)
   })
 
   it('API should return success with downloadable link until there are no downloads remaining', async () => {
@@ -106,7 +103,7 @@ describe('Download pages', () => {
     return url as string
   }
 
-  const sendSqsMessageWithStringBody = async (
+  /*const sendSqsMessageWithStringBody = async (
     messageBody: string
   ): Promise<string | undefined> => {
     const client = new SQSClient({ region: 'eu-west-2' })
@@ -118,5 +115,5 @@ describe('Download pages', () => {
     }
     const result = await client.send(new SendMessageCommand(message))
     return result.MessageId
-  }
+  } */
 })
