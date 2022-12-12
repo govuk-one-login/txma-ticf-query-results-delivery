@@ -5,4 +5,5 @@ export type IntegrationTestEnvironmentVariable = {
     | 'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
     | 'NOTIFY_MOCK_SERVER_BASE_URL'
     | 'STACK_NAME'
+    | 'SECURE_DOWNLOAD_BASE_URL'
 }

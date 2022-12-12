@@ -47,19 +47,11 @@ describe('Download pages', () => {
     })
 
     it('A GET should return a 404 when no record is available for the provided hash', async () => {
-      const downloadUrl = await pollNotifyMockForDownloadUrl(zendeskId)
-
-      const urlWithNonExistentHash = replaceHashInUrl(
-        downloadUrl,
-        'xxxx-yyyy-zzzz'
-      )
+      const urlWithNonExistentHash = `https://${getIntegrationTestEnvironmentVariable(
+        'SECURE_DOWNLOAD_BASE_URL'
+      )}/secure/xxxx-yyyy-zzzz`
       const response = await sendRequest(urlWithNonExistentHash, 'GET')
       assertDownloadNotFoundResponse(response)
     })
-
-    const replaceHashInUrl = (url: string, replacementHash: string) => {
-      const regex = /secure\/[a-z0-9-]+/
-      return url.replace(regex, replacementHash)
-    }
   })
 })

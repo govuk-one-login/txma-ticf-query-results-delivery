@@ -1,3 +1,4 @@
+import { getIntegrationTestEnvironmentVariable } from '../tests/utils/getIntegrationTestEnvironmentVariable'
 import { retrieveSSMParameterValue } from './retrieveSSMParameterValue'
 const region = 'eu-west-2'
 
@@ -18,8 +19,12 @@ const setRegionEnvVar = () => {
 }
 
 const setEnvVarFromJestGlobals = () => {
-  process.env['NOTIFY_MOCK_SERVER_BASE_URL'] =
-    global['NOTIFY_MOCK_SERVER_BASE_URL' as keyof typeof global]
+  process.env['NOTIFY_MOCK_SERVER_BASE_URL'] = process.env[
+    'NOTIFY_MOCK_SERVER_BASE_URL'
+  ]
+    ? process.env['NOTIFY_MOCK_SERVER_BASE_URL']
+    : global['NOTIFY_MOCK_SERVER_BASE_URL' as keyof typeof global]
+
   process.env['STACK_NAME'] = process.env['STACK_NAME']
     ? process.env['STACK_NAME']
     : global['STACK_NAME' as keyof typeof global]
@@ -34,6 +39,9 @@ const readEnvVarsFromSSM = async () => {
     await retrieveSSMParameterValue(
       '/tests/WriteTestDataToAthenaBucketQueueUrl'
     )
-
-  console.log(process.env['INTEGRATION_TESTS_TRIGGER_QUEUE_URL'])
+  process.env['SECURE_DOWNLOAD_BASE_URL'] = await retrieveSSMParameterValue(
+    `/tests/${getIntegrationTestEnvironmentVariable(
+      'STACK_NAME'
+    )}/SecureDownloadWebsiteBaseUrl`
+  )
 }
