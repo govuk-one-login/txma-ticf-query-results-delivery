@@ -1,10 +1,4 @@
-export type TriggerEndOfFlowSQSPayload = {
-  message: MessageDetail
+export type SQSPayload = {
+  message: string
   queueUrl: string
-}
-
-type MessageDetail = {
-  athenaQueryId: string
-  fileContents: string
-  zendeskId: string
 }

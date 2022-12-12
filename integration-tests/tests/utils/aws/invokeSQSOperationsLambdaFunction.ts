@@ -1,10 +1,8 @@
 import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
 import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda'
-import { TriggerEndOfFlowSQSPayload } from '../types/sqsPayload'
+import { SQSPayload } from '../types/sqsPayload'
 
-export const invokeSQSOperationsLambda = async (
-  payload: TriggerEndOfFlowSQSPayload
-) => {
+export const invokeSQSOperationsLambda = async (payload: SQSPayload) => {
   const input = {
     FunctionName: getIntegrationTestEnvironmentVariable(
       'SQS_OPERATIONS_FUNCTION_NAME'
@@ -15,10 +13,12 @@ export const invokeSQSOperationsLambda = async (
   const lambdaClient = new LambdaClient({
     region: getIntegrationTestEnvironmentVariable('AWS_REGION')
   })
-  await lambdaClient.send(new InvokeCommand(input))
+  const result = await lambdaClient.send(new InvokeCommand(input))
+  console.log('PAYLOAD', result.Payload)
+  return uint8ArrayToJson(result.Payload)
 }
 
-const jsonToUint8Array = (json: TriggerEndOfFlowSQSPayload): Uint8Array => {
+const jsonToUint8Array = (json: SQSPayload): Uint8Array => {
   const string = JSON.stringify(json, null, 0)
   const uint8Array = new Uint8Array()
 
@@ -26,4 +26,16 @@ const jsonToUint8Array = (json: TriggerEndOfFlowSQSPayload): Uint8Array => {
     uint8Array[i] = string.charCodeAt(i)
   }
   return uint8Array
+}
+
+const uint8ArrayToJson = (binArray: Uint8Array | undefined) => {
+  if (!binArray) return {}
+
+  let str = ''
+
+  for (let i = 0; i < binArray.length; i++) {
+    str += String.fromCharCode(binArray[i])
+  }
+
+  return JSON.parse(str)
 }

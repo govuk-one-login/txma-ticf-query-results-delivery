@@ -21,10 +21,14 @@ export const pollNotifyMockForDownloadUrl = async (zendeskId: string) => {
 }
 
 const getDownloadUrlFromNotifyMock = async (zendeskId: string) => {
+  const url = `${getIntegrationTestEnvironmentVariable(
+    'NOTIFY_MOCK_SERVER_BASE_URL'
+  )}/notifyrequest/${zendeskId}`
+
+  console.log('MOCK SERVER', url)
+
   const response = await axios({
-    url: `${getIntegrationTestEnvironmentVariable(
-      'NOTIFY_MOCK_SERVER_BASE_URL'
-    )}/notifyrequest/${zendeskId}`,
+    url: url,
     method: 'GET',
     headers: { Accept: 'application/json' },
 

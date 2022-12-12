@@ -2,10 +2,13 @@ import { AxiosResponse } from 'axios'
 import { sendRequest } from './utils/request/sendRequest'
 import { parse } from 'node-html-parser'
 import crypto from 'crypto'
-import { TriggerEndOfFlowSQSPayload } from './utils/types/sqsPayload'
 import { getIntegrationTestEnvironmentVariable } from './utils/getIntegrationTestEnvironmentVariable'
-import { invokeSQSOperationsLambda } from './utils/aws/invokeSQSOperationsLambdaFunction'
 import { pollNotifyMockForDownloadUrl } from './utils/notify/pollNotifyMockForDownloadUrl'
+import {
+  SendMessageCommand,
+  SendMessageRequest,
+  SQSClient
+} from '@aws-sdk/client-sqs'
 
 describe('Download pages', () => {
   let randomId = ''
@@ -17,24 +20,32 @@ describe('Download pages', () => {
     fileContents = crypto.randomUUID()
     zendeskId = Date.now().toString()
 
-    const payload: TriggerEndOfFlowSQSPayload = {
-      message: {
+    // const payload: SQSPayload = {
+    //   message: JSON.stringify({
+    //     athenaQueryId: randomId,
+    //     fileContents: fileContents,
+    //     zendeskId: zendeskId
+    //   }),
+    //   queueUrl: getIntegrationTestEnvironmentVariable(
+    //     'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
+    //   )
+    // }
+    sendSqsMessageWithStringBody(
+      JSON.stringify({
         athenaQueryId: randomId,
         fileContents: fileContents,
         zendeskId: zendeskId
-      },
-      queueUrl: getIntegrationTestEnvironmentVariable(
-        'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
-      )
-    }
-    await invokeSQSOperationsLambda(payload)
+      })
+    )
+    // await invokeSQSOperationsLambda(payload)
   })
 
   it('API should return success with downloadable link until there are no downloads remaining', async () => {
     const downloadUrl = await pollNotifyMockForDownloadUrl(zendeskId)
+    console.log(`DOWNLOAD URL: ${downloadUrl}`)
     const maxDownloads = 2
 
-    const getResponse = await sendRequest(downloadUrl, 'GET')
+    let getResponse = await sendRequest(downloadUrl, 'GET')
     expect(getResponse.status).toEqual(200)
     const contentType = getResponse.headers['content-type']
     expect(contentType).toEqual('text/html')
@@ -51,13 +62,19 @@ describe('Download pages', () => {
 
       if (i > 0) {
         expect(postResponse.status).toEqual(200)
-        expect(postResponse.data).toContain(
-          `You have ${i - 1} downloads remaining`
-        )
+
         const s3Link = retrieveS3LinkFromHtml(postResponse.data)
         fileDownloadResponse = await sendRequest(s3Link, 'GET')
         expect(fileDownloadResponse.status).toEqual(200)
         expect(fileDownloadResponse.data as string).toEqual(fileContents)
+
+        getResponse = await sendRequest(downloadUrl, 'GET')
+        if (i > 1) {
+          expect(getResponse.status).toEqual(200)
+          expect(getResponse.data).toContain(
+            `You have ${i - 1} download remaining`
+          )
+        }
       } else {
         assertDownloadNotFoundResponse(postResponse)
       }
@@ -65,9 +82,9 @@ describe('Download pages', () => {
   })
 
   it('API should return a 404 when no record is available for the provided hash', async () => {
-    const urlWithNonExistentHash = `https://${getIntegrationTestEnvironmentVariable(
+    const urlWithNonExistentHash = `${getIntegrationTestEnvironmentVariable(
       'SECURE_DOWNLOAD_BASE_URL'
-    )}/secure/xxxx-yyyy-zzzz`
+    )}/xxxx-yyyy-zzzz`
     const response = await sendRequest(urlWithNonExistentHash, 'GET')
     assertDownloadNotFoundResponse(response)
   })
@@ -87,5 +104,19 @@ describe('Download pages', () => {
     const url = urlMatch ? urlMatch[1] : undefined
     expect(url).toBeDefined()
     return url as string
+  }
+
+  const sendSqsMessageWithStringBody = async (
+    messageBody: string
+  ): Promise<string | undefined> => {
+    const client = new SQSClient({ region: 'eu-west-2' })
+    const message: SendMessageRequest = {
+      QueueUrl: getIntegrationTestEnvironmentVariable(
+        'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
+      ),
+      MessageBody: messageBody
+    }
+    const result = await client.send(new SendMessageCommand(message))
+    return result.MessageId
   }
 })
