@@ -15,13 +15,19 @@ describe('Download pages', () => {
   describe('Download warning page - successful download', () => {
     let randomId = ''
     let fileContents = ''
+    let zendeskId = ''
 
     beforeEach(async () => {
       randomId = crypto.randomUUID()
       fileContents = crypto.randomUUID()
+      zendeskId = Date.now().toString()
 
       const payload: TriggerEndOfFlowSQSPayload = {
-        message: { athenaQueryId: randomId, fileContents: fileContents },
+        message: {
+          athenaQueryId: randomId,
+          fileContents: fileContents,
+          zendeskId: zendeskId
+        },
         queueUrl: getIntegrationTestEnvironmentVariable(
           'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
         )
@@ -30,7 +36,7 @@ describe('Download pages', () => {
     })
 
     it('A GET should return a success response with correct max downloads when called for the first time', async () => {
-      const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
+      const downloadUrl = await pollNotifyMockForDownloadUrl(zendeskId)
 
       const response = await sendRequest(downloadUrl, 'GET')
       expect(response.status).toEqual(200)
@@ -41,7 +47,7 @@ describe('Download pages', () => {
     })
 
     it('A GET should return a 404 when no record is available for the provided hash', async () => {
-      const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
+      const downloadUrl = await pollNotifyMockForDownloadUrl(zendeskId)
 
       const urlWithNonExistentHash = replaceHashInUrl(
         downloadUrl,

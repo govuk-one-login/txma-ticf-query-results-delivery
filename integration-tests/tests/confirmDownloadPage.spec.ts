@@ -10,13 +10,19 @@ import { pollNotifyMockForDownloadUrl } from './utils/notify/pollNotifyMockForDo
 describe('Confirm download page', () => {
   let randomId = ''
   let fileContents = ''
+  let zendeskId = ''
 
   beforeEach(async () => {
     randomId = crypto.randomUUID()
     fileContents = crypto.randomUUID()
+    zendeskId = Date.now().toString()
 
     const payload: TriggerEndOfFlowSQSPayload = {
-      message: { athenaQueryId: randomId, fileContents: fileContents },
+      message: {
+        athenaQueryId: randomId,
+        fileContents: fileContents,
+        zendeskId: zendeskId
+      },
       queueUrl: getIntegrationTestEnvironmentVariable(
         'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
       )
@@ -25,7 +31,7 @@ describe('Confirm download page', () => {
   })
 
   it('A POST should return a success response when download url is valid', async () => {
-    const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
+    const downloadUrl = await pollNotifyMockForDownloadUrl(zendeskId)
 
     const response = await sendRequest(downloadUrl, 'POST')
     expect(response.status).toEqual(200)
@@ -45,7 +51,7 @@ describe('Confirm download page', () => {
   })
 
   it('A POST should return a 404 when there are no downloads remaining', async () => {
-    const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
+    const downloadUrl = await pollNotifyMockForDownloadUrl(zendeskId)
 
     const response = await sendRequest(downloadUrl, 'POST')
     expect(response.status).toEqual(200)
@@ -72,7 +78,7 @@ describe('Confirm download page', () => {
   })
 
   it('A POST should return a 404 when no record is available for the provided hash', async () => {
-    const downloadUrl = await pollNotifyMockForDownloadUrl(randomId)
+    const downloadUrl = await pollNotifyMockForDownloadUrl(zendeskId)
 
     const urlWithNonExistentHash = replaceHashInUrl(
       downloadUrl,
