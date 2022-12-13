@@ -14,7 +14,6 @@ export const invokeSQSOperationsLambda = async (payload: SQSPayload) => {
     region: getIntegrationTestEnvironmentVariable('AWS_REGION')
   })
   const result = await lambdaClient.send(new InvokeCommand(input))
-  console.log('PAYLOAD', result.Payload)
   return uint8ArrayToJson(result.Payload)
 }
 

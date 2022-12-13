@@ -20,5 +20,5 @@ node_modules/
 !.yarn/versions
 .integration.test*.env
 
-# Git
+# Test Environment file
 integration-tests/.env

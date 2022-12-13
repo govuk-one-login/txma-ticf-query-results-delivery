@@ -13,8 +13,7 @@ describe('Download pages', () => {
   let zendeskId = ''
 
   beforeAll(async () => {
-    randomId = crypto.randomUUID()
-    fileContents = crypto.randomUUID()
+    randomId = fileContents = crypto.randomUUID()
     zendeskId = Date.now().toString()
 
     const payload: SQSPayload = {
@@ -27,19 +26,11 @@ describe('Download pages', () => {
         'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
       )
     }
-    // sendSqsMessageWithStringBody(
-    //   JSON.stringify({
-    //     athenaQueryId: randomId,
-    //     fileContents: fileContents,
-    //     zendeskId: zendeskId
-    //   })
-    // )
     await invokeSQSOperationsLambda(payload)
   })
 
   it('API should return success with downloadable link until there are no downloads remaining', async () => {
     const downloadUrl = await pollNotifyMockForDownloadUrl(zendeskId)
-    console.log(`DOWNLOAD URL: ${downloadUrl}`)
     const maxDownloads = 2
 
     let getResponse = await sendRequest(downloadUrl, 'GET')
@@ -71,6 +62,8 @@ describe('Download pages', () => {
           expect(getResponse.data).toContain(
             `You have ${i - 1} download remaining`
           )
+        } else {
+          assertDownloadNotFoundResponse(getResponse)
         }
       } else {
         assertDownloadNotFoundResponse(postResponse)
@@ -102,18 +95,4 @@ describe('Download pages', () => {
     expect(url).toBeDefined()
     return url as string
   }
-
-  /*const sendSqsMessageWithStringBody = async (
-    messageBody: string
-  ): Promise<string | undefined> => {
-    const client = new SQSClient({ region: 'eu-west-2' })
-    const message: SendMessageRequest = {
-      QueueUrl: getIntegrationTestEnvironmentVariable(
-        'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
-      ),
-      MessageBody: messageBody
-    }
-    const result = await client.send(new SendMessageCommand(message))
-    return result.MessageId
-  } */
 })

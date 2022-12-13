@@ -9,7 +9,8 @@ const config: Config.InitialOptions = {
   globals: {
     NOTIFY_MOCK_SERVER_BASE_URL:
       'https://mockserver.transaction.build.account.gov.uk',
-    STACK_NAME: 'txma-query-results'
+    STACK_NAME: 'txma-query-results',
+    AWS_REGION: 'eu-west-2'
   },
   testTimeout: 60000
 }
