@@ -27,6 +27,13 @@ Parameters:
 
 Conditions:
   ApiCustomDomain: !Not [!Equals [!Ref Environment, dev]]
+  TestEnvironment:
+    !Not [
+      !Or [
+        !Equals [!Ref Environment, production],
+        !Equals [!Ref Environment, integration]
+      ]
+    ]
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
   TestRolePolicy: !Not [!Equals [!Ref TestRoleArn, none]]

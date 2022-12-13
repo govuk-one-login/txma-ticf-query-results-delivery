@@ -21,29 +21,29 @@ This is an API Gateway, 2 AWS Lambda functions, a DynamoDB table and an S3 bucke
 
 ## Integration tests
 
-As well as the usual unit tests, we have some tests which hit the deployed Lambdas, and also set up some test data so that those tests have what they need.
+As well as the usual unit tests, we have some tests which hit the deployed Lambdas, including resources that help the tests set up the data that they need.
 
-To get started with those, you need to create a file called `.integration.test-<<environment>>.env` (where `environment` is the desired test environment - one of `dev`, `build`, and `staging`) at the root, with the following contents (adjust as necessary)
+The environment variables needed are mainly set up from SSM parameters deployed to the query results AWS account. The rest as set up in the `global` option of the test jest config. They are:
 
 ```
-process.env.DOWNLOAD_PAGE_BASE_URL="https://YOUR-LAMBDA-URL.amazonaws.com/default/"
+process.env.NOTIFY_MOCK_SERVER_BASE_URL="The base URL for the Notify mock server set in the test jest config. Value in Audit account SSM parameters"
 
-process.env.DOWNLOAD_DYNAMODB_TABLE_NAME="<Dynamo DB table, look in SECURE_DOWNLOAD_TABLE_NAME env variable in lambda>"
+process.env.SECURE_DOWNLOAD_BASE_URL="The base URL for secure download. Available as an SSM parameter"
 
-process.env.AWS_REGION="eu-west-2"
+process.env.SQS_OPERATIONS_FUNCTION_NAME="the name of the sqs operations lambda available as an SSM parameter"
 
-process.env.S3_RESULTS_KEY="key of CSV PII data request results file"
+process.env.INTEGRATION_TESTS_TRIGGER_QUEUE_URL="the URL for the queue that the sqs operations lambda calls. Also available as an SSM parameter"
 
-process.env.S3_RESULTS_BUCKET="bucket name for location of results. This should be the bucket that the ConfirmDownloadFunction lambda has access to"
+process.env.AWS_REGION='eu-west-2'
+
+process.env.STACK_NAME='Set as a jest global. Value in AWS Cloudformation'
+
 ```
 
 You also need permissions to access AWS resources, which
-we do by running our script from the di-txma-ticf-integration called `assumeRole.sh` in https://github.com/alphagov/di-txma-ticf-integration/blob/main/scripts/assumeRole.sh
+we do by authenticating against the desired AWS account (some options are the gds cli or running the script `assumeRole.sh` in the `di-txma-ticf-integration` repo).
 
-If you've got this repo checked out at the same level as this one, you can just run this first
+To run the tests:
 
-```
-source ../di-txma-ticf-integration/scripts/assumeRole.sh <MFA code>
-```
-
-and then run `yarn test:integration`
+run `yarn test:integration` (against your authenticated environment) OR
+`yarn test:integration-dev` (using environment variables from local .env file in the integration tests directory)

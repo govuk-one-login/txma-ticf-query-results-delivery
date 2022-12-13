@@ -16,7 +16,8 @@
     "postinstall": "husky install",
     "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
     "test": "jest -c jest.config.ts",
-    "test:integration": "jest --setupFiles ./.integration.test-${ENV:-build}.env -c jest.integration.config.ts"
+    "test:integration": "jest -c integration-tests/jest.integration.config.ts",
+    "test:integration-dev": "jest --setupFiles '<rootDir>/.env' -c integration-tests/jest.integration.config.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.186.0",
@@ -27,6 +28,9 @@
     "notifications-node-client": "5.1.1"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudformation": "3.224.0",
+    "@aws-sdk/client-lambda": "3.163.0",
+    "@aws-sdk/client-ssm": "3.163.0",
     "@jest/types": "29.1.2",
     "@types/aws-lambda": "8.10.106",
     "@types/jest": "29.1.2",

@@ -19,3 +19,6 @@ node_modules/
 !.yarn/sdks
 !.yarn/versions
 .integration.test*.env
+
+# Test Environment file
+integration-tests/.env
