@@ -31,44 +31,40 @@ describe('Download pages', () => {
 
   it('API should return success with downloadable link until there are no downloads remaining', async () => {
     const downloadUrl = await pollNotifyMockForDownloadUrl(zendeskId)
-    const maxDownloads = 2
 
-    let getResponse = await sendRequest(downloadUrl, 'GET')
-    expect(getResponse.status).toEqual(200)
-    const contentType = getResponse.headers['content-type']
+    // Download 1
+    const firstGetResponse = await sendRequest(downloadUrl, 'GET')
+    expect(firstGetResponse.status).toEqual(200)
+    const contentType = firstGetResponse.headers['content-type']
     expect(contentType).toEqual('text/html')
-    expect(getResponse.data).toContain('Download the report')
-    expect(getResponse.data).toContain(
-      `You have ${maxDownloads} downloads remaining`
-    )
+    expect(firstGetResponse.data).toContain('Download the report')
+    expect(firstGetResponse.data).toContain(`You have 2 downloads remaining`)
 
-    let postResponse,
-      fileDownloadResponse = null
+    const firstDownloadResponse = await sendRequest(downloadUrl, 'POST')
+    expect(firstDownloadResponse.status).toEqual(200)
 
-    for (let i = maxDownloads; i >= 0; i--) {
-      postResponse = await sendRequest(downloadUrl, 'POST')
+    const s3Link = retrieveS3LinkFromHtml(firstDownloadResponse.data)
+    const fileDownloadResponse = await sendRequest(s3Link, 'GET')
+    expect(fileDownloadResponse.status).toEqual(200)
+    expect(fileDownloadResponse.data as string).toEqual(fileContents)
 
-      if (i > 0) {
-        expect(postResponse.status).toEqual(200)
+    // Download 2
+    const secondGetResponse = await sendRequest(downloadUrl, 'GET')
+    expect(secondGetResponse.status).toEqual(200)
+    expect(secondGetResponse.data).toContain(`You have 1 download remaining`)
+    const secondDownloadResponse = await sendRequest(downloadUrl, 'POST')
+    expect(secondDownloadResponse.status).toEqual(200)
 
-        const s3Link = retrieveS3LinkFromHtml(postResponse.data)
-        fileDownloadResponse = await sendRequest(s3Link, 'GET')
-        expect(fileDownloadResponse.status).toEqual(200)
-        expect(fileDownloadResponse.data as string).toEqual(fileContents)
+    const secondS3Link = retrieveS3LinkFromHtml(secondDownloadResponse.data)
+    const secondFileDownloadResponse = await sendRequest(secondS3Link, 'GET')
+    expect(secondFileDownloadResponse.status).toEqual(200)
+    expect(secondFileDownloadResponse.data as string).toEqual(fileContents)
 
-        getResponse = await sendRequest(downloadUrl, 'GET')
-        if (i > 1) {
-          expect(getResponse.status).toEqual(200)
-          expect(getResponse.data).toContain(
-            `You have ${i - 1} download remaining`
-          )
-        } else {
-          assertDownloadNotFoundResponse(getResponse)
-        }
-      } else {
-        assertDownloadNotFoundResponse(postResponse)
-      }
-    }
+    // Download 3
+    const thirdGetResponse = await sendRequest(downloadUrl, 'GET')
+    assertDownloadNotFoundResponse(thirdGetResponse)
+    const thirdDownloadResponse = await sendRequest(downloadUrl, 'POST')
+    assertDownloadNotFoundResponse(thirdDownloadResponse)
   })
 
   it('API should return a 404 when no record is available for the provided hash', async () => {

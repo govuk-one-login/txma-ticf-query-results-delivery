@@ -25,8 +25,6 @@ const getDownloadUrlFromNotifyMock = async (zendeskId: string) => {
     'NOTIFY_MOCK_SERVER_BASE_URL'
   )}/notifyrequest/${zendeskId}`
 
-  console.log('MOCK SERVER', url)
-
   const response = await axios({
     url: url,
     method: 'GET',
