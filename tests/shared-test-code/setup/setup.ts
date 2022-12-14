@@ -1,4 +1,4 @@
-import { getIntegrationTestEnvironmentVariable } from '../tests/utils/getIntegrationTestEnvironmentVariable'
+import { getIntegrationTestEnvironmentVariable } from '../utils/getIntegrationTestEnvironmentVariable'
 import { retrieveSSMParameterValue } from './retrieveSSMParameterValue'
 
 // eslint-disable-next-line @typescript-eslint/prefer-namespace-keyword, @typescript-eslint/no-namespace

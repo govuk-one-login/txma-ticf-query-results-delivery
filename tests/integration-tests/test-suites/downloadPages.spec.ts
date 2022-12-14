@@ -1,11 +1,11 @@
 import { AxiosResponse } from 'axios'
-import { sendRequest } from './utils/request/sendRequest'
+import { sendRequest } from '../../shared-test-code/utils/request/sendRequest'
 import { parse } from 'node-html-parser'
 import crypto from 'crypto'
-import { getIntegrationTestEnvironmentVariable } from './utils/getIntegrationTestEnvironmentVariable'
-import { pollNotifyMockForDownloadUrl } from './utils/notify/pollNotifyMockForDownloadUrl'
-import { SQSPayload } from './utils/types/sqsPayload'
-import { invokeSQSOperationsLambda } from './utils/aws/invokeSQSOperationsLambdaFunction'
+import { getIntegrationTestEnvironmentVariable } from '../../shared-test-code/utils/getIntegrationTestEnvironmentVariable'
+import { pollNotifyMockForDownloadUrl } from '../../shared-test-code/utils/notify/pollNotifyMockForDownloadUrl'
+import { SQSPayload } from '../../shared-test-code/utils/types/sqsPayload'
+import { invokeSQSOperationsLambda } from '../../shared-test-code/utils/aws/invokeSQSOperationsLambdaFunction'
 
 describe('Download pages', () => {
   let randomId = ''
