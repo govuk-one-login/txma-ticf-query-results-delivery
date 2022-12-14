@@ -6,4 +6,5 @@ export type IntegrationTestEnvironmentVariable = {
     | 'NOTIFY_MOCK_SERVER_BASE_URL'
     | 'STACK_NAME'
     | 'SECURE_DOWNLOAD_BASE_URL'
+    | 'NOTIFY_API_KEY'
 }

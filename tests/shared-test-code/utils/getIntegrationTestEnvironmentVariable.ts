@@ -1,4 +1,4 @@
-import { IntegrationTestEnvironmentVariable } from './types/integrationTestEnvironmentVariable'
+import { IntegrationTestEnvironmentVariable } from '../types/integrationTestEnvironmentVariable'
 
 export const getIntegrationTestEnvironmentVariable = (
   name: IntegrationTestEnvironmentVariable['name']

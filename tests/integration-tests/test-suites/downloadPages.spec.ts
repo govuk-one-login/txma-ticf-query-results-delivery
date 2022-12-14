@@ -4,7 +4,7 @@ import { parse } from 'node-html-parser'
 import crypto from 'crypto'
 import { getIntegrationTestEnvironmentVariable } from '../../shared-test-code/utils/getIntegrationTestEnvironmentVariable'
 import { pollNotifyMockForDownloadUrl } from '../../shared-test-code/utils/notify/pollNotifyMockForDownloadUrl'
-import { SQSPayload } from '../../shared-test-code/utils/types/sqsPayload'
+import { SQSPayload } from '../../shared-test-code/types/sqsPayload'
 import { invokeSQSOperationsLambda } from '../../shared-test-code/utils/aws/invokeSQSOperationsLambdaFunction'
 
 describe('Download pages', () => {
