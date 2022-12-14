@@ -415,7 +415,6 @@ Resources:
                 Resource: '{{resolve:ssm:SqsKmsKeyArn}}'
 
   # Query results integration test resources
-
   IntegrationTestsSqsOperationsFunctionNameParameter:
     Condition: TestEnvironment
     Type: AWS::SSM::Parameter
@@ -444,3 +443,11 @@ Resources:
           'https://{{resolve:ssm:ResultsApiDomainName}}/secure',
           !Sub 'https://${ResultsApi}.execute-api.${AWS::Region}.amazonaws.com/${ResultsApi.Stage}/secure'
         ]
+
+  SqsOperationsLambdaPolicy:
+    Condition: TestRoleResources
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt IntegrationTestsSqsOperationsFunctionNameParameter.Value
+      Principal: !Ref TestRoleArn

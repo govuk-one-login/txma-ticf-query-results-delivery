@@ -46,4 +46,4 @@ we do by authenticating against the desired AWS account (some options are the gd
 To run the tests:
 
 run `yarn test:integration` (against your authenticated environment) OR
-`yarn test:integration-dev` (using environment variables from local .env file in the integration tests directory)
+`yarn test:integration:dev` (using environment variables from local .env file in the integration tests directory)
