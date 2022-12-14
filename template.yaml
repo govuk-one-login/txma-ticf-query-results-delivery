@@ -39,6 +39,8 @@ Conditions:
   TestRolePolicy: !Not [!Equals [!Ref TestRoleArn, none]]
   IsStubbedEnvironment:
     !Or [!Equals [!Ref Environment, dev], !Equals [!Ref Environment, build]]
+  TestRoleResources:
+    !And [Condition: TestEnvironment, !Not [!Equals [!Ref TestRoleArn, none]]]
 
 Globals:
   Function:
