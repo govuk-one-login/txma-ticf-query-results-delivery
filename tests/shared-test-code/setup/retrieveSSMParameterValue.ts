@@ -1,5 +1,5 @@
 import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm'
-import { getIntegrationTestEnvironmentVariable } from '../tests/utils/getIntegrationTestEnvironmentVariable'
+import { getIntegrationTestEnvironmentVariable } from '../utils/getIntegrationTestEnvironmentVariable'
 
 export const retrieveSSMParameterValue = async (parameterName: string) => {
   const ssmClient = new SSMClient({

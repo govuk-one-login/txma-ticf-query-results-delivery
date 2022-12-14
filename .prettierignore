@@ -11,3 +11,5 @@ CODEOWNERS
 coverage/
 dist/
 yarn.lock
+Dockerfile
+.dockerignore

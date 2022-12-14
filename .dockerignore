@@ -1,0 +1,12 @@
+.yarn/
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+tests/**/.env*
+tests/docker-compose.allure.yaml
+tests/Dockerfile
+tests/reports/
+tests/run-allure.sh

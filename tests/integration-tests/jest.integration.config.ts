@@ -4,8 +4,20 @@ const config: Config.InitialOptions = {
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
   testPathIgnorePatterns: ['/src/'],
   preset: 'ts-jest',
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        suiteName: 'TxMA query results delivery integration tests',
+        outputDirectory: '<rootDir>/../reports/allure-results',
+        ancestorSeparator: ',',
+        includeConsoleOutput: true
+      }
+    ]
+  ],
   verbose: true,
-  setupFiles: ['<rootDir>/setup/setup.ts'],
+  setupFiles: ['<rootDir>/../shared-test-code/setup/setup.ts'],
   globals: {
     NOTIFY_MOCK_SERVER_BASE_URL:
       'https://mockserver.transaction.build.account.gov.uk',

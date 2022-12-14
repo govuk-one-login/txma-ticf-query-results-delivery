@@ -7,6 +7,10 @@ coverage/
 # Miscellaneous
 .DS_Store
 
+# tests
+tests/**/.env
+tests/reports/
+
 # NPM
 node_modules/
 
