@@ -4,6 +4,18 @@ const config: Config.InitialOptions = {
   coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
   testPathIgnorePatterns: ['/src/'],
   preset: 'ts-jest',
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        suiteName: 'TxMA query results delivery integration tests',
+        outputDirectory: '<rootDir>/../reports/allure-results',
+        ancestorSeparator: ',',
+        includeConsoleOutput: true
+      }
+    ]
+  ],
   verbose: true,
   setupFiles: ['<rootDir>/../shared-test-code/setup/setup.ts'],
   globals: {
