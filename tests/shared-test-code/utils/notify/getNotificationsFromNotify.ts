@@ -10,12 +10,10 @@ export const getNotificationsFromNotify = async (
     url: `https://api.notifications.service.gov.uk/v2/notifications?reference=${reference}`,
     method: 'GET',
     headers: {
-      Accept: 'application/json',
       Authorization: `Bearer ${generateNotifyToken(
         getIntegrationTestEnvironmentVariable('NOTIFY_API_KEY')
       )}`
     }
   })
-  console.log(response)
   return response.data
 }

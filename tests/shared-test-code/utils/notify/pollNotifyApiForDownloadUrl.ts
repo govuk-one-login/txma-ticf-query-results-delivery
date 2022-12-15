@@ -43,7 +43,6 @@ const queryNotifyEmailRequests = async (
     zendeskId
   )
 
-  console.log('response from notify', response)
   if (!response.notifications.length) {
     return undefined
   }
