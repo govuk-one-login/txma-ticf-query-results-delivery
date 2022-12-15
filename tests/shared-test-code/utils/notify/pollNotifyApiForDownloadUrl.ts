@@ -1,8 +1,12 @@
-import { NotifyClient } from 'notifications-node-client-test'
 import {
+  NotifyClient,
   CustomAxiosResponse,
   NotificationObject
-} from '../../types/notify/customAxiosResponse'
+} from 'notifications-node-client-test'
+// import {
+//   CustomAxiosResponse,
+//   NotificationObject
+// } from '../../types/notify/customAxiosResponse'
 import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
 import { pause } from '../pause'
 
