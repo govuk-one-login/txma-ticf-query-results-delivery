@@ -1,4 +1,4 @@
-import { NotifyClient } from 'notifications-test-node-client'
+import { NotifyClient } from 'notifications-node-client-test'
 import {
   CustomAxiosResponse,
   NotificationObject

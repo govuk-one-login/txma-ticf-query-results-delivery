@@ -7,4 +7,5 @@ export type IntegrationTestEnvironmentVariable = {
     | 'STACK_NAME'
     | 'SECURE_DOWNLOAD_BASE_URL'
     | 'NOTIFY_API_KEY'
+    | 'EMAIL_RECIPIENT'
 }

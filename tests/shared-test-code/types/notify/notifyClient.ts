@@ -1,10 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-declare module 'notifications-test-node-client' {
-  interface Options {
-    personalisation: import('./personalisationOptions')
-    reference: string
-  }
+declare module 'notifications-node-client-test' {
   export class NotifyClient {
     constructor(apiKey: string)
     getNotifications(

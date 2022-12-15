@@ -433,6 +433,13 @@ Resources:
       Type: String
       Value: '{{resolve:ssm:/tests/WriteTestDataToAthenaBucketQueueUrl}}'
 
+  IntegrationTestsNotifySecretSet:
+    Condition: TestEnvironment
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub tests/${AWS::StackName}/NotifySecrets
+      KmsKeyId: '{{resolve:ssm:SecretsKmsKeyArn}}'
+
   IntegrationTestsSecureDownloadWebsiteBaseUrlParameter:
     Condition: TestEnvironment
     Type: AWS::SSM::Parameter

@@ -1,11 +1,11 @@
 import { AxiosResponse } from 'axios'
 import { sendRequest } from '../../shared-test-code/utils/request/sendRequest'
-import { parse } from 'node-html-parser'
 import crypto from 'crypto'
 import { getIntegrationTestEnvironmentVariable } from '../../shared-test-code/utils/getIntegrationTestEnvironmentVariable'
 import { pollNotifyMockForDownloadUrl } from '../../shared-test-code/utils/notify/pollNotifyMockForDownloadUrl'
 import { SQSPayload } from '../../shared-test-code/types/sqsPayload'
 import { invokeSQSOperationsLambda } from '../../shared-test-code/utils/aws/invokeSQSOperationsLambdaFunction'
+import { retrieveS3LinkFromHtml } from '../../shared-test-code/utils/retrieveS3LinkFromHtml'
 
 describe('Download pages', () => {
   let randomId = ''
@@ -20,7 +20,8 @@ describe('Download pages', () => {
       message: JSON.stringify({
         athenaQueryId: randomId,
         fileContents: fileContents,
-        zendeskId: zendeskId
+        zendeskId: zendeskId,
+        recipientEmail: getIntegrationTestEnvironmentVariable('EMAIL_RECIPIENT')
       }),
       queueUrl: getIntegrationTestEnvironmentVariable(
         'INTEGRATION_TESTS_TRIGGER_QUEUE_URL'
@@ -78,17 +79,5 @@ describe('Download pages', () => {
   const assertDownloadNotFoundResponse = (response: AxiosResponse) => {
     expect(response.status).toEqual(404)
     expect(response.data).toEqual('')
-  }
-
-  const retrieveS3LinkFromHtml = (htmlBody: string): string => {
-    const htmlRoot = parse(htmlBody)
-    const metaTag = htmlRoot.querySelector('meta[http-equiv="refresh"]')
-    const contentAttribute = metaTag?.attributes['content'] as string
-    expect(contentAttribute).toBeDefined()
-
-    const urlMatch = contentAttribute.match(/url=(.*)/)
-    const url = urlMatch ? urlMatch[1] : undefined
-    expect(url).toBeDefined()
-    return url as string
   }
 })
