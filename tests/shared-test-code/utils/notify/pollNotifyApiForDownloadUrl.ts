@@ -3,10 +3,6 @@ import {
   CustomAxiosResponse,
   NotificationObject
 } from 'notifications-node-client-test'
-// import {
-//   CustomAxiosResponse,
-//   NotificationObject
-// } from '../../types/notify/customAxiosResponse'
 import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
 import { pause } from '../pause'
 
