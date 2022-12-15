@@ -5178,6 +5178,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jsonwebtoken@npm:8.5.9":
+  version: 8.5.9
+  resolution: "@types/jsonwebtoken@npm:8.5.9"
+  dependencies:
+    "@types/node": "*"
+  checksum: 33815ab02d1371b423118316b7706d2f2ec03eeee5e1494be72da50425d2384e5e0a09ea193f7a5ab4b4f6a9c5847147305f50e965f3d927a95bdf8adb471b2a
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*":
   version: 18.11.3
   resolution: "@types/node@npm:18.11.3"
@@ -6134,6 +6143,7 @@ __metadata:
     "@types/aws-lambda": 8.10.106
     "@types/jest": 29.1.2
     "@types/jest-when": 3.5.2
+    "@types/jsonwebtoken": 8.5.9
     "@types/node": 18.8.3
     "@typescript-eslint/eslint-plugin": 5.40.1
     "@typescript-eslint/parser": 5.40.1
@@ -6149,6 +6159,7 @@ __metadata:
     jest-extended: 3.1.0
     jest-junit: 14.0.1
     jest-when: 3.5.1
+    jsonwebtoken: 8.5.1
     lint-staged: 13.0.3
     node-html-parser: 6.1.1
     notifications-node-client: 5.1.1
@@ -8099,7 +8110,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^8.2.1":
+"jsonwebtoken@npm:8.5.1, jsonwebtoken@npm:^8.2.1":
   version: 8.5.1
   resolution: "jsonwebtoken@npm:8.5.1"
   dependencies:

@@ -1,10 +1,9 @@
-import {
-  NotifyClient,
-  CustomAxiosResponse,
-  NotificationObject
-} from 'notifications-node-client-test'
-import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
+import { getNotificationsFromNotify } from './getNotificationsFromNotify'
 import { pause } from '../pause'
+import {
+  NotificationObject,
+  NotificationsResponse
+} from '../../types/notify/notificationsResponse'
 
 // Email objects from Notify here are referred to as Notifications
 
@@ -40,25 +39,16 @@ const getDownloadUrlFromNotifyApi = async (
 const queryNotifyEmailRequests = async (
   zendeskId: string
 ): Promise<NotificationObject[] | undefined> => {
-  const client = new NotifyClient(
-    getIntegrationTestEnvironmentVariable('NOTIFY_API_KEY')
-  )
-  const response: CustomAxiosResponse = await client.getNotifications(
-    '',
-    '',
-    zendeskId // the email reference -> assigned as the ZendeskId for querying purposes
+  const response: NotificationsResponse = await getNotificationsFromNotify(
+    zendeskId
   )
 
-  if (!response?.data) throw Error('Empty response returned from Notify')
-
-  if (
-    !response?.data?.notifications ||
-    !response?.data?.notifications?.length
-  ) {
+  console.log('response from notify', response)
+  if (!response.notifications.length) {
     return undefined
   }
 
-  return response.data.notifications
+  return response.notifications
 }
 
 const getMostRecentEmailSent = async (emailList: NotificationObject[]) => {
