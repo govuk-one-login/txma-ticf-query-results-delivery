@@ -29,12 +29,18 @@ const setEnvVarsFromJestGlobals = () => {
 const readEnvVarsFromSecrets = async () => {
   const notifySecretName = `tests/${stack}/NotifySecrets`
   const notifySecrets = await retrieveSecretValue(notifySecretName, region)
-  checkSecretsSet(notifySecretName, notifySecrets, [
-    'NOTIFY_API_KEY',
-    'EMAIL_RECIPIENT'
-  ])
-  process.env['NOTIFY_API_KEY'] = notifySecrets['NOTIFY_API_KEY']
-  process.env['EMAIL_RECIPIENT'] = notifySecrets['EMAIL_RECIPIENT']
+
+  if (process.env['NOTIFY_MOCK_SERVER_BASE_URL']) {
+    checkSecretsSet(notifySecretName, notifySecrets, ['EMAIL_RECIPIENT'])
+    process.env['EMAIL_RECIPIENT'] = notifySecrets['EMAIL_RECIPIENT']
+  } else {
+    checkSecretsSet(notifySecretName, notifySecrets, [
+      'NOTIFY_API_KEY',
+      'EMAIL_RECIPIENT'
+    ])
+    process.env['NOTIFY_API_KEY'] = notifySecrets['NOTIFY_API_KEY']
+    process.env['EMAIL_RECIPIENT'] = notifySecrets['EMAIL_RECIPIENT']
+  }
 }
 
 const readEnvVarsFromSSM = async () => {
