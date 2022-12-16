@@ -1,6 +1,6 @@
 import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
 import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda'
-import { SQSPayload } from '../types/sqsPayload'
+import { SQSPayload } from '../../types/sqsPayload'
 
 export const invokeSQSOperationsLambda = async (payload: SQSPayload) => {
   const input = {

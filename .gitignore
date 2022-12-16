@@ -8,7 +8,7 @@ coverage/
 .DS_Store
 
 # tests
-tests/**/.env
+tests/**/*.env
 tests/reports/
 
 # NPM
@@ -24,5 +24,4 @@ node_modules/
 !.yarn/versions
 .integration.test*.env
 
-# Test Environment file
-integration-tests/.env
+

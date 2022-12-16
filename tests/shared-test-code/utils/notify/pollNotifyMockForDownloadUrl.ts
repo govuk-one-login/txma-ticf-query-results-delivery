@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
+import { pause } from '../pause'
 
 export const pollNotifyMockForDownloadUrl = async (zendeskId: string) => {
   const maxAttempts = 30
@@ -35,8 +36,4 @@ const getDownloadUrlFromNotifyMock = async (zendeskId: string) => {
     validateStatus: () => true
   })
   return response?.data?.secureDownloadUrl
-}
-
-const pause = async (delay: number) => {
-  return new Promise((r) => setTimeout(r, delay))
 }

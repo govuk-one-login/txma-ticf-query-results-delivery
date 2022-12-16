@@ -40,6 +40,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/aws-lambda", "npm:8.10.106"],\
             ["@types/jest", "npm:29.1.2"],\
             ["@types/jest-when", "npm:3.5.2"],\
+            ["@types/jsonwebtoken", "npm:8.5.9"],\
             ["@types/node", "npm:18.8.3"],\
             ["@typescript-eslint/eslint-plugin", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:5.40.1"],\
             ["@typescript-eslint/parser", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:5.40.1"],\
@@ -55,6 +56,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest-extended", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:3.1.0"],\
             ["jest-junit", "npm:14.0.1"],\
             ["jest-when", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:3.5.1"],\
+            ["jsonwebtoken", "npm:8.5.1"],\
             ["lint-staged", "npm:13.0.3"],\
             ["node-html-parser", "npm:6.1.1"],\
             ["notifications-node-client", "npm:5.1.1"],\
@@ -5650,6 +5652,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@types/jsonwebtoken", [\
+        ["npm:8.5.9", {\
+          "packageLocation": "./.yarn/cache/@types-jsonwebtoken-npm-8.5.9-79c2843a81-33815ab02d.zip/node_modules/@types/jsonwebtoken/",\
+          "packageDependencies": [\
+            ["@types/jsonwebtoken", "npm:8.5.9"],\
+            ["@types/node", "npm:18.11.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@types/node", [\
         ["npm:18.11.3", {\
           "packageLocation": "./.yarn/cache/@types-node-npm-18.11.3-0725b6dee6-3a2a9142d8.zip/node_modules/@types/node/",\
@@ -6898,6 +6910,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/aws-lambda", "npm:8.10.106"],\
             ["@types/jest", "npm:29.1.2"],\
             ["@types/jest-when", "npm:3.5.2"],\
+            ["@types/jsonwebtoken", "npm:8.5.9"],\
             ["@types/node", "npm:18.8.3"],\
             ["@typescript-eslint/eslint-plugin", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:5.40.1"],\
             ["@typescript-eslint/parser", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:5.40.1"],\
@@ -6913,6 +6926,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest-extended", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:3.1.0"],\
             ["jest-junit", "npm:14.0.1"],\
             ["jest-when", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:3.5.1"],\
+            ["jsonwebtoken", "npm:8.5.1"],\
             ["lint-staged", "npm:13.0.3"],\
             ["node-html-parser", "npm:6.1.1"],\
             ["notifications-node-client", "npm:5.1.1"],\
