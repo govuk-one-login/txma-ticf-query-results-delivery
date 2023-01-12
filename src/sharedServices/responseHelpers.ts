@@ -1,5 +1,7 @@
+import { logger } from './logger'
+
 export const notFoundResponse = () => {
-  console.warn('Returning 404 response because no download record was found')
+  logger.warn('Returning 404 response because no download record was found')
   return emptyStatusCodeResponse(404)
 }
 
@@ -8,7 +10,7 @@ export const serverErrorResponse = () => {
 }
 
 export const invalidParametersResponse = () => {
-  console.warn(
+  logger.warn(
     'Returning 400 response because path parameter downloadHash not found in request'
   )
   return emptyStatusCodeResponse(400)

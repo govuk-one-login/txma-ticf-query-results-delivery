@@ -16,6 +16,7 @@ Parameters:
       - staging
       - integration
       - production
+    Default: dev
   PermissionsBoundary:
     Description: The ARN of the permissions boundary to apply to any role created by the template
     Type: String
@@ -50,6 +51,8 @@ Globals:
     Environment:
       Variables:
         NODE_OPTIONS: --enable-source-maps
+        POWERTOOLS_DEV: !Equals [!Ref Environment, dev]
+        LOG_LEVEL: 'INFO'
     PermissionsBoundary:
       !If [UsePermissionsBoundary, !Ref PermissionsBoundary, !Ref AWS::NoValue]
     ReservedConcurrentExecutions: 10

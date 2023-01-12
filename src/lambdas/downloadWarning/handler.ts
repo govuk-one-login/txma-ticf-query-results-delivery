@@ -6,12 +6,17 @@ import {
   notFoundResponse,
   serverErrorResponse
 } from '../../sharedServices/responseHelpers'
+import { logger } from '../../sharedServices/logger'
 
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
-    console.log('received request', event)
+    logger.info('received request', {
+      event_type: event.requestContext.eventType,
+      messageId: event.requestContext.messageId
+    })
+
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()
     }
@@ -23,11 +28,13 @@ export const handler = async (
       return notFoundResponse()
     }
 
+    logger.info('Data persistence test log')
+
     return downloadConfirmResponse(
       downloadAvailabilityResult.downloadsRemaining as number
     )
   } catch (err) {
-    console.error(err)
+    logger.error('Error', err as Error)
     return serverErrorResponse()
   }
 }
