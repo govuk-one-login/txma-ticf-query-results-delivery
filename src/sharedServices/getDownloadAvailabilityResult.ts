@@ -1,22 +1,14 @@
 import { logger } from './logger'
 import { DownloadAvailabilityResult } from '../types/downloadAvailabilityResult'
 import { getEnv } from '../utils/getEnv'
-// import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
+import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 import { isDateOverDaysLimit } from './isDateOverDaysLimit'
 
 export const getDownloadAvailabilityResult = async (
   downloadHash: string
 ): Promise<DownloadAvailabilityResult> => {
-  // const record = await getSecureDownloadRecord(downloadHash)
-  const record = {
-    canDownload: true,
-    createdDate: 2022,
-    downloadsRemaining: 2,
-    s3ResultsBucket: 'bobs-bucket',
-    s3ResultsKey: 'S312345',
-    zendeskId: 'Z12345',
-    downloadHash: downloadHash
-  }
+  const record = await getSecureDownloadRecord(downloadHash)
+
   if (!record) {
     return {
       canDownload: false
