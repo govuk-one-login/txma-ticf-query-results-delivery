@@ -1,5 +1,6 @@
 *.sh
 *.toml
+.dockerignore
 .editorconfig
 .eslintignore
 .gitignore
@@ -10,6 +11,6 @@
 CODEOWNERS
 coverage/
 dist/
-yarn.lock
 Dockerfile
-.dockerignore
+sonar-project.properties
+yarn.lock
