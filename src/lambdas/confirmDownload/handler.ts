@@ -14,7 +14,6 @@ import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
-  console.log('received request', JSON.stringify(event))
   try {
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()
