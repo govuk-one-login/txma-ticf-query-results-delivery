@@ -12,6 +12,7 @@ export const writeOutSecureDownloadRecord = async (parameters: {
   downloadHash: string
   zendeskId: string
 }) => {
+  logger.appendKeys({ zendeskId: parameters.zendeskId })
   const recordExpiryTimeSeconds =
     currentDateEpochSeconds() + parseInt(getEnv('DATABASE_TTL_HOURS')) * 60 * 60
 
@@ -28,9 +29,7 @@ export const writeOutSecureDownloadRecord = async (parameters: {
     }
   }
 
-  logger.info(
-    `Writing secure download record for zendeskId ${parameters.zendeskId}`
-  )
+  logger.info('Writing secure download record')
 
   await ddbClient.send(new PutItemCommand(putCommand))
 }
