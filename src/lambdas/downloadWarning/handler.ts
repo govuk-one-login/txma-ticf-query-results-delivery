@@ -28,8 +28,6 @@ export const handler = async (
       return notFoundResponse()
     }
 
-    logger.info('Data persistence test log')
-
     return downloadConfirmResponse(
       downloadAvailabilityResult.downloadsRemaining as number
     )
