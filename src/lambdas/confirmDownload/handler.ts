@@ -10,6 +10,7 @@ import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
 import { createDownloadPageResponse } from './createDownloadPageResponse'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
+import { logger } from '../../sharedServices/logger'
 
 export const handler = async (
   event: APIGatewayProxyEvent
@@ -38,7 +39,7 @@ export const handler = async (
 
     return htmlResponse(200, createDownloadPageResponse(temporaryS3Link))
   } catch (err) {
-    console.log(err)
+    logger.error('Unknown Error', err as Error)
 
     return serverErrorResponse()
   }
