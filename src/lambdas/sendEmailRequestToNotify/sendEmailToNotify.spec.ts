@@ -9,6 +9,7 @@ import {
   TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
 import { testSuccessfulNotifyResponse } from '../../utils/tests/setup/testNotifyResponses'
+import { logger } from '../../sharedServices/logger'
 
 jest.mock('notifications-node-client', () => ({
   NotifyClient: jest.fn().mockImplementation(() => {
@@ -50,7 +51,7 @@ describe('sendEmailToNotify', () => {
     jest.clearAllMocks()
   })
   it('given correct parameters, sends an email and logs the response information', async () => {
-    jest.spyOn(global.console, 'log')
+    jest.spyOn(logger, 'info')
     givenNotifySecretsAvailable()
     givenSuccessfulSendEmailRequest()
 
@@ -70,7 +71,7 @@ describe('sendEmailToNotify', () => {
         reference: TEST_ZENDESK_TICKET_ID
       }
     )
-    expect(console.log).toHaveBeenLastCalledWith({
+    expect(logger.info).toHaveBeenLastCalledWith('notify response', {
       status: 201,
       emailSentTo: TEST_NOTIFY_EMAIL,
       subjectLine: 'Your data query has completed'
