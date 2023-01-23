@@ -25,7 +25,7 @@ export const getDownloadAvailabilityResult = async (
   logger.appendKeys({
     zendeskId: record.zendeskId
   })
-  logger.info('download availibility', {
+  logger.info('download availability', {
     canDownload,
     downloadsRemaining: record.downloadsRemaining
   })
