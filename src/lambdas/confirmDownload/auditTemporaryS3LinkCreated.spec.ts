@@ -7,6 +7,7 @@ import {
 } from '../../utils/tests/setup/testConstants'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 import { when } from 'jest-when'
+import { logger } from '../../sharedServices/logger'
 
 jest.mock('../../sharedServices/queue/sendSqsMessage', () => ({
   sendSqsMessage: jest.fn()
@@ -18,7 +19,7 @@ jest.mock('../../utils/currentDateEpoch', () => ({
 
 describe('auditTemporaryS3LinkCreated', () => {
   beforeEach(() => {
-    jest.spyOn(global.console, 'error')
+    jest.spyOn(logger, 'error')
   })
 
   when(currentDateEpochSeconds).mockReturnValue(TEST_CURRENT_TIME_EPOCH_SECONDS)
@@ -41,14 +42,12 @@ describe('auditTemporaryS3LinkCreated', () => {
   })
 
   it('should trap and log any errors', async () => {
-    const errorMessage = 'error sending message to queue'
+    const errorMessage =
+      'Error sending audit message. This error has not disrupted any user flow'
     const testError = new Error(errorMessage)
     when(sendSqsMessage).mockRejectedValue(testError)
     await auditTemporaryS3LinkCreated(TEST_ZENDESK_TICKET_ID)
 
-    expect(console.error).toHaveBeenCalledWith(
-      'Error sending audit message. This error has not disrupted any user flow',
-      testError
-    )
+    expect(logger.error).toHaveBeenCalledWith(errorMessage, testError as Error)
   })
 })
