@@ -12,7 +12,6 @@ export const writeOutSecureDownloadRecord = async (parameters: {
   downloadHash: string
   zendeskId: string
 }) => {
-  logger.appendKeys({ zendeskId: parameters.zendeskId })
   const recordExpiryTimeSeconds =
     currentDateEpochSeconds() + parseInt(getEnv('DATABASE_TTL_HOURS')) * 60 * 60
 
