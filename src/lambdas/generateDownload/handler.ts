@@ -9,9 +9,10 @@ import { copyDataFromAthenaOutputBucket } from './copyDataFromAthenaOutputBucket
 import { generateSecureDownloadHash } from './generateSecureDownloadHash'
 import { queueSendResultsReadyEmail } from './queueSendResultsReadyEmail'
 import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
+import { logger } from '../../sharedServices/logger'
 
 export const handler = async (event: SQSEvent) => {
-  console.log(
+  logger.info(
     'Handling query complete SQS event',
     JSON.stringify(event, null, 2)
   )
