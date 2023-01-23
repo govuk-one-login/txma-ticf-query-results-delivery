@@ -1,5 +1,6 @@
 import { NotifyClient } from 'notifications-node-client'
 import { notifyCopy } from '../../constants/notifyCopy'
+import { logger } from '../../sharedServices/logger'
 import { retrieveNotifySecrets } from '../../sharedServices/secrets/retrieveNotifyApiSecrets'
 import { PersonalisationOptions } from '../../types/notify/personalisationOptions'
 import { getEnv } from '../../utils/getEnv'
@@ -17,7 +18,7 @@ export const sendEmailToNotify = async (
     ? new NotifyClient(getEnv('MOCK_SERVER_BASE_URL'), secrets.notifyApiKey)
     : new NotifyClient(secrets.notifyApiKey)
 
-  console.log(interpolateTemplate('requestToNotify', notifyCopy))
+  logger.info(interpolateTemplate('requestToNotify', notifyCopy))
   const response = await Promise.resolve(
     notifyClient.sendEmail(secrets.notifyTemplateId, requestDetails.email, {
       personalisation: {
@@ -34,7 +35,7 @@ export const sendEmailToNotify = async (
     emailSentTo: requestDetails.email,
     subjectLine: response.data.content.subject
   }
-  console.log(responseInfo)
+  logger.info('notify response', responseInfo)
 }
 
 const useNotifyMockServer = () => {

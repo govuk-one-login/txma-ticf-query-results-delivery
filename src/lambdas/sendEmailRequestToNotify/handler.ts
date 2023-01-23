@@ -6,9 +6,10 @@ import { interpolateTemplate } from '../../utils/interpolateTemplate'
 import { notifyCopy } from '../../constants/notifyCopy'
 import { NotifyError } from '../../types/notify/notifyError'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
+import { logger } from '../../sharedServices/logger'
 
 export const handler = async (event: SQSEvent) => {
-  console.log('received event', JSON.stringify(event, null, 2))
+  logger.info('received event', JSON.stringify(event, null, 2))
   const requestDetails = parseRequestDetails(event)
   try {
     if (isEventBodyInvalid(requestDetails)) {
@@ -16,12 +17,12 @@ export const handler = async (event: SQSEvent) => {
     }
     await sendEmailToNotify(requestDetails)
   } catch (error) {
-    console.error(
+    logger.error(
       `${interpolateTemplate(
         'requestNotSentToNotify',
         notifyCopy
       )}${formatNotifyErrors(error)}`,
-      error
+      error as Error
     )
     await sendMessageToCloseTicketQueue(
       requestDetails.zendeskId,
