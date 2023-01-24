@@ -20,6 +20,8 @@ export const handler = async (
       return invalidParametersResponse()
     }
     const downloadHash = event.pathParameters.downloadHash as string
+
+    // getDownloadAvailabilityResult adds zendeskId to the logger
     const downloadAvailabilityResult = await getDownloadAvailabilityResult(
       downloadHash
     )

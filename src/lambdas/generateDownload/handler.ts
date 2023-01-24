@@ -29,7 +29,7 @@ export const handler = async (event: SQSEvent) => {
   }
 
   const queryCompleteMessage = eventData as QueryCompleteMessage
-  logger.appendKeys({ zendeskID: queryCompleteMessage.zendeskTicketId })
+  logger.appendKeys({ zendeskId: queryCompleteMessage.zendeskTicketId })
   const downloadHash = generateSecureDownloadHash()
   await copyDataFromAthenaOutputBucket(queryCompleteMessage.athenaQueryId)
 

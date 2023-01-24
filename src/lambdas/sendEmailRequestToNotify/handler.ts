@@ -11,6 +11,9 @@ import { logger } from '../../sharedServices/logger'
 export const handler = async (event: SQSEvent) => {
   logger.info('received event', JSON.stringify(event, null, 2))
   const requestDetails = parseRequestDetails(event)
+
+  logger.appendKeys({ zendeskId: requestDetails.zendeskId })
+
   try {
     if (isEventBodyInvalid(requestDetails)) {
       throw Error(interpolateTemplate('requiredDetailsMissing', notifyCopy))
