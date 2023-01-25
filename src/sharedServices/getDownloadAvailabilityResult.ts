@@ -15,6 +15,9 @@ export const getDownloadAvailabilityResult = async (
     }
   }
 
+  logger.appendKeys({
+    zendeskId: record.zendeskId
+  })
   const canDownload =
     record.downloadsRemaining > 0 &&
     !isDateOverDaysLimit(
@@ -22,9 +25,6 @@ export const getDownloadAvailabilityResult = async (
       parseInt(getEnv('LINK_EXPIRY_TIME'))
     )
 
-  logger.appendKeys({
-    zendeskId: record.zendeskId
-  })
   logger.info('download availability', {
     canDownload,
     downloadsRemaining: record.downloadsRemaining
