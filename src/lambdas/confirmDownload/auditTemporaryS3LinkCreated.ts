@@ -2,11 +2,9 @@ import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
 import { currentDateEpochSeconds } from '../../utils/currentDateEpoch'
 import { getEnv } from '../../utils/getEnv'
 import { logger } from '../../sharedServices/logger'
-export const auditTemporaryS3LinkCreated = async (
-  zendeskIdInternal: string
-) => {
+export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
   try {
-    logger.appendKeys({ zendeskId: zendeskIdInternal })
+    logger.appendKeys({ zendeskId: zendeskId })
     await sendSqsMessage(
       {
         timestamp: currentDateEpochSeconds(),
@@ -14,7 +12,7 @@ export const auditTemporaryS3LinkCreated = async (
         component_id: 'TXMA',
         extensions: {
           ticket_details: {
-            zendeskId: zendeskIdInternal
+            zendeskId: zendeskId
           }
         }
       },
