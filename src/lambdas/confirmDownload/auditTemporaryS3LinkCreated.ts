@@ -4,7 +4,6 @@ import { getEnv } from '../../utils/getEnv'
 import { logger } from '../../sharedServices/logger'
 export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
   try {
-    logger.appendKeys({ zendeskId: zendeskId })
     await sendSqsMessage(
       {
         timestamp: currentDateEpochSeconds(),
