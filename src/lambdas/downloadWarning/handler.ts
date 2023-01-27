@@ -1,4 +1,8 @@
-import { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda'
+import {
+  APIGatewayProxyResult,
+  APIGatewayProxyEvent,
+  Context
+} from 'aws-lambda'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
 import {
   htmlResponse,
@@ -9,8 +13,10 @@ import {
 import { logger } from '../../sharedServices/logger'
 
 export const handler = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
+  context: Context
 ): Promise<APIGatewayProxyResult> => {
+  logger.addContext(context)
   try {
     logger.info('received request', {
       event_type: event.requestContext.eventType,

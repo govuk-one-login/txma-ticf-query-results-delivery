@@ -1,4 +1,4 @@
-import { SQSEvent } from 'aws-lambda'
+import { Context, SQSEvent } from 'aws-lambda'
 import {
   isQueryCompleteMessage,
   QueryCompleteMessage
@@ -11,7 +11,8 @@ import { queueSendResultsReadyEmail } from './queueSendResultsReadyEmail'
 import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
 import { logger } from '../../sharedServices/logger'
 
-export const handler = async (event: SQSEvent) => {
+export const handler = async (event: SQSEvent, context: Context) => {
+  logger.addContext(context)
   logger.info(
     'Handling query complete SQS event',
     JSON.stringify(event, null, 2)

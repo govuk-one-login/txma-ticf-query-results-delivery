@@ -12,6 +12,7 @@ import {
   TEST_SIGNED_URL,
   TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
+import { mockLambdaContext } from '../../utils/tests/mocks/mockLambdaContext'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
   getDownloadAvailabilityResult: jest.fn()
@@ -47,7 +48,7 @@ describe('confirmDownload.handler', () => {
   }
 
   it('should return a 400 if no hash is provided', async () => {
-    const result = await handler(defaultApiRequest)
+    const result = await handler(defaultApiRequest, mockLambdaContext)
     expect(result.statusCode).toEqual(400)
     expect(result.body).toBe('')
     expect(getDownloadAvailabilityResult).not.toHaveBeenCalled()
@@ -55,12 +56,15 @@ describe('confirmDownload.handler', () => {
 
   it('should return a 404 if the hash provided does not correspond to a valid download entry', async () => {
     givenNoDownloadAvailable()
-    const result = await handler({
-      ...defaultApiRequest,
-      pathParameters: {
-        downloadHash: DOWNLOAD_HASH
-      }
-    })
+    const result = await handler(
+      {
+        ...defaultApiRequest,
+        pathParameters: {
+          downloadHash: DOWNLOAD_HASH
+        }
+      },
+      mockLambdaContext
+    )
 
     expect(result.statusCode).toEqual(404)
     expect(result.body).toBe('')
@@ -71,12 +75,15 @@ describe('confirmDownload.handler', () => {
     givenDownloadAvailable()
     when(createTemporaryS3Link).mockResolvedValue(TEST_SIGNED_URL)
 
-    const result = await handler({
-      ...defaultApiRequest,
-      pathParameters: {
-        downloadHash: DOWNLOAD_HASH
-      }
-    })
+    const result = await handler(
+      {
+        ...defaultApiRequest,
+        pathParameters: {
+          downloadHash: DOWNLOAD_HASH
+        }
+      },
+      mockLambdaContext
+    )
 
     expect(result.statusCode).toEqual(200)
     expect(result.body).toContain(
@@ -94,12 +101,15 @@ describe('confirmDownload.handler', () => {
 
   it('should show the headline and body text on page when download is available', async () => {
     givenDownloadAvailable()
-    const result = await handler({
-      ...defaultApiRequest,
-      pathParameters: {
-        downloadHash: DOWNLOAD_HASH
-      }
-    })
+    const result = await handler(
+      {
+        ...defaultApiRequest,
+        pathParameters: {
+          downloadHash: DOWNLOAD_HASH
+        }
+      },
+      mockLambdaContext
+    )
     expect(result.body).toContain('Fraud secure page')
     expect(result.body).toContain(
       'Your data will automatically download in CSV format.'

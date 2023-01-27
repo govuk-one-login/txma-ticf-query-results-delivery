@@ -9,6 +9,7 @@ import { sendEmailToNotify } from './sendEmailToNotify'
 import { constructSqsEvent } from '../../utils/tests/events/sqsEvent'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
 import { logger } from '../../sharedServices/logger'
+import { mockLambdaContext } from '../../utils/tests/mocks/mockLambdaContext'
 
 jest.mock('./sendEmailToNotify', () => ({
   sendEmailToNotify: jest.fn()
@@ -42,7 +43,7 @@ const validEventBody = `{
     }`
 
 const callHandlerWithBody = async (customBody: string) => {
-  await handler(constructSqsEvent(customBody))
+  await handler(constructSqsEvent(customBody), mockLambdaContext)
 }
 const successfulCommentCopyReference = 'linkToResults'
 const unsuccessfulCommentCopyReference = 'resultNotEmailed'
@@ -71,7 +72,7 @@ describe('initiate sendEmailRequest handler', () => {
   })
 
   it('throws an error when no event records are in the SQSEvent object', async () => {
-    await expect(handler({ Records: [] })).rejects.toThrow(
+    await expect(handler({ Records: [] }, mockLambdaContext)).rejects.toThrow(
       'No records found in event'
     )
   })

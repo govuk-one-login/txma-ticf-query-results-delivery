@@ -1,4 +1,4 @@
-import { SQSEvent } from 'aws-lambda'
+import { Context, SQSEvent } from 'aws-lambda'
 import { sendEmailToNotify } from './sendEmailToNotify'
 import { PersonalisationOptions } from '../../types/notify/personalisationOptions'
 import { tryParseJSON } from '../../utils/tryParseJson'
@@ -8,7 +8,8 @@ import { NotifyError } from '../../types/notify/notifyError'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
 import { logger } from '../../sharedServices/logger'
 
-export const handler = async (event: SQSEvent) => {
+export const handler = async (event: SQSEvent, context: Context) => {
+  logger.addContext(context)
   logger.info('received event', JSON.stringify(event, null, 2))
   const requestDetails = parseRequestDetails(event)
 

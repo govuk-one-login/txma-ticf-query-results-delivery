@@ -1,4 +1,8 @@
-import { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda'
+import {
+  APIGatewayProxyResult,
+  APIGatewayProxyEvent,
+  Context
+} from 'aws-lambda'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
 import {
   invalidParametersResponse,
@@ -13,8 +17,10 @@ import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 import { logger } from '../../sharedServices/logger'
 
 export const handler = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
+  context: Context
 ): Promise<APIGatewayProxyResult> => {
+  logger.addContext(context)
   try {
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()
