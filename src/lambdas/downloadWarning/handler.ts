@@ -10,13 +10,13 @@ import {
   notFoundResponse,
   serverErrorResponse
 } from '../../sharedServices/responseHelpers'
-import { logger } from '../../sharedServices/logger'
+import { initialiseLogger, logger } from '../../sharedServices/logger'
 
 export const handler = async (
   event: APIGatewayProxyEvent,
   context: Context
 ): Promise<APIGatewayProxyResult> => {
-  logger.addContext(context)
+  initialiseLogger(context)
   try {
     logger.info('received request', {
       event_type: event.requestContext.eventType,

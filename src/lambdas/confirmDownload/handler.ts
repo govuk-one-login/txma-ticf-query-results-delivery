@@ -14,13 +14,13 @@ import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
 import { createDownloadPageResponse } from './createDownloadPageResponse'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
-import { logger } from '../../sharedServices/logger'
+import { initialiseLogger, logger } from '../../sharedServices/logger'
 
 export const handler = async (
   event: APIGatewayProxyEvent,
   context: Context
 ): Promise<APIGatewayProxyResult> => {
-  logger.addContext(context)
+  initialiseLogger(context)
   try {
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()

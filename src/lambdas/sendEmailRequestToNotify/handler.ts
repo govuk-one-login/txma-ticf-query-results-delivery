@@ -6,14 +6,17 @@ import { interpolateTemplate } from '../../utils/interpolateTemplate'
 import { notifyCopy } from '../../constants/notifyCopy'
 import { NotifyError } from '../../types/notify/notifyError'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
-import { logger } from '../../sharedServices/logger'
+import {
+  appendZendeskIdToLogger,
+  initialiseLogger,
+  logger
+} from '../../sharedServices/logger'
 
 export const handler = async (event: SQSEvent, context: Context) => {
-  logger.addContext(context)
-  logger.info('received event', JSON.stringify(event, null, 2))
+  initialiseLogger(context)
+  logger.info('received event', { handledEvent: event })
   const requestDetails = parseRequestDetails(event)
-
-  logger.appendKeys({ zendeskId: requestDetails.zendeskId })
+  appendZendeskIdToLogger(requestDetails.zendeskId)
 
   try {
     if (isEventBodyInvalid(requestDetails)) {

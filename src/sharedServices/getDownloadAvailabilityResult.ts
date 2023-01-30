@@ -1,4 +1,4 @@
-import { logger } from './logger'
+import { appendZendeskIdToLogger, logger } from './logger'
 import { DownloadAvailabilityResult } from '../types/downloadAvailabilityResult'
 import { getEnv } from '../utils/getEnv'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
@@ -14,10 +14,8 @@ export const getDownloadAvailabilityResult = async (
       canDownload: false
     }
   }
+  appendZendeskIdToLogger(record.zendeskId)
 
-  logger.appendKeys({
-    zendeskId: record.zendeskId
-  })
   const canDownload =
     record.downloadsRemaining > 0 &&
     !isDateOverDaysLimit(
