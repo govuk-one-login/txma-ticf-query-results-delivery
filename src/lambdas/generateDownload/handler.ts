@@ -1,4 +1,4 @@
-import { SQSEvent } from 'aws-lambda'
+import { Context, SQSEvent } from 'aws-lambda'
 import {
   isQueryCompleteMessage,
   QueryCompleteMessage
@@ -9,9 +9,15 @@ import { copyDataFromAthenaOutputBucket } from './copyDataFromAthenaOutputBucket
 import { generateSecureDownloadHash } from './generateSecureDownloadHash'
 import { queueSendResultsReadyEmail } from './queueSendResultsReadyEmail'
 import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
+import {
+  appendZendeskIdToLogger,
+  initialiseLogger,
+  logger
+} from '../../sharedServices/logger'
 
-export const handler = async (event: SQSEvent) => {
-  console.log(
+export const handler = async (event: SQSEvent, context: Context) => {
+  initialiseLogger(context)
+  logger.info(
     'Handling query complete SQS event',
     JSON.stringify(event, null, 2)
   )
@@ -28,8 +34,9 @@ export const handler = async (event: SQSEvent) => {
   }
 
   const queryCompleteMessage = eventData as QueryCompleteMessage
-  const downloadHash = generateSecureDownloadHash()
+  appendZendeskIdToLogger(queryCompleteMessage.zendeskTicketId)
 
+  const downloadHash = generateSecureDownloadHash()
   await copyDataFromAthenaOutputBucket(queryCompleteMessage.athenaQueryId)
 
   await writeOutSecureDownloadRecord({

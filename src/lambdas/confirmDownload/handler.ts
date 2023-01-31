@@ -1,4 +1,8 @@
-import { APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda'
+import {
+  APIGatewayProxyResult,
+  APIGatewayProxyEvent,
+  Context
+} from 'aws-lambda'
 import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
 import {
   invalidParametersResponse,
@@ -10,15 +14,19 @@ import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
 import { createDownloadPageResponse } from './createDownloadPageResponse'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
+import { initialiseLogger, logger } from '../../sharedServices/logger'
 
 export const handler = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
+  context: Context
 ): Promise<APIGatewayProxyResult> => {
+  initialiseLogger(context)
   try {
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()
     }
     const downloadHash = event.pathParameters.downloadHash as string
+
     const downloadAvailabilityResult = await getDownloadAvailabilityResult(
       downloadHash
     )
@@ -38,7 +46,7 @@ export const handler = async (
 
     return htmlResponse(200, createDownloadPageResponse(temporaryS3Link))
   } catch (err) {
-    console.log(err)
+    logger.error('Unknown Error', err as Error)
 
     return serverErrorResponse()
   }

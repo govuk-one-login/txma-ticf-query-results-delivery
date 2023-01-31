@@ -1,7 +1,7 @@
 import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
 import { currentDateEpochSeconds } from '../../utils/currentDateEpoch'
 import { getEnv } from '../../utils/getEnv'
-
+import { logger } from '../../sharedServices/logger'
 export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
   try {
     await sendSqsMessage(
@@ -18,9 +18,9 @@ export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
       getEnv('AUDIT_DATA_REQUEST_EVENTS_QUEUE_URL')
     )
   } catch (err) {
-    console.error(
+    logger.error(
       'Error sending audit message. This error has not disrupted any user flow',
-      err
+      err as Error
     )
   }
 }

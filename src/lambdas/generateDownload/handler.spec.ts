@@ -12,6 +12,7 @@ import {
   TEST_RECIPIENT_NAME,
   TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
+import { mockLambdaContext } from '../../utils/tests/mocks/mockLambdaContext'
 
 jest.mock('./writeOutSecureDownloadRecord', () => ({
   writeOutSecureDownloadRecord: jest.fn()
@@ -44,7 +45,8 @@ describe('generateDownload', () => {
           recipientName: TEST_RECIPIENT_NAME,
           zendeskTicketId: TEST_ZENDESK_TICKET_ID
         })
-      )
+      ),
+      mockLambdaContext
     )
     expect(copyDataFromAthenaOutputBucket).toHaveBeenCalledWith(
       TEST_ATHENA_QUERY_ID
@@ -65,22 +67,24 @@ describe('generateDownload', () => {
   })
 
   it('should throw an appropriate error if there is no data in the event', async () => {
-    await expect(handler({ Records: [] })).rejects.toThrow('No data in event')
+    await expect(handler({ Records: [] }, mockLambdaContext)).rejects.toThrow(
+      'No data in event'
+    )
   })
 
   it('should throw an appropriate error if the request includes data of the wrong shape', async () => {
     const initiateDataRequestEvent = constructSqsEvent(
       JSON.stringify({ someProperty: 'someValue' })
     )
-    await expect(handler(initiateDataRequestEvent)).rejects.toThrow(
-      'Event data was not of the correct type'
-    )
+    await expect(
+      handler(initiateDataRequestEvent, mockLambdaContext)
+    ).rejects.toThrow('Event data was not of the correct type')
   })
 
   it('should throw an appropriate error if the request includes non-JSON data', async () => {
     const initiateDataRequestEvent = constructSqsEvent('some message')
-    await expect(handler(initiateDataRequestEvent)).rejects.toThrow(
-      'Event data did not include a valid JSON body'
-    )
+    await expect(
+      handler(initiateDataRequestEvent, mockLambdaContext)
+    ).rejects.toThrow('Event data did not include a valid JSON body')
   })
 })

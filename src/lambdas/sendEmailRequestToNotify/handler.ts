@@ -1,4 +1,4 @@
-import { SQSEvent } from 'aws-lambda'
+import { Context, SQSEvent } from 'aws-lambda'
 import { sendEmailToNotify } from './sendEmailToNotify'
 import { PersonalisationOptions } from '../../types/notify/personalisationOptions'
 import { tryParseJSON } from '../../utils/tryParseJson'
@@ -6,22 +6,30 @@ import { interpolateTemplate } from '../../utils/interpolateTemplate'
 import { notifyCopy } from '../../constants/notifyCopy'
 import { NotifyError } from '../../types/notify/notifyError'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
+import {
+  appendZendeskIdToLogger,
+  initialiseLogger,
+  logger
+} from '../../sharedServices/logger'
 
-export const handler = async (event: SQSEvent) => {
-  console.log('received event', JSON.stringify(event, null, 2))
+export const handler = async (event: SQSEvent, context: Context) => {
+  initialiseLogger(context)
+  logger.info('received event', { handledEvent: event })
   const requestDetails = parseRequestDetails(event)
+  appendZendeskIdToLogger(requestDetails.zendeskId)
+
   try {
     if (isEventBodyInvalid(requestDetails)) {
       throw Error(interpolateTemplate('requiredDetailsMissing', notifyCopy))
     }
     await sendEmailToNotify(requestDetails)
   } catch (error) {
-    console.error(
+    logger.error(
       `${interpolateTemplate(
         'requestNotSentToNotify',
         notifyCopy
       )}${formatNotifyErrors(error)}`,
-      error
+      error as Error
     )
     await sendMessageToCloseTicketQueue(
       requestDetails.zendeskId,
