@@ -118,6 +118,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-lambda-powertools/commons@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@aws-lambda-powertools/commons@npm:1.5.0"
+  checksum: 8da4886b67088d53c550df3644affb98515156ff2e14c082085c856f75910934ef18c9dc074212c272ebe3a1200810e42bb00441bc05691aa7c57f586fef6eb0
+  languageName: node
+  linkType: hard
+
+"@aws-lambda-powertools/logger@npm:1.5.0":
+  version: 1.5.0
+  resolution: "@aws-lambda-powertools/logger@npm:1.5.0"
+  dependencies:
+    "@aws-lambda-powertools/commons": ^1.5.0
+    lodash.merge: ^4.6.2
+    lodash.pickby: ^4.6.0
+  checksum: 599128f63a2614d8d29ead9bcd4ce6b37f7df9487aec80040f392112b6a042a5840c95cf998525eaad93e4224e093ea9467dd840f9fa89086e9408d9311937e1
+  languageName: node
+  linkType: hard
+
 "@aws-sdk/abort-controller@npm:3.162.0":
   version: 3.162.0
   resolution: "@aws-sdk/abort-controller@npm:3.162.0"
@@ -5566,7 +5584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aws-sdk-client-mock-jest@npm:^2.0.0":
+"aws-sdk-client-mock-jest@npm:2.0.0":
   version: 2.0.0
   resolution: "aws-sdk-client-mock-jest@npm:2.0.0"
   dependencies:
@@ -6131,6 +6149,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "di-txma-ticf-query-results-delivery@workspace:."
   dependencies:
+    "@aws-lambda-powertools/logger": 1.5.0
     "@aws-sdk/client-cloudformation": 3.224.0
     "@aws-sdk/client-dynamodb": 3.186.0
     "@aws-sdk/client-lambda": 3.163.0
@@ -6148,7 +6167,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.40.1
     "@typescript-eslint/parser": 5.40.1
     aws-sdk-client-mock: 1.0.0
-    aws-sdk-client-mock-jest: ^2.0.0
+    aws-sdk-client-mock-jest: 2.0.0
     axios: 0.27.2
     esbuild: 0.15.12
     eslint: 8.25.0
@@ -8323,6 +8342,13 @@ __metadata:
   version: 4.1.1
   resolution: "lodash.once@npm:4.1.1"
   checksum: d768fa9f9b4e1dc6453be99b753906f58990e0c45e7b2ca5a3b40a33111e5d17f6edf2f768786e2716af90a8e78f8f91431ab8435f761fef00f9b0c256f6d245
+  languageName: node
+  linkType: hard
+
+"lodash.pickby@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "lodash.pickby@npm:4.6.0"
+  checksum: a554d898c15bcd3218e4005b95b5146210bd862010c7d242d17106ee36aed9b9209a858ce974136ab1faadd86a82297761c206fda7f1886278bac827145c5536
   languageName: node
   linkType: hard
 
