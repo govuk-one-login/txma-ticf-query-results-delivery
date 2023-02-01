@@ -27,9 +27,10 @@ Parameters:
 
 Conditions:
   ApiCustomDomain: !Not [!Equals [!Ref Environment, dev]]
-  IsProductionOrStaging:
+  CslsEgress:
     !Or [
       !Equals [!Ref Environment, production],
+      !Equals [!Ref Environment, integration],
       !Equals [!Ref Environment, staging]
     ]
   TestEnvironment:
@@ -112,7 +113,7 @@ Resources:
 
   ResultsApiCslsSubscriptionFilter:
     Type: AWS::Logs::SubscriptionFilter
-    Condition: IsProductionOrStaging
+    Condition: CslsEgress
     Properties:
       LogGroupName: !Ref ResultsApiAccessLogs
       FilterPattern: ''
@@ -192,7 +193,7 @@ Resources:
 
   ConfirmDownloadCslsSubscriptionFilter:
     Type: AWS::Logs::SubscriptionFilter
-    Condition: IsProductionOrStaging
+    Condition: CslsEgress
     Properties:
       LogGroupName: !Ref ConfirmDownloadFunctionLogs
       FilterPattern: ''
@@ -247,7 +248,7 @@ Resources:
 
   DownloadWarningCslsSubscriptionFilter:
     Type: AWS::Logs::SubscriptionFilter
-    Condition: IsProductionOrStaging
+    Condition: CslsEgress
     Properties:
       LogGroupName: !Ref DownloadWarningFunctionLogs
       FilterPattern: ''
@@ -320,7 +321,7 @@ Resources:
 
   SendEmailRequestToNotifyCslsSubscriptionFilter:
     Type: AWS::Logs::SubscriptionFilter
-    Condition: IsProductionOrStaging
+    Condition: CslsEgress
     Properties:
       LogGroupName: !Ref SendEmailRequestToNotifyLogs
       FilterPattern: ''
@@ -380,7 +381,7 @@ Resources:
 
   GenerateDownloadCslsSubscriptionFilter:
     Type: AWS::Logs::SubscriptionFilter
-    Condition: IsProductionOrStaging
+    Condition: CslsEgress
     Properties:
       LogGroupName: !Ref GenerateDownloadFunctionLogs
       FilterPattern: ''
