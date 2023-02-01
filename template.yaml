@@ -27,6 +27,12 @@ Parameters:
 
 Conditions:
   ApiCustomDomain: !Not [!Equals [!Ref Environment, dev]]
+  CslsEgress:
+    !Or [
+      !Equals [!Ref Environment, production],
+      !Equals [!Ref Environment, integration],
+      !Equals [!Ref Environment, staging]
+    ]
   TestEnvironment:
     !Not [
       !Or [
@@ -105,6 +111,14 @@ Resources:
       LogGroupName: !Sub /aws/apigateway/${ResultsApi}-access-logs
       RetentionInDays: 30
 
+  ResultsApiCslsSubscriptionFilter:
+    Type: AWS::Logs::SubscriptionFilter
+    Condition: CslsEgress
+    Properties:
+      LogGroupName: !Ref ResultsApiAccessLogs
+      FilterPattern: ''
+      DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
+
   SecureFraudApiWafAssociation:
     Type: AWS::WAFv2::WebACLAssociation
     Properties:
@@ -177,6 +191,14 @@ Resources:
       LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-confirm-download-page'
       RetentionInDays: 30
 
+  ConfirmDownloadCslsSubscriptionFilter:
+    Type: AWS::Logs::SubscriptionFilter
+    Condition: CslsEgress
+    Properties:
+      LogGroupName: !Ref ConfirmDownloadFunctionLogs
+      FilterPattern: ''
+      DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
+
   DownloadWarningFunction:
     #checkov:skip=CKV_AWS_115:Defined in Globals
     #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
@@ -223,6 +245,14 @@ Resources:
       KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
       LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-download-warning-page'
       RetentionInDays: 30
+
+  DownloadWarningCslsSubscriptionFilter:
+    Type: AWS::Logs::SubscriptionFilter
+    Condition: CslsEgress
+    Properties:
+      LogGroupName: !Ref DownloadWarningFunctionLogs
+      FilterPattern: ''
+      DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   SendEmailRequestToNotifyFunction:
     #checkov:skip=CKV_AWS_115:Defined in Globals section
@@ -289,6 +319,14 @@ Resources:
       LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-send-email-request-to-notify'
       RetentionInDays: 30
 
+  SendEmailRequestToNotifyCslsSubscriptionFilter:
+    Type: AWS::Logs::SubscriptionFilter
+    Condition: CslsEgress
+    Properties:
+      LogGroupName: !Ref SendEmailRequestToNotifyLogs
+      FilterPattern: ''
+      DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
+
   SendEmailQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -340,6 +378,14 @@ Resources:
       KmsKeyId: '{{resolve:ssm:LogsKmsKeyArn}}'
       LogGroupName: !Sub '/aws/lambda/${AWS::StackName}-generate-download'
       RetentionInDays: 30
+
+  GenerateDownloadCslsSubscriptionFilter:
+    Type: AWS::Logs::SubscriptionFilter
+    Condition: CslsEgress
+    Properties:
+      LogGroupName: !Ref GenerateDownloadFunctionLogs
+      FilterPattern: ''
+      DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   GenerateDownloadFunctionRole:
     Type: AWS::IAM::Role
