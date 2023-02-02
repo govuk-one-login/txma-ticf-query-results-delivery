@@ -352,7 +352,7 @@ Resources:
       Role: !GetAtt GenerateDownloadFunctionRole.Arn
       Environment:
         Variables:
-          ATHENA_OUTPUT_BUCKET_NAME: !Sub txma-data-analysis-${Environment}-athena-query-output-bucket
+          ATHENA_OUTPUT_LOCATION: !Sub txma-data-analysis-${Environment}-athena-query-output-bucket/ticf-automated-audit-data-queries
           QUERY_RESULTS_BUCKET_NAME: '{{resolve:ssm:QueryResultsBucketName}}'
           SECURE_DOWNLOAD_LINK_BASE_URL:
             !If [

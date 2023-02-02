@@ -7,7 +7,7 @@ import { getEnv } from '../../utils/getEnv'
 
 export const copyDataFromAthenaOutputBucket = async (athenaQueryId: string) => {
   const copyObjectCommandInput: CopyObjectCommandInput = {
-    CopySource: `${getEnv('ATHENA_OUTPUT_BUCKET_NAME')}/${athenaQueryId}.csv`,
+    CopySource: `${getEnv('ATHENA_OUTPUT_LOCATION')}/${athenaQueryId}.csv`,
     Bucket: getEnv('QUERY_RESULTS_BUCKET_NAME'),
     Key: `${athenaQueryId}.csv`
   }
