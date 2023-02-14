@@ -60,7 +60,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jsonwebtoken", "npm:8.5.1"],\
             ["lint-staged", "npm:13.0.3"],\
             ["node-html-parser", "npm:6.1.1"],\
-            ["notifications-node-client", "npm:5.1.1"],\
+            ["notifications-node-client", "npm:5.2.3"],\
             ["prettier", "npm:2.7.1"],\
             ["ts-jest", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:29.0.5"],\
             ["ts-node", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:10.9.1"],\
@@ -7214,7 +7214,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jsonwebtoken", "npm:8.5.1"],\
             ["lint-staged", "npm:13.0.3"],\
             ["node-html-parser", "npm:6.1.1"],\
-            ["notifications-node-client", "npm:5.1.1"],\
+            ["notifications-node-client", "npm:5.2.3"],\
             ["prettier", "npm:2.7.1"],\
             ["ts-jest", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:29.0.5"],\
             ["ts-node", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:10.9.1"],\
@@ -9920,13 +9920,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["notifications-node-client", [\
-        ["npm:5.1.1", {\
-          "packageLocation": "./.yarn/cache/notifications-node-client-npm-5.1.1-ca082c4942-86459a0690.zip/node_modules/notifications-node-client/",\
+        ["npm:5.2.3", {\
+          "packageLocation": "./.yarn/cache/notifications-node-client-npm-5.2.3-ac4b8665dd-71982ec89d.zip/node_modules/notifications-node-client/",\
           "packageDependencies": [\
-            ["notifications-node-client", "npm:5.1.1"],\
+            ["notifications-node-client", "npm:5.2.3"],\
             ["axios", "npm:0.25.0"],\
-            ["jsonwebtoken", "npm:8.5.1"],\
-            ["underscore", "npm:1.13.6"]\
+            ["jsonwebtoken", "npm:8.5.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -11109,15 +11108,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/typescript-patch-80bfdb5552-301459fc3e.zip/node_modules/typescript/",\
           "packageDependencies": [\
             ["typescript", "patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["underscore", [\
-        ["npm:1.13.6", {\
-          "packageLocation": "./.yarn/cache/underscore-npm-1.13.6-3ebe9d92fb-d5cedd14a9.zip/node_modules/underscore/",\
-          "packageDependencies": [\
-            ["underscore", "npm:1.13.6"]\
           ],\
           "linkType": "HARD"\
         }]\
