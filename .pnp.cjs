@@ -37,7 +37,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@aws-sdk/client-sqs", "npm:3.170.0"],\
             ["@aws-sdk/client-ssm", "npm:3.163.0"],\
             ["@aws-sdk/s3-request-presigner", "npm:3.188.0"],\
-            ["@jest/types", "npm:29.1.2"],\
+            ["@jest/types", "npm:29.4.3"],\
             ["@types/aws-lambda", "npm:8.10.106"],\
             ["@types/jest", "npm:29.4.0"],\
             ["@types/jest-when", "npm:3.5.2"],\
@@ -5477,19 +5477,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
-        ["npm:29.1.2", {\
-          "packageLocation": "./.yarn/cache/@jest-types-npm-29.1.2-0dbe55dc45-697fc72c37.zip/node_modules/@jest/types/",\
-          "packageDependencies": [\
-            ["@jest/types", "npm:29.1.2"],\
-            ["@jest/schemas", "npm:29.0.0"],\
-            ["@types/istanbul-lib-coverage", "npm:2.0.4"],\
-            ["@types/istanbul-reports", "npm:3.0.1"],\
-            ["@types/node", "npm:18.11.3"],\
-            ["@types/yargs", "npm:17.0.13"],\
-            ["chalk", "npm:4.1.2"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:29.2.1", {\
           "packageLocation": "./.yarn/cache/@jest-types-npm-29.2.1-6fb73b9831-a83f207274.zip/node_modules/@jest/types/",\
           "packageDependencies": [\
@@ -7301,7 +7288,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@aws-sdk/client-sqs", "npm:3.170.0"],\
             ["@aws-sdk/client-ssm", "npm:3.163.0"],\
             ["@aws-sdk/s3-request-presigner", "npm:3.188.0"],\
-            ["@jest/types", "npm:29.1.2"],\
+            ["@jest/types", "npm:29.4.3"],\
             ["@types/aws-lambda", "npm:8.10.106"],\
             ["@types/jest", "npm:29.4.0"],\
             ["@types/jest-when", "npm:3.5.2"],\
@@ -11131,7 +11118,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["ts-jest", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:29.0.5"],\
             ["@babel/core", null],\
-            ["@jest/types", "npm:29.1.2"],\
+            ["@jest/types", "npm:29.4.3"],\
             ["@types/babel-jest", null],\
             ["@types/babel__core", null],\
             ["@types/esbuild", null],\
