@@ -38,7 +38,7 @@
     "@aws-sdk/client-cloudformation": "3.224.0",
     "@aws-sdk/client-lambda": "3.163.0",
     "@aws-sdk/client-ssm": "3.163.0",
-    "@jest/types": "29.1.2",
+    "@jest/types": "29.4.3",
     "@types/aws-lambda": "8.10.106",
     "@types/jest": "29.4.0",
     "@types/jest-when": "3.5.2",
