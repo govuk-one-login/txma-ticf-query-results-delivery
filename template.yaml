@@ -52,7 +52,6 @@ Globals:
   Function:
     CodeSigningConfigArn:
       !If [UseCodeSigning, !Ref CodeSigningConfigArn, !Ref AWS::NoValue]
-    CodeUri: dist/
     Environment:
       Variables:
         NODE_OPTIONS: --enable-source-maps
@@ -131,7 +130,8 @@ Resources:
     #checkov:skip=CKV_AWS_117:VPC not required
     Type: AWS::Serverless::Function
     Properties:
-      Handler: confirmDownload.handler
+      CodeUri: dist/confirmDownload/
+      Handler: handler.handler
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
@@ -205,7 +205,8 @@ Resources:
     #checkov:skip=CKV_AWS_117:VPC not required
     Type: AWS::Serverless::Function
     Properties:
-      Handler: downloadWarning.handler
+      CodeUri: dist/downloadWarning/
+      Handler: handler.handler
       Environment:
         Variables:
           SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
@@ -260,7 +261,8 @@ Resources:
     #checkov:skip=CKV_AWS_117:VPC not required
     Type: AWS::Serverless::Function
     Properties:
-      Handler: sendEmailRequestToNotify.handler
+      CodeUri: dist/sendEmailRequestToNotify/
+      Handler: handler.handler
       Environment:
         Variables:
           ENVIRONMENT: !Ref Environment
@@ -348,7 +350,8 @@ Resources:
     #checkov:skip=CKV_AWS_116:Queue we read from has DLQ set up
     Type: AWS::Serverless::Function
     Properties:
-      Handler: generateDownload.handler
+      CodeUri: dist/generateDownload/
+      Handler: handler.handler
       Role: !GetAtt GenerateDownloadFunctionRole.Arn
       Environment:
         Variables:
