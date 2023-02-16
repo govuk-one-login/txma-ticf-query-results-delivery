@@ -7,7 +7,7 @@
   },
   "author": "GDS",
   "license": "MIT",
-  "packageManager": "yarn@3.2.4",
+  "packageManager": "yarn@3.4.1",
   "private": true,
   "scripts": {
     "allure": "./tests/run-allure.sh",
