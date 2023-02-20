@@ -1,8 +1,11 @@
-import type { Config } from '@jest/types'
+import type { JestConfigWithTsJest } from 'ts-jest'
 
-const config: Config.InitialOptions = {
-  coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
-  testPathIgnorePatterns: ['/src/'],
+const config: JestConfigWithTsJest = {
+  coveragePathIgnorePatterns: ['/.yarn/', '/dist/'],
+  globals: {
+    STACK_NAME: 'txma-query-results',
+    AWS_REGION: 'eu-west-2'
+  },
   preset: 'ts-jest',
   reporters: [
     'default',
@@ -16,13 +19,10 @@ const config: Config.InitialOptions = {
       }
     ]
   ],
-  verbose: true,
   setupFiles: ['<rootDir>/../shared-test-code/setup/setup.ts'],
-  globals: {
-    STACK_NAME: 'txma-query-results',
-    AWS_REGION: 'eu-west-2'
-  },
-  testTimeout: 60000
+  testMatch: ['<rootDir>/**/*.spec.ts'],
+  testTimeout: 60000,
+  verbose: true
 }
 
 export default config
