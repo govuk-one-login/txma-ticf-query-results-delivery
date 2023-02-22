@@ -16,7 +16,7 @@ const config: JestConfigWithTsJest = {
       'jest-junit',
       {
         suiteName: 'TxMA query results delivery e2e tests',
-        outputDirectory: '<rootDir>/../reports/allure-results',
+        outputDirectory: '<rootDir>/../reports/results',
         ancestorSeparator: ',',
         includeConsoleOutput: true
       }
