@@ -17,10 +17,7 @@ import {
 
 export const handler = async (event: SQSEvent, context: Context) => {
   initialiseLogger(context)
-  logger.info(
-    'Handling query complete SQS event',
-    JSON.stringify(event, null, 2)
-  )
+  logger.info('Handling query complete SQS event')
   if (event.Records.length === 0) {
     throw new Error('No data in event')
   }
