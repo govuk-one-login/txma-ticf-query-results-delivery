@@ -4,8 +4,6 @@ import {
   NotificationObject,
   NotificationsResponse
 } from '../../types/notify/notificationsResponse'
-import { logger } from '../../../../src/sharedServices/logger'
-
 // Email objects from Notify here are referred to as Notifications
 
 export const pollNotifyApiForDownloadUrl = async (zendeskId: string) => {
@@ -31,7 +29,7 @@ const getDownloadUrlFromNotifyApi = async (
   const url = getUrlFromEmailBody(mostRecentEmail?.body ?? '') ?? ''
 
   if (url) {
-    logger.info(`Found URL for Zendesk ID: ${zendeskId}`)
+    console.log(`Found URL for Zendesk ID: ${zendeskId}`)
   }
 
   return url
