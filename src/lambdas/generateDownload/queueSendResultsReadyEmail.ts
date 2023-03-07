@@ -1,3 +1,4 @@
+import { logger } from '../../sharedServices/logger'
 import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
 import { getEnv } from '../../utils/getEnv'
 export const queueSendResultsReadyEmail = async (parameters: {
@@ -6,7 +7,8 @@ export const queueSendResultsReadyEmail = async (parameters: {
   recipientEmail: string
   recipientName: string
 }) => {
-  await sendSqsMessage(
+  logger.info('Sending message to sendToEmail queue...')
+  const messageId = await sendSqsMessage(
     {
       firstName: parameters.recipientName,
       zendeskId: parameters.zendeskTicketId,
@@ -17,4 +19,5 @@ export const queueSendResultsReadyEmail = async (parameters: {
     },
     getEnv('SEND_TO_EMAIL_QUEUE_URL')
   )
+  logger.info(`Sent message to sendToEmail queue with messageId ${messageId}`)
 }

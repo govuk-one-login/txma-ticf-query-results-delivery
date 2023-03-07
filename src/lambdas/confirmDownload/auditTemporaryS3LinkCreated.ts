@@ -4,7 +4,8 @@ import { getEnv } from '../../utils/getEnv'
 import { logger } from '../../sharedServices/logger'
 export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
   try {
-    await sendSqsMessage(
+    logger.info('Sending TXMA_AUDIT_QUERY_OUTPUT_ACCESSED audit event...')
+    const messageId = await sendSqsMessage(
       {
         timestamp: currentDateEpochSeconds(),
         event_name: 'TXMA_AUDIT_QUERY_OUTPUT_ACCESSED',
@@ -16,6 +17,9 @@ export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
         }
       },
       getEnv('AUDIT_DATA_REQUEST_EVENTS_QUEUE_URL')
+    )
+    logger.info(
+      `Sent TXMA_AUDIT_QUERY_OUTPUT_ACCESSED audit event with messageId: ${messageId}`
     )
   } catch (err) {
     logger.error(
