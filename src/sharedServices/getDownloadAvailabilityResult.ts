@@ -1,4 +1,4 @@
-import { appendZendeskIdToLogger, logger } from './logger'
+import { appendZendeskIdToLogger } from './logger'
 import { DownloadAvailabilityResult } from '../types/downloadAvailabilityResult'
 import { getEnv } from '../utils/getEnv'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
@@ -22,11 +22,6 @@ export const getDownloadAvailabilityResult = async (
       record.createdDate,
       parseInt(getEnv('LINK_EXPIRY_TIME'))
     )
-
-  logger.info('download availability', {
-    canDownload,
-    downloadsRemaining: record.downloadsRemaining
-  })
 
   return {
     canDownload,

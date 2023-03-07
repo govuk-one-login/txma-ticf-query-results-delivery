@@ -11,13 +11,11 @@ import { queueSendResultsReadyEmail } from './queueSendResultsReadyEmail'
 import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
 import {
   appendZendeskIdToLogger,
-  initialiseLogger,
-  logger
+  initialiseLogger
 } from '../../sharedServices/logger'
 
 export const handler = async (event: SQSEvent, context: Context) => {
   initialiseLogger(context)
-  logger.info('Handling query complete SQS event')
   if (event.Records.length === 0) {
     throw new Error('No data in event')
   }

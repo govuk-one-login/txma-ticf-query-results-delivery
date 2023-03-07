@@ -35,6 +35,7 @@ export const sendEmailToNotify = async (
     emailSentTo: requestDetails.email,
     subjectLine: response.data.content.subject
   }
+  //Retained in order to track internal recipient of notify email
   logger.info('notify response', responseInfo)
 }
 
