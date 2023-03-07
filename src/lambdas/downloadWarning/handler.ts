@@ -18,11 +18,6 @@ export const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   initialiseLogger(context)
   try {
-    logger.info('received request', {
-      event_type: event.requestContext.eventType,
-      messageId: event.requestContext.messageId
-    })
-
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()
     }
