@@ -31,7 +31,7 @@ export const handler = async (
     )
 
     if (!downloadAvailabilityResult.canDownload) {
-      return notFoundResponse()
+      return notFoundResponse(!!downloadAvailabilityResult.zendeskId)
     }
 
     return downloadConfirmResponse(

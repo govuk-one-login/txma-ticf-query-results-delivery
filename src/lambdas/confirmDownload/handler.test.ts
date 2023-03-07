@@ -5,6 +5,7 @@ import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 import { when } from 'jest-when'
+import { logger } from '../../sharedServices/logger'
 import {
   DOWNLOAD_HASH,
   TEST_QUERY_RESULTS_BUCKET_NAME,
@@ -31,11 +32,33 @@ jest.mock('./auditTemporaryS3LinkCreated', () => ({
 }))
 
 describe('confirmDownload.handler', () => {
-  beforeEach(() => jest.resetAllMocks())
+  beforeEach(() => {
+    jest.spyOn(logger, 'warn')
+    jest.resetAllMocks()
+  })
   const givenNoDownloadAvailable = () => {
     when(getDownloadAvailabilityResult).mockResolvedValue({
       canDownload: false
     })
+  }
+
+  const givenDownloadExpired = () => {
+    when(getDownloadAvailabilityResult).mockResolvedValue({
+      canDownload: false,
+      zendeskId: TEST_ZENDESK_TICKET_ID
+    })
+  }
+
+  const invokeHandler = () => {
+    return handler(
+      {
+        ...defaultApiRequest,
+        pathParameters: {
+          downloadHash: DOWNLOAD_HASH
+        }
+      },
+      mockLambdaContext
+    )
   }
 
   const givenDownloadAvailable = () => {
@@ -56,34 +79,33 @@ describe('confirmDownload.handler', () => {
 
   it('should return a 404 if the hash provided does not correspond to a valid download entry', async () => {
     givenNoDownloadAvailable()
-    const result = await handler(
-      {
-        ...defaultApiRequest,
-        pathParameters: {
-          downloadHash: DOWNLOAD_HASH
-        }
-      },
-      mockLambdaContext
-    )
+    const result = await invokeHandler()
 
     expect(result.statusCode).toEqual(404)
     expect(result.body).toBe('')
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
+    expect(logger.warn).toHaveBeenCalledWith(
+      'Returning 404 response because no record was found'
+    )
+  })
+
+  it('should return a 404 if the hash provided has expired', async () => {
+    givenDownloadExpired()
+    const result = await invokeHandler()
+
+    expect(result.statusCode).toEqual(404)
+    expect(result.body).toBe('')
+    expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
+    expect(logger.warn).toHaveBeenCalledWith(
+      'Returning 404 response because the download has expired or has been downloaded too many times already'
+    )
   })
 
   it('should return a refresh tag with a signed S3 URL if hash corresponds to a valid download entry', async () => {
     givenDownloadAvailable()
     when(createTemporaryS3Link).mockResolvedValue(TEST_SIGNED_URL)
 
-    const result = await handler(
-      {
-        ...defaultApiRequest,
-        pathParameters: {
-          downloadHash: DOWNLOAD_HASH
-        }
-      },
-      mockLambdaContext
-    )
+    const result = await invokeHandler()
 
     expect(result.statusCode).toEqual(200)
     expect(result.body).toContain(
@@ -101,15 +123,7 @@ describe('confirmDownload.handler', () => {
 
   it('should show the headline and body text on page when download is available', async () => {
     givenDownloadAvailable()
-    const result = await handler(
-      {
-        ...defaultApiRequest,
-        pathParameters: {
-          downloadHash: DOWNLOAD_HASH
-        }
-      },
-      mockLambdaContext
-    )
+    const result = await invokeHandler()
     expect(result.body).toContain('Fraud secure page')
     expect(result.body).toContain(
       'Your data will automatically download in CSV format.'

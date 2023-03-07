@@ -1,7 +1,13 @@
 import { logger } from './logger'
 
-export const notFoundResponse = () => {
-  logger.warn('Returning 404 response because no download record was found')
+export const notFoundResponse = (recordWasFound: boolean) => {
+  logger.warn(
+    `Returning 404 response because ${
+      recordWasFound
+        ? 'the download has expired or has been downloaded too many times already'
+        : 'no record was found'
+    }`
+  )
   return emptyStatusCodeResponse(404)
 }
 

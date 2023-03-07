@@ -32,7 +32,7 @@ export const handler = async (
     )
 
     if (!downloadAvailabilityResult.canDownload) {
-      return notFoundResponse()
+      return notFoundResponse(!!downloadAvailabilityResult.zendeskId)
     }
     const temporaryS3Link = await createTemporaryS3Link({
       bucket: downloadAvailabilityResult.s3ResultsBucket as string,
