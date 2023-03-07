@@ -33,7 +33,7 @@ export const handler = async (
       downloadAvailabilityResult.downloadsRemaining as number
     )
   } catch (err) {
-    logger.error('Error', err as Error)
+    logger.error('Error while handling download warning request', err as Error)
     return serverErrorResponse()
   }
 }

@@ -34,6 +34,7 @@ jest.mock('./auditTemporaryS3LinkCreated', () => ({
 describe('confirmDownload.handler', () => {
   beforeEach(() => {
     jest.spyOn(logger, 'warn')
+    jest.spyOn(logger, 'error')
     jest.resetAllMocks()
   })
   const givenNoDownloadAvailable = () => {
@@ -75,6 +76,19 @@ describe('confirmDownload.handler', () => {
     expect(result.statusCode).toEqual(400)
     expect(result.body).toBe('')
     expect(getDownloadAvailabilityResult).not.toHaveBeenCalled()
+  })
+
+  it('should return a 500 if there is an unexpected error', async () => {
+    when(getDownloadAvailabilityResult).mockRejectedValue('Some DB error')
+    const result = await invokeHandler()
+
+    expect(result.statusCode).toEqual(500)
+    expect(result.body).toBe('')
+    expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
+    expect(logger.error).toHaveBeenCalledWith(
+      'Error while handling confirm download request',
+      'Some DB error'
+    )
   })
 
   it('should return a 404 if the hash provided does not correspond to a valid download entry', async () => {

@@ -46,7 +46,7 @@ export const handler = async (
 
     return htmlResponse(200, createDownloadPageResponse(temporaryS3Link))
   } catch (err) {
-    logger.error('Unknown Error', err as Error)
+    logger.error('Error while handling confirm download request', err as Error)
 
     return serverErrorResponse()
   }
