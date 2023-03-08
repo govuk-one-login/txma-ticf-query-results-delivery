@@ -27,7 +27,7 @@ export const sendEmailToNotify = async (
     })
   )
   logger.info('Finished sending email with Notify API', {
-    responseId: response.data.id
+    notifyResponseId: response.data.id
   })
 }
 

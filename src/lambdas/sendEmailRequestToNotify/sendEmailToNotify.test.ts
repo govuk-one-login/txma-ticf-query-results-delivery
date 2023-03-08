@@ -75,7 +75,7 @@ describe('sendEmailToNotify', () => {
     expect(logger.info).toHaveBeenLastCalledWith(
       'Finished sending email with Notify API',
       {
-        responseId: TEST_NOTIFY_RESPONSE_ID
+        notifyResponseId: TEST_NOTIFY_RESPONSE_ID
       }
     )
   })
