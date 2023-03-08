@@ -3,6 +3,7 @@ import {
   ALL_NOTIFY_SECRETS,
   TEST_NOTIFY_EMAIL,
   TEST_NOTIFY_NAME,
+  TEST_NOTIFY_RESPONSE_ID,
   TEST_ZENDESK_TICKET_ID
 } from './testConstants'
 
@@ -23,6 +24,7 @@ export const testSuccessfulNotifyResponse: CustomAxiosResponse = {
     }`
   },
   data: {
+    id: TEST_NOTIFY_RESPONSE_ID,
     content: {
       subject: 'Your data query has completed'
     }

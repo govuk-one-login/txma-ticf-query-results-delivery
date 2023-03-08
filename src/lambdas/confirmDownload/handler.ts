@@ -30,6 +30,7 @@ export const handler = async (
     const downloadAvailabilityResult = await getDownloadAvailabilityResult(
       downloadHash
     )
+    logger.info('Finished getting download record')
 
     if (!downloadAvailabilityResult.canDownload) {
       return notFoundResponse(!!downloadAvailabilityResult.zendeskId)
@@ -38,7 +39,10 @@ export const handler = async (
       bucket: downloadAvailabilityResult.s3ResultsBucket as string,
       key: downloadAvailabilityResult.s3ResultsKey as string
     })
+    logger.info('Temporary S3 link generated')
+
     await decrementDownloadCount(downloadHash)
+    logger.info('Download count decremented in database')
 
     await auditTemporaryS3LinkCreated(
       downloadAvailabilityResult.zendeskId as string

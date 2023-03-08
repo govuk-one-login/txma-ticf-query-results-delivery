@@ -24,6 +24,9 @@ export const handler = async (
     const downloadAvailabilityResult = await getDownloadAvailabilityResult(
       event.pathParameters.downloadHash as string
     )
+    logger.info('Finished getting download record', {
+      downloadsRemaining: downloadAvailabilityResult.downloadsRemaining
+    })
 
     if (!downloadAvailabilityResult.canDownload) {
       return notFoundResponse(!!downloadAvailabilityResult.zendeskId)

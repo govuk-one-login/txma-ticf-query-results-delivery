@@ -11,7 +11,8 @@ import { queueSendResultsReadyEmail } from './queueSendResultsReadyEmail'
 import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
 import {
   appendZendeskIdToLogger,
-  initialiseLogger
+  initialiseLogger,
+  logger
 } from '../../sharedServices/logger'
 
 export const handler = async (event: SQSEvent, context: Context) => {
@@ -33,12 +34,14 @@ export const handler = async (event: SQSEvent, context: Context) => {
 
   const downloadHash = generateSecureDownloadHash()
   await copyDataFromAthenaOutputBucket(queryCompleteMessage.athenaQueryId)
+  logger.info('Finished copying data from Athena output bucket')
 
   await writeOutSecureDownloadRecord({
     athenaQueryId: queryCompleteMessage.athenaQueryId,
     downloadHash: downloadHash,
     zendeskId: queryCompleteMessage.zendeskTicketId
   })
+  logger.info('Finished writing out secure download record')
 
   await queueSendResultsReadyEmail({
     downloadHash: downloadHash,

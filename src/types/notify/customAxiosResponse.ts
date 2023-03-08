@@ -7,6 +7,7 @@ export interface CustomAxiosResponse {
     data: string
   }
   data: {
+    id: string
     content: {
       subject: string
     }

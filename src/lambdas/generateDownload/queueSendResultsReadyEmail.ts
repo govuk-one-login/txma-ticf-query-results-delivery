@@ -7,7 +7,6 @@ export const queueSendResultsReadyEmail = async (parameters: {
   recipientEmail: string
   recipientName: string
 }) => {
-  logger.info('Sending message to sendToEmail queue...')
   const messageId = await sendSqsMessage(
     {
       firstName: parameters.recipientName,
@@ -19,5 +18,5 @@ export const queueSendResultsReadyEmail = async (parameters: {
     },
     getEnv('SEND_TO_EMAIL_QUEUE_URL')
   )
-  logger.info(`Sent message to sendToEmail queue with messageId ${messageId}`)
+  logger.info('Sent message to sendToEmail queue', { messageId })
 }
