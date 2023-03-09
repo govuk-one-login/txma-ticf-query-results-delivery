@@ -1,6 +1,5 @@
 import { PutItemCommand, PutItemCommandInput } from '@aws-sdk/client-dynamodb'
 import { ddbClient } from '../../sharedServices/dynamoDb/dynamoDbClient'
-import { logger } from '../../sharedServices/logger'
 import {
   currentDateEpochMilliseconds,
   currentDateEpochSeconds
@@ -27,8 +26,6 @@ export const writeOutSecureDownloadRecord = async (parameters: {
       createdDate: { N: currentDateEpochMilliseconds().toString() }
     }
   }
-
-  logger.info('Writing secure download record')
 
   await ddbClient.send(new PutItemCommand(putCommand))
 }

@@ -1,4 +1,3 @@
-import { getIntegrationTestEnvironmentVariable } from '../utils/getIntegrationTestEnvironmentVariable'
 import { checkSecretsSet, retrieveSecretValue } from './retrieveSecretValue'
 import { retrieveSSMParameterValue } from './retrieveSSMParameterValue'
 
@@ -9,11 +8,15 @@ declare module global {
   const AWS_REGION: string
 }
 const region = global.AWS_REGION
-const stack = global.STACK_NAME
+const stack = process.env.STACK_NAME
+  ? process.env.STACK_NAME
+  : global.STACK_NAME
+
+const isMainStack = stack === 'txma-query-results'
 
 module.exports = async () => {
   setEnvVarsFromJestGlobals()
-  await readEnvVarsFromSecrets()
+  isMainStack ? await readEnvVarsFromSecrets() : setMockServerNotifyDetails()
   await readEnvVarsFromSSM()
 }
 
@@ -37,22 +40,21 @@ const readEnvVarsFromSecrets = async () => {
   process.env['EMAIL_RECIPIENT'] = notifySecrets['EMAIL_RECIPIENT']
 }
 
+const setMockServerNotifyDetails = () => {
+  process.env['NOTIFY_API_KEY'] = 'someFakeNotifyKey'
+  process.env['EMAIL_RECIPIENT'] = 'testRecipient@test.gov.uk'
+}
+
 const readEnvVarsFromSSM = async () => {
   process.env['SQS_OPERATIONS_FUNCTION_NAME'] = await retrieveSSMParameterValue(
-    `/tests/${getIntegrationTestEnvironmentVariable(
-      'STACK_NAME'
-    )}/SqsOperationsFunctionName`
+    `/tests/${stack}/SqsOperationsFunctionName`
   )
 
   process.env['INTEGRATION_TESTS_TRIGGER_QUEUE_URL'] =
     await retrieveSSMParameterValue(
-      `/tests/${getIntegrationTestEnvironmentVariable(
-        'STACK_NAME'
-      )}/WriteTestDataToAthenaBucketQueueUrl`
+      `/tests/${stack}/WriteTestDataToAthenaBucketQueueUrl`
     )
   process.env['SECURE_DOWNLOAD_BASE_URL'] = await retrieveSSMParameterValue(
-    `/tests/${getIntegrationTestEnvironmentVariable(
-      'STACK_NAME'
-    )}/SecureDownloadWebsiteBaseUrl`
+    `/tests/${stack}/SecureDownloadWebsiteBaseUrl`
   )
 }

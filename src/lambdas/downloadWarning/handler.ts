@@ -18,27 +18,25 @@ export const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   initialiseLogger(context)
   try {
-    logger.info('received request', {
-      event_type: event.requestContext.eventType,
-      messageId: event.requestContext.messageId
-    })
-
     if (!event.pathParameters || !event.pathParameters.downloadHash) {
       return invalidParametersResponse()
     }
     const downloadAvailabilityResult = await getDownloadAvailabilityResult(
       event.pathParameters.downloadHash as string
     )
+    logger.info('Finished getting download record', {
+      downloadsRemaining: downloadAvailabilityResult.downloadsRemaining
+    })
 
     if (!downloadAvailabilityResult.canDownload) {
-      return notFoundResponse()
+      return notFoundResponse(!!downloadAvailabilityResult.zendeskId)
     }
 
     return downloadConfirmResponse(
       downloadAvailabilityResult.downloadsRemaining as number
     )
   } catch (err) {
-    logger.error('Error', err as Error)
+    logger.error('Error while handling download warning request', err as Error)
     return serverErrorResponse()
   }
 }

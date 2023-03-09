@@ -17,10 +17,6 @@ import {
 
 export const handler = async (event: SQSEvent, context: Context) => {
   initialiseLogger(context)
-  logger.info(
-    'Handling query complete SQS event',
-    JSON.stringify(event, null, 2)
-  )
   if (event.Records.length === 0) {
     throw new Error('No data in event')
   }
@@ -38,12 +34,14 @@ export const handler = async (event: SQSEvent, context: Context) => {
 
   const downloadHash = generateSecureDownloadHash()
   await copyDataFromAthenaOutputBucket(queryCompleteMessage.athenaQueryId)
+  logger.info('Finished copying data from Athena output bucket')
 
   await writeOutSecureDownloadRecord({
     athenaQueryId: queryCompleteMessage.athenaQueryId,
     downloadHash: downloadHash,
     zendeskId: queryCompleteMessage.zendeskTicketId
   })
+  logger.info('Finished writing out secure download record')
 
   await queueSendResultsReadyEmail({
     downloadHash: downloadHash,

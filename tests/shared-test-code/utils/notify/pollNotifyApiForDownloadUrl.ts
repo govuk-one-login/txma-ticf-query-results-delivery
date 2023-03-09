@@ -4,7 +4,6 @@ import {
   NotificationObject,
   NotificationsResponse
 } from '../../types/notify/notificationsResponse'
-
 // Email objects from Notify here are referred to as Notifications
 
 export const pollNotifyApiForDownloadUrl = async (zendeskId: string) => {

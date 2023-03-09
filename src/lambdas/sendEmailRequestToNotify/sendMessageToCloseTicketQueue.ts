@@ -8,17 +8,12 @@ export const sendMessageToCloseTicketQueue = async (
   zendeskId: string,
   commentCopyReference: string
 ) => {
-  logger.info(
-    `Sending message to close ticket queue for Zendesk ID ${zendeskId}`
-  )
-  const closeTicketMessageId = await sendSqsMessage(
+  const messageId = await sendSqsMessage(
     {
       zendeskId,
       commentCopyText: interpolateTemplate(commentCopyReference, notifyCopy)
     },
     getEnv('CLOSE_TICKET_QUEUE_URL')
   )
-  logger.info(
-    `Finished sending message to close ticket queue for Zendesk ID ${zendeskId}. Message id ${closeTicketMessageId}`
-  )
+  logger.info('Finished sending message to close ticket queue', { messageId })
 }

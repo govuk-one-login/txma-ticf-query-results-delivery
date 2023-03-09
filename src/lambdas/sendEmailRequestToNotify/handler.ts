@@ -14,7 +14,6 @@ import {
 
 export const handler = async (event: SQSEvent, context: Context) => {
   initialiseLogger(context)
-  logger.info('received event', { handledEvent: event })
   const requestDetails = parseRequestDetails(event)
   appendZendeskIdToLogger(requestDetails.zendeskId)
 

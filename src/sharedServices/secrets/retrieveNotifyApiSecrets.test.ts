@@ -42,7 +42,6 @@ describe('retrieveNotifySecrets', () => {
         ...allSecretKeys
       }
       delete secretCollection[keyToOmit]
-      console.log(secretCollection)
       givenSecretKeysSet(secretCollection)
 
       expect(retrieveNotifySecrets()).rejects.toThrow(

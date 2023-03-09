@@ -5,6 +5,7 @@ import {
   ALL_NOTIFY_SECRETS,
   TEST_NOTIFY_EMAIL,
   TEST_NOTIFY_NAME,
+  TEST_NOTIFY_RESPONSE_ID,
   TEST_SECURE_DOWNLOAD_URL,
   TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
@@ -71,11 +72,12 @@ describe('sendEmailToNotify', () => {
         reference: TEST_ZENDESK_TICKET_ID
       }
     )
-    expect(logger.info).toHaveBeenLastCalledWith('notify response', {
-      status: 201,
-      emailSentTo: TEST_NOTIFY_EMAIL,
-      subjectLine: 'Your data query has completed'
-    })
+    expect(logger.info).toHaveBeenLastCalledWith(
+      'Finished sending email with Notify API',
+      {
+        notifyResponseId: TEST_NOTIFY_RESPONSE_ID
+      }
+    )
   })
   it('given correct parameters and send email fails an error is thrown', async () => {
     givenNotifySecretsAvailable()
