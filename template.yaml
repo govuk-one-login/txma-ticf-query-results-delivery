@@ -524,25 +524,27 @@ Resources:
     Properties:
       CodeUri: dist/ssfCreateSQS/
       Handler: handler.handler
-      # Role: !GetAtt GenerateDownloadFunctionRole.Arn
-      # Environment:
-      #   Variables:
-      #     ATHENA_OUTPUT_LOCATION: !Sub txma-data-analysis-${Environment}-athena-query-output-bucket/ticf-automated-audit-data-queries
-      #     QUERY_RESULTS_BUCKET_NAME: '{{resolve:ssm:QueryResultsBucketName}}'
-      #     SECURE_DOWNLOAD_LINK_BASE_URL:
-      #       !If [
-      #         ApiCustomDomain,
-      #         'https://{{resolve:ssm:ResultsApiDomainName}}/secure',
-      #         !Sub 'https://${ResultsApi}.execute-api.${AWS::Region}.amazonaws.com/${ResultsApi.Stage}/secure'
-      #       ]
-      #     SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
-      #     SEND_TO_EMAIL_QUEUE_URL: !Ref SendEmailQueue
-      #     DATABASE_TTL_HOURS: '{{resolve:ssm:DatabaseTtlHours}}'
-      # Events:
-      #   QueryCompleteEvent:
-      #     Type: SQS
-      #     Properties:
-      #       Queue: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
-      #       BatchSize: 1
       FunctionName: !Sub ${AWS::StackName}-${Environment}-ssf-create-sqs
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Policies:
+        - Statement:
+            - Sid: CreateSQS
+              Effect: Allow
+              Action:
+                - sqs:*
+              Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*
+            - Sid: UseSqsKmsKey
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+              Resource:
+                - '{{resolve:ssm:CloseZendeskTicketQueueKmsKeyArn}}'
+            - Sid: DecryptKmsKeys
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+              Resource:
+                - '{{resolve:ssm:SecretsKmsKeyArn}}'
+                - '{{resolve:ssm:SqsKmsKeyArn}}'
