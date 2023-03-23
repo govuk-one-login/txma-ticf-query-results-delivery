@@ -565,9 +565,9 @@ Resources:
         - AttributeName: userId
           KeyType: HASH
       GlobalSecondaryIndexes:
-        - IndexName: userIdIndex
+        - IndexName: queueArnIndex
           KeySchema:
-            - AttributeName: userId
+            - AttributeName: queueArn
               KeyType: HASH
           Projection:
             ProjectionType: 'KEYS_ONLY'
