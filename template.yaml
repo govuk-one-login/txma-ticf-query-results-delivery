@@ -509,3 +509,40 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt IntegrationTestsSqsOperationsFunctionNameParameter.Value
       Principal: !Ref TestRoleArn
+
+  ###########################
+  #                         #
+  # SSF SQS SPIKE RESOURCES #
+  #                         #
+  ###########################
+
+  SSFCreateSQSFunction:
+    #checkov:skip=CKV_AWS_117:VPC not required
+    #checkov:skip=CKV_AWS_115:Defined in Globals section
+    #checkov:skip=CKV_AWS_116:Queue we read from has DLQ set up
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/ssfCreateSQS/
+      Handler: handler.handler
+      # Role: !GetAtt GenerateDownloadFunctionRole.Arn
+      # Environment:
+      #   Variables:
+      #     ATHENA_OUTPUT_LOCATION: !Sub txma-data-analysis-${Environment}-athena-query-output-bucket/ticf-automated-audit-data-queries
+      #     QUERY_RESULTS_BUCKET_NAME: '{{resolve:ssm:QueryResultsBucketName}}'
+      #     SECURE_DOWNLOAD_LINK_BASE_URL:
+      #       !If [
+      #         ApiCustomDomain,
+      #         'https://{{resolve:ssm:ResultsApiDomainName}}/secure',
+      #         !Sub 'https://${ResultsApi}.execute-api.${AWS::Region}.amazonaws.com/${ResultsApi.Stage}/secure'
+      #       ]
+      #     SECURE_DOWNLOAD_TABLE_NAME: '{{resolve:ssm:SecureFraudSiteDataTableName}}'
+      #     SEND_TO_EMAIL_QUEUE_URL: !Ref SendEmailQueue
+      #     DATABASE_TTL_HOURS: '{{resolve:ssm:DatabaseTtlHours}}'
+      # Events:
+      #   QueryCompleteEvent:
+      #     Type: SQS
+      #     Properties:
+      #       Queue: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
+      #       BatchSize: 1
+      FunctionName: !Sub ${AWS::StackName}-{Environment}-ssf-create-sqs
+      KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
