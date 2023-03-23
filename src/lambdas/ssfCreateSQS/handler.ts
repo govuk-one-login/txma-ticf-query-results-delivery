@@ -10,12 +10,12 @@ import { initialiseLogger, logger } from '../../sharedServices/logger'
 export const handler = async (context: Context) => {
   initialiseLogger(context)
 
-  const id = `SSF_SQS_${Date.toLocaleString()}`
+  const id = Date.now()
 
   const client = new SQSClient({ region: getEnv('AWS_REGION') })
 
   const input: CreateQueueCommandInput = {
-    QueueName: id
+    QueueName: id.toString()
     // Attributes: {
     //   MessageRetentionPeriod: 86400
     // }
