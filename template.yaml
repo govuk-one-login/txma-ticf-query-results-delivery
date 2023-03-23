@@ -544,5 +544,5 @@ Resources:
       #     Properties:
       #       Queue: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
       #       BatchSize: 1
-      FunctionName: !Sub ${AWS::StackName}-{Environment}-ssf-create-sqs
+      FunctionName: !Sub ${AWS::StackName}-${Environment}-ssf-create-sqs
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
