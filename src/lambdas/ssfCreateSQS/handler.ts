@@ -15,7 +15,7 @@ export const handler = async (context: Context) => {
   const client = new SQSClient({ region: getEnv('AWS_REGION') })
 
   const input: CreateQueueCommandInput = {
-    QueueName: `${id}.fifo`,
+    QueueName: id,
     Attributes: {
       MessageRetentionPeriod: 86400
     }
@@ -23,5 +23,5 @@ export const handler = async (context: Context) => {
 
   const result = await client.send(new CreateQueueCommand(input))
 
-  logger.info(result.QueueUrl)
+  logger.info(`${result.QueueUrl}`)
 }
