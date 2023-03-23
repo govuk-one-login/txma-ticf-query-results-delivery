@@ -533,18 +533,53 @@ Resources:
               Action:
                 - sqs:*
               Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*
-            - Sid: UseSqsKmsKey
+            - Sid: UseSqsAndDatabaseKmsKey
               Effect: Allow
               Action:
                 - kms:Decrypt
                 - kms:GenerateDataKey*
                 - kms:ReEncrypt*
               Resource:
-                - '{{resolve:ssm:CloseZendeskTicketQueueKmsKeyArn}}'
-            - Sid: DecryptKmsKeys
+                - '{{resolve:ssm:SqsKmsKeyArn}}'
+                - '{{resolve:ssm:DatabaseKmsKeyArn}}'
+            - Sid: QueueARNTableReadWrite
               Effect: Allow
               Action:
-                - kms:Decrypt
-              Resource:
-                - '{{resolve:ssm:SecretsKmsKeyArn}}'
-                - '{{resolve:ssm:SqsKmsKeyArn}}'
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+              Resource: !GetAtt QueueARNTable.Arn
+
+  QueueARNTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Sub ${AWS::StackName}-${Environment}-queue-arn-table
+      AttributeDefinitions:
+        - AttributeName: queueArn
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: userIdIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+          Projection:
+            ProjectionType: 'KEYS_ONLY'
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+        SSEType: KMS
+        KMSMasterKeyId: '{{resolve:ssm:DatabaseKmsKeyArn}}'
