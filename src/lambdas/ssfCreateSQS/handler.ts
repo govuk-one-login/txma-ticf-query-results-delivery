@@ -25,7 +25,7 @@ export const handler = async (context: Context) => {
 
   const result = await client.send(new CreateQueueCommand(input))
 
-  const queueUrl = result.QueueUrl
+  const queueUrl = result.QueueUrl ? result.QueueUrl : ''
   const queueArn = 'testArn'
 
   await writeToQueueTable(id, queueUrl, queueArn)
