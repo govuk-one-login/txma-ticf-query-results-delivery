@@ -5,9 +5,7 @@ import {
 } from '@aws-sdk/client-sqs'
 import { getEnv } from '../../utils/getEnv'
 
-export const readSqsMessages = async (
-  queueUrl: string
-): Promise<string | undefined> => {
+export const readSqsMessages = async (queueUrl: string) => {
   const client = new SQSClient({ region: getEnv('AWS_REGION') })
   const params: ReceiveMessageCommandInput = {
     QueueUrl: queueUrl,
