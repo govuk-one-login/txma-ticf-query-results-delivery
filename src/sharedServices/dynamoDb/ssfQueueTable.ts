@@ -18,5 +18,5 @@ export const writeToQueueTable = async (
   }
   const result = await ddbClient.send(new PutItemCommand(params))
 
-  logger.info(result.$metadata)
+  if (result.$metadata) logger.info('did some db stuff')
 }
