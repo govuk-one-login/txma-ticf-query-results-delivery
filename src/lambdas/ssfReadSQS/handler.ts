@@ -20,5 +20,5 @@ export const handler = async (
 
   const messages = await readSqsMessages(queueUrl)
 
-  logger.info(messages)
+  console.log(messages)
 }
