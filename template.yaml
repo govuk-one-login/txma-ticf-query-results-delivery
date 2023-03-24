@@ -561,19 +561,21 @@ Resources:
           AttributeType: S
         - AttributeName: userId
           AttributeType: S
+        - AttributeName: queueUrl
+          AttributeType: S
       KeySchema:
         - AttributeName: userId
           KeyType: HASH
-      GlobalSecondaryIndexes:
-        - IndexName: queueArnIndex
-          KeySchema:
-            - AttributeName: queueArn
-              KeyType: HASH
-          Projection:
-            ProjectionType: 'KEYS_ONLY'
-          ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
+      # GlobalSecondaryIndexes:
+      #   - IndexName: queueArnIndex
+      #     KeySchema:
+      #       - AttributeName: queueArn
+      #         KeyType: HASH
+      #     Projection:
+      #       ProjectionType: 'KEYS_ONLY'
+      #     ProvisionedThroughput:
+      #       ReadCapacityUnits: 5
+      #       WriteCapacityUnits: 5
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
