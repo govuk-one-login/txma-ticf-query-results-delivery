@@ -590,6 +590,43 @@ Resources:
                 - dynamodb:UpdateItem
               Resource: !GetAtt QueueARNTable.Arn
 
+  SSFReadSQSFunction:
+    #checkov:skip=CKV_AWS_117:VPC not required
+    #checkov:skip=CKV_AWS_115:Defined in Globals section
+    #checkov:skip=CKV_AWS_116:Queue we read from has DLQ set up
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/ssfReadSQS/
+      Handler: handler.handler
+      FunctionName: !Sub ${AWS::StackName}-${Environment}-ssf-read-sqs
+      KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Environment:
+        Variables:
+          SSF_QUEUE_ARN_TABLE_NAME: !Ref QueueARNTable
+      Policies:
+        - Statement:
+            - Sid: WriteSQS
+              Effect: Allow
+              Action:
+                - sqs:*
+              Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*
+            - Sid: UseSqsAndDatabaseKmsKey
+              Effect: Allow
+              Action:
+                - kms:Decrypt
+                - kms:GenerateDataKey*
+                - kms:ReEncrypt*
+              Resource:
+                - '{{resolve:ssm:SqsKmsKeyArn}}'
+                - '{{resolve:ssm:DatabaseKmsKeyArn}}'
+            - Sid: QueueARNTableReadWrite
+              Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+              Resource: !GetAtt QueueARNTable.Arn
+
   QueueARNTable:
     Type: AWS::DynamoDB::Table
     DeletionPolicy: Retain
