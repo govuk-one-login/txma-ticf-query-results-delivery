@@ -4,10 +4,11 @@ import { initialiseLogger, logger } from '../../sharedServices/logger'
 import { getDataFromQueueTable } from '../../sharedServices/dynamoDb/ssfQueueTable'
 import { tryParseJSON } from '../../utils/tryParseJson'
 
-export const handler = async (payload: any, context: Context) => {
+export const handler = async (payload: string, context: Context) => {
   initialiseLogger(context)
+  console.log(payload)
   const receivedObject = tryParseJSON(payload)
-
+  logger.info(receivedObject)
   const data = await getDataFromQueueTable(receivedObject.userId)
 
   if (!data || !data.queueUrl) {

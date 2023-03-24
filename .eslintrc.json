@@ -10,7 +10,7 @@
   },
   "overrides": [
     {
-      "files": ["tests/**"],
+      "files": ["tests/**", "src/lambdas/**"],
       "rules": { "no-console": ["off"] }
     }
   ],
