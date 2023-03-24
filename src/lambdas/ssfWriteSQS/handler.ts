@@ -2,11 +2,13 @@ import { Context } from 'aws-lambda'
 import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
 import { initialiseLogger, logger } from '../../sharedServices/logger'
 import { getDataFromQueueTable } from '../../sharedServices/dynamoDb/ssfQueueTable'
+import { tryParseJSON } from '../../utils/tryParseJson'
 
-export const handler = async (userId: string, context: Context) => {
+export const handler = async (payload: any, context: Context) => {
   initialiseLogger(context)
+  const receivedObject = tryParseJSON(payload)
 
-  const data = await getDataFromQueueTable(userId)
+  const data = await getDataFromQueueTable(receivedObject.userId)
 
   if (!data || !data.queueUrl) {
     logger.info('no data')
