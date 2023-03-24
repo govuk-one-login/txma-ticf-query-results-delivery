@@ -526,6 +526,9 @@ Resources:
       Handler: handler.handler
       FunctionName: !Sub ${AWS::StackName}-${Environment}-ssf-create-sqs
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Environment:
+        Variables:
+          SSF_QUEUE_ARN_TABLE_NAME: !Ref QueueARNTable
       Policies:
         - Statement:
             - Sid: CreateSQS

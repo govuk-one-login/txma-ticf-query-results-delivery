@@ -15,4 +15,5 @@ export interface EnvironmentVar {
     | 'MOCK_SERVER_BASE_URL'
     | 'USE_NOTIFY_MOCK_SERVER'
     | 'DATABASE_TTL_HOURS'
+    | 'SSF_QUEUE_ARN_TABLE_NAME'
 }
