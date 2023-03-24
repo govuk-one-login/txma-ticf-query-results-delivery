@@ -1,7 +1,7 @@
 import { Context } from 'aws-lambda'
-import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
 import { initialiseLogger, logger } from '../../sharedServices/logger'
 import { getDataFromQueueTable } from '../../sharedServices/dynamoDb/ssfQueueTable'
+import { readSqsMessages } from '../../sharedServices/queue/readSqsMessage'
 
 export const handler = async (
   payload: { userId: string },
@@ -17,9 +17,8 @@ export const handler = async (
   }
 
   const queueUrl = data.queueUrl
-  const message = {
-    message: 'hello'
-  }
 
-  await sendSqsMessage(message, queueUrl)
+  const messages = await readSqsMessages(queueUrl)
+
+  logger.info(messages)
 }
