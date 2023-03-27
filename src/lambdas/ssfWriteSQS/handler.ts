@@ -17,9 +17,17 @@ export const handler = async (
   }
 
   const queueUrl = data.queueUrl
-  const message = {
-    message: 'hello'
+  // const message = {
+  //   message: 'hello'
+  // }
+
+  for (let i = 1; i <= 21; i++) {
+    const message = {
+      message: `this is message ${i}`
+    }
+
+    await sendSqsMessage(message, queueUrl)
   }
 
-  await sendSqsMessage(message, queueUrl)
+  // await sendSqsMessage(message, queueUrl)
 }
