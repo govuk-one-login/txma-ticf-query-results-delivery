@@ -10,7 +10,8 @@ export const readSqsMessages = async (queueUrl: string) => {
   const params: ReceiveMessageCommandInput = {
     QueueUrl: queueUrl,
     MaxNumberOfMessages: 10,
-    VisibilityTimeout: 60
+    VisibilityTimeout: 60,
+    MessageGroupId: 'ssfTest'
   }
 
   const result = await client.send(new ReceiveMessageCommand(params))

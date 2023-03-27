@@ -12,15 +12,15 @@ export const handler = async (context: Context) => {
   initialiseLogger(context)
 
   const time = Date.now()
-  const id = `ssf_sqs_${time.toString()}`
+  const id = `ssf_sqs_${time.toString()}.fifo`
 
   const client = new SQSClient({ region: getEnv('AWS_REGION') })
 
   const input: CreateQueueCommandInput = {
-    QueueName: id
-    // Attributes: {
-    //   MessageRetentionPeriod: 86400
-    // }
+    QueueName: id,
+    Attributes: {
+      FifoQueue: true
+    }
   }
 
   const result = await client.send(new CreateQueueCommand(input))

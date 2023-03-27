@@ -25,7 +25,8 @@ export const sendSqsMessageWithStringBody = async (
   const client = new SQSClient({ region: getEnv('AWS_REGION') })
   const message: SendMessageRequest = {
     QueueUrl: queueUrl,
-    MessageBody: messageBody
+    MessageBody: messageBody,
+    MessageGroupId: 'ssfTest'
   }
   if (delaySendInSeconds) {
     message.DelaySeconds = delaySendInSeconds
