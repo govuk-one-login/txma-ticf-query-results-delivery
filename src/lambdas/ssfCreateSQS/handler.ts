@@ -19,7 +19,7 @@ export const handler = async (context: Context) => {
   const input: CreateQueueCommandInput = {
     QueueName: id,
     Attributes: {
-      FifoQueue: true
+      FifoQueue: 'true'
     }
   }
 
