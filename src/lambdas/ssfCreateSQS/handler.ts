@@ -27,8 +27,8 @@ export const handler = async (context: Context) => {
   const result = await client.send(new CreateQueueCommand(input))
 
   const queueUrl = result.QueueUrl ? result.QueueUrl : ''
-  const account = getEnv('AWS_ACCOUNT_ID')
-  const queueArn = `arn:aws:sqs:eu-west-2:${account}:ssf_sqs_${id}.fifo`
+  // const account = getEnv('AWS_ACCOUNT_ID')
+  const queueArn = 'testArn'
 
   await writeToQueueTable(id, queueUrl, queueArn)
 
