@@ -534,8 +534,8 @@ Resources:
             - Sid: CreateSQS
               Effect: Allow
               Action:
-                - sqs:*
-              Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*
+                - sqs:CreateQueue
+              Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:ssf_sqs_*
             - Sid: UseSqsAndDatabaseKmsKey
               Effect: Allow
               Action:
@@ -571,8 +571,8 @@ Resources:
             - Sid: WriteSQS
               Effect: Allow
               Action:
-                - sqs:*
-              Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*
+                - sqs: sqs:SendMessage
+              Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:ssf_sqs_*
             - Sid: UseSqsAndDatabaseKmsKey
               Effect: Allow
               Action:
@@ -608,8 +608,9 @@ Resources:
             - Sid: WriteSQS
               Effect: Allow
               Action:
-                - sqs:*
-              Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:*
+                - sqs:ReceiveMessage
+                - sqs:DeleteMessage
+              Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:ssf_sqs_*
             - Sid: UseSqsAndDatabaseKmsKey
               Effect: Allow
               Action:
