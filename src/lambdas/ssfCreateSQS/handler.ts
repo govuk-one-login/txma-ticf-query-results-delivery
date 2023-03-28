@@ -39,19 +39,5 @@ export const handler = async (context: Context) => {
 }
 
 const createPolicy = (account: string, queueArn: string, id: string) => {
-  return {
-    Version: '2012-10-17',
-    Id: id,
-    Statement: [
-      {
-        Sid: '1',
-        Effect: 'Allow',
-        Principal: {
-          AWS: [account]
-        },
-        Action: ['sqs:SendMessage', 'sqs:ReceiveMessage', 'sqs:DeleteMessage'],
-        Resource: queueArn
-      }
-    ]
-  }
+  return `{Version:'2012-10-17',Id:${id},Statement:[{Sid:'1',Effect:'Allow',Principal:{AWS:[${account}]},Action:['sqs:SendMessage','sqs:ReceiveMessage','sqs:DeleteMessage'],Resource:${queueArn}]}`
 }
