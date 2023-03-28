@@ -20,5 +20,7 @@ export const handler = async (
 
   const messages = await readSqsMessages(queueUrl)
 
-  console.log(messages)
+  for (let i = 0; i < messages.length; i++) {
+    console.log(messages[i].Body)
+  }
 }
