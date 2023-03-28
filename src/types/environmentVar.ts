@@ -16,4 +16,5 @@ export interface EnvironmentVar {
     | 'USE_NOTIFY_MOCK_SERVER'
     | 'DATABASE_TTL_HOURS'
     | 'SSF_QUEUE_ARN_TABLE_NAME'
+    | 'AWS_ACCOUNT_ID'
 }
