@@ -571,7 +571,7 @@ Resources:
             - Sid: WriteSQS
               Effect: Allow
               Action:
-                - sqs: sqs:SendMessage
+                - sqs:SendMessage
               Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:ssf_sqs_*
             - Sid: UseSqsAndDatabaseKmsKey
               Effect: Allow
