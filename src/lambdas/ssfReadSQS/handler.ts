@@ -27,7 +27,9 @@ export const handler = async (
     for (let i = 0; i < messages.length; i++) {
       const { Body, ReceiptHandle } = messages[i]
       console.log(`processing ${Body}, trying to delete it...`)
-      await deleteSqsMessage(queueUrl, ReceiptHandle)
+      if (ReceiptHandle) {
+        await deleteSqsMessage(queueUrl, ReceiptHandle)
+      }
       console.log('now go check the queue to see if it deleted')
     }
   }
