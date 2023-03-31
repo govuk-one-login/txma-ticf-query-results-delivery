@@ -17,10 +17,10 @@ export const handler = async (context: Context) => {
   const client = new SQSClient({ region: getEnv('AWS_REGION') })
 
   const input: CreateQueueCommandInput = {
-    QueueName: `ssf_sqs_${id}.fifo`,
+    QueueName: `ssf_sqs_${id}`,
     Attributes: {
-      FifoQueue: 'true',
-      ContentBasedDeduplication: 'true',
+      // FifoQueue: 'true',
+      // ContentBasedDeduplication: 'true',
       VisibilityTimeout: '0'
     }
   }
