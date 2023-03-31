@@ -11,8 +11,8 @@ export const readSqsMessages = async (queueUrl: string) => {
   const client = new SQSClient({ region: getEnv('AWS_REGION') })
   const params: ReceiveMessageCommandInput = {
     QueueUrl: queueUrl,
-    MaxNumberOfMessages: 2,
-    VisibilityTimeout: 60
+    MaxNumberOfMessages: 2
+    // VisibilityTimeout: 60
   }
 
   const result = await client.send(new ReceiveMessageCommand(params))

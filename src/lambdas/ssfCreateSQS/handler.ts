@@ -20,7 +20,8 @@ export const handler = async (context: Context) => {
     QueueName: `ssf_sqs_${id}.fifo`,
     Attributes: {
       FifoQueue: 'true',
-      ContentBasedDeduplication: 'true'
+      ContentBasedDeduplication: 'true',
+      VisibilityTimeout: '0'
     }
   }
 
