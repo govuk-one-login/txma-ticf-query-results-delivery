@@ -19,9 +19,9 @@ export const handler = async (context: Context) => {
   const input: CreateQueueCommandInput = {
     QueueName: `ssf_sqs_${id}`,
     Attributes: {
-      // FifoQueue: 'true',
-      // ContentBasedDeduplication: 'true',
-      VisibilityTimeout: '60'
+      FifoQueue: 'true',
+      ContentBasedDeduplication: 'true',
+      VisibilityTimeout: '0'
     }
   }
 
