@@ -34,3 +34,30 @@ export const sendSqsMessageWithStringBody = async (
   const result = await client.send(new SendMessageCommand(message))
   return result.MessageId
 }
+
+export const sendSsfSqsMessage = async (
+  messageBody: object,
+  queueUrl: string,
+  messageGroupId: string
+): Promise<string | undefined> => {
+  return sendSsfSqsMessageWithStringBody(
+    JSON.stringify(messageBody),
+    queueUrl,
+    messageGroupId
+  )
+}
+
+export const sendSsfSqsMessageWithStringBody = async (
+  messageBody: string,
+  queueUrl: string,
+  messageGroupId: string
+): Promise<string | undefined> => {
+  const client = new SQSClient({ region: getEnv('AWS_REGION') })
+  const message: SendMessageRequest = {
+    QueueUrl: queueUrl,
+    MessageBody: messageBody,
+    MessageGroupId: messageGroupId
+  }
+  const result = await client.send(new SendMessageCommand(message))
+  return result.MessageId
+}
