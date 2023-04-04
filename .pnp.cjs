@@ -58,7 +58,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest-when", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:3.5.2"],\
             ["jsonwebtoken", "npm:8.5.1"],\
             ["lint-staged", "npm:13.1.2"],\
-            ["node-html-parser", "npm:6.1.4"],\
+            ["node-html-parser", "npm:6.1.5"],\
             ["notifications-node-client", "npm:5.2.3"],\
             ["prettier", "npm:2.8.4"],\
             ["ts-jest", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:29.0.5"],\
@@ -7298,7 +7298,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jest-when", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:3.5.2"],\
             ["jsonwebtoken", "npm:8.5.1"],\
             ["lint-staged", "npm:13.1.2"],\
-            ["node-html-parser", "npm:6.1.4"],\
+            ["node-html-parser", "npm:6.1.5"],\
             ["notifications-node-client", "npm:5.2.3"],\
             ["prettier", "npm:2.8.4"],\
             ["ts-jest", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:29.0.5"],\
@@ -9959,10 +9959,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["node-html-parser", [\
-        ["npm:6.1.4", {\
-          "packageLocation": "./.yarn/cache/node-html-parser-npm-6.1.4-59d4a58063-fadf622c6b.zip/node_modules/node-html-parser/",\
+        ["npm:6.1.5", {\
+          "packageLocation": "./.yarn/cache/node-html-parser-npm-6.1.5-b4e338af4b-b54257b319.zip/node_modules/node-html-parser/",\
           "packageDependencies": [\
-            ["node-html-parser", "npm:6.1.4"],\
+            ["node-html-parser", "npm:6.1.5"],\
             ["css-select", "npm:5.1.0"],\
             ["he", "npm:1.2.0"]\
           ],\
