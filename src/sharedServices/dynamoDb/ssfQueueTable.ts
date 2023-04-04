@@ -6,14 +6,16 @@ import { logger } from '../logger'
 export const writeToQueueTable = async (
   userId: string,
   queueUrl: string,
-  queueArn: string
+  queueArn: string,
+  sentQueueUrl: string
 ) => {
   const params = {
     TableName: getEnv('SSF_QUEUE_ARN_TABLE_NAME'),
     Item: {
       userId: { S: userId },
       queueUrl: { S: queueUrl },
-      queueArn: { S: queueArn }
+      queueArn: { S: queueArn },
+      sentQueueUrl: { S: sentQueueUrl }
     }
   }
   const result = await ddbClient.send(new PutItemCommand(params))
@@ -37,7 +39,8 @@ export const getDataFromQueueTable = async (userId: string) => {
   const record = {
     userId: responseObject?.userId?.S,
     queueUrl: responseObject?.queueUrl?.S,
-    queueArn: responseObject?.queueArn?.S
+    queueArn: responseObject?.queueArn?.S,
+    sentQueueUrl: responseObject?.sentQueueUrl?.S
   }
 
   return record

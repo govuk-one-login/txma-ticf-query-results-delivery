@@ -641,6 +641,8 @@ Resources:
           AttributeType: S
         - AttributeName: queueUrl
           AttributeType: S
+        - AttributeName: sentQueueUrl
+          AttributeType: S
       KeySchema:
         - AttributeName: userId
           KeyType: HASH
@@ -657,6 +659,15 @@ Resources:
         - IndexName: queueUrlIndex
           KeySchema:
             - AttributeName: queueUrl
+              KeyType: HASH
+          Projection:
+            ProjectionType: 'KEYS_ONLY'
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+        - IndexName: sentQueueUrlIndex
+          KeySchema:
+            - AttributeName: sentQueueUrl
               KeyType: HASH
           Projection:
             ProjectionType: 'KEYS_ONLY'

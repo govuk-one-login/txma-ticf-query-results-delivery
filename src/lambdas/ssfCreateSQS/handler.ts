@@ -17,7 +17,16 @@ export const handler = async (context: Context) => {
   const client = new SQSClient({ region: getEnv('AWS_REGION') })
 
   const input: CreateQueueCommandInput = {
-    QueueName: `ssf_sqs_${id}.fifo`,
+    QueueName: `ssf_sqs_not_sent_${id}.fifo`,
+    Attributes: {
+      FifoQueue: 'true',
+      ContentBasedDeduplication: 'true',
+      VisibilityTimeout: '0'
+    }
+  }
+
+  const sentInput: CreateQueueCommandInput = {
+    QueueName: `ssf_sqs_sent_${id}.fifo`,
     Attributes: {
       FifoQueue: 'true',
       ContentBasedDeduplication: 'true',
@@ -26,12 +35,14 @@ export const handler = async (context: Context) => {
   }
 
   const result = await client.send(new CreateQueueCommand(input))
+  const sentResult = await client.send(new CreateQueueCommand(sentInput))
 
   const queueUrl = result.QueueUrl ? result.QueueUrl : ''
+  const sentQueueUrl = sentResult.QueueUrl ? sentResult.QueueUrl : ''
   // const account = getEnv('AWS_ACCOUNT_ID')
   const queueArn = 'testArn'
 
-  await writeToQueueTable(id, queueUrl, queueArn)
+  await writeToQueueTable(id, queueUrl, queueArn, sentQueueUrl)
 
   logger.info(queueUrl)
 }
