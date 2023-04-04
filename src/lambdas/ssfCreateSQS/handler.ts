@@ -21,7 +21,7 @@ export const handler = async (context: Context) => {
     Attributes: {
       FifoQueue: 'true',
       ContentBasedDeduplication: 'true',
-      VisibilityTimeout: '0'
+      VisibilityTimeout: '30'
     }
   }
 
