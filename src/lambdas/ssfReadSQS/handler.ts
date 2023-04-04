@@ -1,10 +1,7 @@
 import { Context } from 'aws-lambda'
 import { initialiseLogger, logger } from '../../sharedServices/logger'
 import { getDataFromQueueTable } from '../../sharedServices/dynamoDb/ssfQueueTable'
-import {
-  readSqsMessages,
-  deleteSqsMessage
-} from '../../sharedServices/queue/readSqsMessage'
+import { readSqsMessages } from '../../sharedServices/queue/readSqsMessage'
 import { sendSsfSqsMessageWithStringBody } from '../../sharedServices/queue/sendSqsMessage'
 
 export const handler = async (
@@ -40,11 +37,12 @@ export const handler = async (
       const { Body, MessageId, ReceiptHandle } = messages[i]
       console.log(`processing ${Body}`)
       if (Body && MessageId) {
+        console.log(`this is the messageId`)
         await sendSsfSqsMessageWithStringBody(Body, sentQueueUrl, MessageId)
       }
       if (ReceiptHandle) {
         console.log(` this is the receiptHandle ${ReceiptHandle}`)
-        await deleteSqsMessage(queueUrl, ReceiptHandle)
+        // await deleteSqsMessage(queueUrl, ReceiptHandle)
       }
       // console.log('now go check the queue to see if it deleted')
     }
