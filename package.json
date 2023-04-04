@@ -54,7 +54,7 @@
     "jest-extended": "3.2.4",
     "jest-junit": "14.0.1",
     "jest-when": "3.5.2",
-    "jsonwebtoken": "8.5.1",
+    "jsonwebtoken": "9.0.0",
     "lint-staged": "13.1.2",
     "node-html-parser": "6.1.5",
     "prettier": "2.8.4",
