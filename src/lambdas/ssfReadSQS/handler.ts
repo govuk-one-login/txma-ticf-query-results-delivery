@@ -34,10 +34,12 @@ export const handler = async (
     for (let i = 0; i < messages.length; i++) {
       const { Body, MessageId, ReceiptHandle } = messages[i]
       console.log(`processing ${Body}`)
-      await sendSsfSqsMessageWithStringBody(Body, sentQueueUrl, MessageId)
+      if (MessageId) {
+        await sendSsfSqsMessageWithStringBody(Body, sentQueueUrl, MessageId)
+      }
       if (ReceiptHandle) {
         console.log(` this is the receiptHandle ${ReceiptHandle}`)
-        deleteSqsMessage(queueUrl, ReceiptHandle)
+        await deleteSqsMessage(queueUrl, ReceiptHandle)
       }
       // console.log('now go check the queue to see if it deleted')
     }
