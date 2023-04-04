@@ -608,6 +608,7 @@ Resources:
             - Sid: WriteSQS
               Effect: Allow
               Action:
+                - sqs:SendMessage
                 - sqs:ReceiveMessage
                 - sqs:DeleteMessage
               Resource: !Sub arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:ssf_sqs_*
