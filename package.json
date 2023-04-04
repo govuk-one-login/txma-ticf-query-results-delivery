@@ -45,7 +45,7 @@
     "aws-sdk-client-mock": "2.0.1",
     "aws-sdk-client-mock-jest": "2.0.1",
     "axios": "0.27.2",
-    "esbuild": "0.17.8",
+    "esbuild": "0.17.14",
     "eslint": "8.34.0",
     "eslint-config-prettier": "8.6.0",
     "eslint-plugin-jest": "27.1.3",
