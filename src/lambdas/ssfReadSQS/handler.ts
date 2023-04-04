@@ -39,7 +39,7 @@ export const handler = async (
     for (let i = 0; i < messages.length; i++) {
       const { Body, MessageId, ReceiptHandle } = messages[i]
       console.log(`processing ${Body}`)
-      if (MessageId) {
+      if (Body && MessageId) {
         await sendSsfSqsMessageWithStringBody(Body, sentQueueUrl, MessageId)
       }
       if (ReceiptHandle) {
