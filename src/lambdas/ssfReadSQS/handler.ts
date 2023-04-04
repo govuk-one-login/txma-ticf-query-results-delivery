@@ -20,6 +20,11 @@ export const handler = async (
     return
   }
 
+  if (!data.sentQueueUrl) {
+    logger.info('no sent queue url')
+    return
+  }
+
   const queueUrl = data.queueUrl
   const sentQueueUrl = data.sentQueueUrl
 
