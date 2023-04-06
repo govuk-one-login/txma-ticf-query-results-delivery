@@ -36,6 +36,7 @@ describe('Download pages', () => {
     // Download 1
     const firstGetResponse = await sendRequest(downloadUrl, 'GET')
     expect(firstGetResponse.status).toEqual(200)
+    assertSecurityHeadersSet(firstGetResponse)
     const contentType = firstGetResponse.headers['content-type']
     expect(contentType).toEqual('text/html')
     expect(firstGetResponse.data).toContain('Download the report')
@@ -66,6 +67,7 @@ describe('Download pages', () => {
     assertDownloadNotFoundResponse(thirdGetResponse)
     const thirdDownloadResponse = await sendRequest(downloadUrl, 'POST')
     assertDownloadNotFoundResponse(thirdDownloadResponse)
+    assertSecurityHeadersSet(thirdDownloadResponse)
   })
 
   it('API should return a 404 when no record is available for the provided hash', async () => {
@@ -74,10 +76,19 @@ describe('Download pages', () => {
     )}/xxxx-yyyy-zzzz`
     const response = await sendRequest(urlWithNonExistentHash, 'GET')
     assertDownloadNotFoundResponse(response)
+    assertSecurityHeadersSet(response)
   })
 
   const assertDownloadNotFoundResponse = (response: AxiosResponse) => {
     expect(response.status).toEqual(404)
     expect(response.data).toEqual('')
+  }
+
+  const assertSecurityHeadersSet = (result: AxiosResponse) => {
+    expect(
+      result.headers && result.headers['strict-transport-security']
+    ).toEqual('max-age=31536000; includeSubDomains; preload')
+
+    expect(result.headers && result.headers['x-frame-options']).toEqual('DENY')
   }
 })
