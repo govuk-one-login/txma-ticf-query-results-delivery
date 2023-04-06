@@ -88,9 +88,6 @@ Resources:
       EndpointConfiguration:
         Type: REGIONAL
       GatewayResponses:
-        default:
-          responseParameters:
-            gatewayresponse.header.Strict-Transport-Security:: 'max-age=31536000; includeSubDomains; preload'
         ACCESS_DENIED:
           ResponseTemplates:
             application/json: '{"message": "Access Denied: if you think you should have access to this URL, make sure you are connected to the VPN"}'
