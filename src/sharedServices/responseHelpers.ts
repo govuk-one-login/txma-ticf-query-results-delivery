@@ -1,3 +1,4 @@
+import { APIGatewayProxyResult } from 'aws-lambda'
 import { logger } from './logger'
 
 export const notFoundResponse = (recordWasFound: boolean) => {
@@ -23,18 +24,30 @@ export const invalidParametersResponse = () => {
 }
 
 export const htmlResponse = (statusCode: number, body: string) => {
-  return {
+  return appendSecurityHeadersToResponse({
     statusCode: statusCode,
     body: body,
     headers: {
       'Content-type': 'text/html'
     }
-  }
+  })
 }
 
 export const emptyStatusCodeResponse = (statusCode: number) => {
-  return {
+  return appendSecurityHeadersToResponse({
     statusCode,
     body: ''
+  })
+}
+
+const appendSecurityHeadersToResponse = (
+  response: APIGatewayProxyResult
+): APIGatewayProxyResult => {
+  if (!response.headers) {
+    response.headers = {}
   }
+  response.headers['Strict-Transport-Security'] =
+    'max-age=31536000; includeSubDomains; preload'
+  response.headers['X-Frame-Options'] = 'DENY'
+  return response
 }

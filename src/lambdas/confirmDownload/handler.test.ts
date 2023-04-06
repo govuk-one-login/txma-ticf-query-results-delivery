@@ -14,6 +14,7 @@ import {
   TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
 import { mockLambdaContext } from '../../utils/tests/mocks/mockLambdaContext'
+import { assertSecurityHeadersSet } from '../../utils/tests/assertSecurityHeadersSet'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
   getDownloadAvailabilityResult: jest.fn()
@@ -75,6 +76,9 @@ describe('confirmDownload.handler', () => {
     const result = await handler(defaultApiRequest, mockLambdaContext)
     expect(result.statusCode).toEqual(400)
     expect(result.body).toBe('')
+
+    assertSecurityHeadersSet(result)
+
     expect(getDownloadAvailabilityResult).not.toHaveBeenCalled()
   })
 
@@ -84,6 +88,9 @@ describe('confirmDownload.handler', () => {
 
     expect(result.statusCode).toEqual(500)
     expect(result.body).toBe('')
+
+    assertSecurityHeadersSet(result)
+
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(logger.error).toHaveBeenCalledWith(
       'Error while handling confirm download request',
@@ -97,6 +104,9 @@ describe('confirmDownload.handler', () => {
 
     expect(result.statusCode).toEqual(404)
     expect(result.body).toBe('')
+
+    assertSecurityHeadersSet(result)
+
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(logger.warn).toHaveBeenCalledWith(
       'Returning 404 response because no record was found'
@@ -109,6 +119,9 @@ describe('confirmDownload.handler', () => {
 
     expect(result.statusCode).toEqual(404)
     expect(result.body).toBe('')
+
+    assertSecurityHeadersSet(result)
+
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(logger.warn).toHaveBeenCalledWith(
       'Returning 404 response because the download has expired or has been downloaded too many times already'
@@ -125,6 +138,9 @@ describe('confirmDownload.handler', () => {
     expect(result.body).toContain(
       `<meta http-equiv="refresh" content="0; url=${TEST_SIGNED_URL}">`
     )
+
+    assertSecurityHeadersSet(result)
+
     expect(createTemporaryS3Link).toHaveBeenCalledWith({
       bucket: TEST_QUERY_RESULTS_BUCKET_NAME,
       key: TEST_S3_OBJECT_KEY
@@ -142,5 +158,7 @@ describe('confirmDownload.handler', () => {
     expect(result.body).toContain(
       'Your data will automatically download in CSV format.'
     )
+
+    assertSecurityHeadersSet(result)
   })
 })
