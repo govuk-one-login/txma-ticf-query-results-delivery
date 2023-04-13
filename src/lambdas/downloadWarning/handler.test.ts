@@ -10,6 +10,7 @@ import {
   TEST_ZENDESK_TICKET_ID
 } from '../../utils/tests/setup/testConstants'
 import { mockLambdaContext } from '../../utils/tests/mocks/mockLambdaContext'
+import { assertSecurityHeadersSet } from '../../utils/tests/assertSecurityHeadersSet'
 
 jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
   getDownloadAvailabilityResult: jest.fn()
@@ -70,6 +71,9 @@ describe('downloadWarning.handler', () => {
 
     expect(result.statusCode).toEqual(500)
     expect(result.body).toBe('')
+
+    assertSecurityHeadersSet(result)
+
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(logger.error).toHaveBeenCalledWith(
       'Error while handling download warning request',
@@ -83,6 +87,9 @@ describe('downloadWarning.handler', () => {
 
     expect(result.statusCode).toEqual(404)
     expect(result.body).toBe('')
+
+    assertSecurityHeadersSet(result)
+
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(logger.warn).toHaveBeenCalledWith(
       'Returning 404 response because no record was found'
@@ -95,6 +102,9 @@ describe('downloadWarning.handler', () => {
 
     expect(result.statusCode).toEqual(404)
     expect(result.body).toBe('')
+
+    assertSecurityHeadersSet(result)
+
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(logger.warn).toHaveBeenCalledWith(
       'Returning 404 response because the download has expired or has been downloaded too many times already'
@@ -107,6 +117,9 @@ describe('downloadWarning.handler', () => {
 
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(result.statusCode).toEqual(200)
+
+    assertSecurityHeadersSet(result)
+
     expect(result.body).toContain('Download the report')
     expect(result.body).toContain(
       `You have ${TEST_DOWNLOADS_REMAINING} downloads remaining.`
