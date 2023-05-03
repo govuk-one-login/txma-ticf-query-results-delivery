@@ -1,6 +1,6 @@
 export const TEST_AWS_REGION = 'eu-west-2'
 export const TEST_FRAUD_TABLE = 'TestFraudTable'
-export const DOWNLOAD_HASH = 'myHash'
+export const DOWNLOAD_HASH = 'myHash-myHash-myHash-myHash-myHash'
 export const TEST_S3_OBJECT_KEY = 'myS3ObjectKey'
 export const TEST_QUERY_RESULTS_BUCKET_NAME = 'myS3ObjectBucket'
 export const TEST_ATHENA_OUTPUT_LOCATION = 'myAthenaOutputBucket'
