@@ -169,7 +169,7 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-        - !Ref: ConfirmDownloadFunctionPolicy
+        - !Ref ConfirmDownloadFunctionPolicy
 
   ConfirmDownloadFunctionPolicy:
     Type: AWS::IAM::ManagedPolicy
