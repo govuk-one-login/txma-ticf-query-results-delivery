@@ -151,8 +151,7 @@ Resources:
   ConfirmDownloadFunctionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName:
-        Fn::Sub: ${AWS::StackName}-confirm-download-role
+      RoleName: !Sub ${AWS::StackName}-confirm-download-role
       PermissionsBoundary:
         Fn::If:
           - UsePermissionsBoundary
@@ -243,26 +242,47 @@ Resources:
             Path: /secure/{downloadHash}
       FunctionName: !Sub ${AWS::StackName}-download-warning-page
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Role: !GetAtt DownloadWarningFunctionRole.Arn
 
-      Policies:
-        - Statement:
-            - Sid: SecureFraudSiteDataTableRead
-              Effect: Allow
-              Action:
-                - dynamodb:GetItem
-              Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
-            - Sid: DecryptDatabaseKmsKey
-              Effect: Allow
-              Action:
-                - kms:Decrypt
-              Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
-            - Sid: Logs
-              Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource: !GetAtt DownloadWarningFunctionLogs.Arn
+  DownloadWarningFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-download-warning-role
+      PermissionsBoundary:
+        Fn::If:
+          - UsePermissionsBoundary
+          - Ref: PermissionsBoundary
+          - Ref: AWS::NoValue
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowLambdaToAssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - !Ref DownloadWarningFunctionPolicy
+
+  DownloadWarningFunctionPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub ${AWS::StackName}-download-warning-policy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: SecureFraudSiteDataTableRead
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+            Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
+          - Sid: DecryptDatabaseKmsKey
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
 
   DownloadWarningFunctionLogs:
     Type: AWS::Logs::LogGroup
