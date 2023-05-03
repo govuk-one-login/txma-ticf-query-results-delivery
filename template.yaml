@@ -139,6 +139,7 @@ Resources:
           AUDIT_DATA_REQUEST_EVENTS_QUEUE_URL: '{{resolve:ssm:AuditDataRequestEventsQueueUrl}}'
       FunctionName: !Sub ${AWS::StackName}-confirm-download-page
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Role: !GetAtt ConfirmDownloadFunctionRole.Arn
       Events:
         ConfirmDownload:
           Type: Api
@@ -146,43 +147,66 @@ Resources:
             RestApiId: !Ref ResultsApi
             Method: post
             Path: /secure/{downloadHash}
-      Policies:
-        - Statement:
-            - Sid: SecureFraudSiteDataTableReadWrite
-              Effect: Allow
-              Action:
-                - dynamodb:GetItem
-                - dynamodb:UpdateItem
-              Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
-            - Sid: DecryptKmsKeys
-              Effect: Allow
-              Action:
-                - kms:Decrypt
-              Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
-            - Sid: S3ResultsBucketRead
-              Effect: Allow
-              Action:
-                - s3:GetObject
-              Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
-            - Sid: Logs
-              Effect: Allow
-              Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-              Resource: !GetAtt ConfirmDownloadFunctionLogs.Arn
-            - Sid: AllowSqsAuditEventsSend
-              Effect: Allow
-              Action:
-                - sqs:SendMessage
-              Resource: '{{resolve:ssm:AuditDataRequestEventsQueueArn}}'
-            - Sid: AllowQueueKmsKeyAccess
-              Effect: Allow
-              Action:
-                - kms:Decrypt
-                - kms:GenerateDataKey*
-                - kms:ReEncrypt*
-              Resource: '{{resolve:ssm:AuditDataRequestEventsQueueKmsKeyArn}}'
+
+  ConfirmDownloadFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ${AWS::StackName}-confirm-download-role
+      PermissionsBoundary:
+        Fn::If:
+          - UsePermissionsBoundary
+          - Ref: PermissionsBoundary
+          - Ref: AWS::NoValue
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowLambdaToAssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - !Ref: ConfirmDownloadFunctionPolicy
+
+  ConfirmDownloadFunctionPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName:
+        Fn::Sub: ${AWS::StackName}-confirm-download-policy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: SecureFraudSiteDataTableReadWrite
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+            Resource: '{{resolve:ssm:SecureFraudSiteDataTableArn}}'
+          - Sid: DecryptKmsKeys
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
+          - Sid: S3ResultsBucketRead
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: '{{resolve:ssm:QueryResultsBucketArn}}/*'
+          - Sid: AllowSqsAuditEventsSend
+            Effect: Allow
+            Action:
+              - sqs:SendMessage
+            Resource: '{{resolve:ssm:AuditDataRequestEventsQueueArn}}'
+          - Sid: AllowQueueKmsKeyAccess
+            Effect: Allow
+            Action:
+              - kms:Decrypt
+              - kms:GenerateDataKey*
+              - kms:ReEncrypt*
+            Resource: '{{resolve:ssm:AuditDataRequestEventsQueueKmsKeyArn}}'
 
   ConfirmDownloadFunctionLogs:
     Type: AWS::Logs::LogGroup
@@ -220,6 +244,7 @@ Resources:
             Path: /secure/{downloadHash}
       FunctionName: !Sub ${AWS::StackName}-download-warning-page
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+
       Policies:
         - Statement:
             - Sid: SecureFraudSiteDataTableRead
