@@ -487,6 +487,13 @@ Resources:
               - sqs:DeleteMessage
               - sqs:GetQueueAttributes
             Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
+          - Sid: AllowSendEmailQueueRead
+            Effect: Allow
+            Action:
+              - sqs:ReceiveMessage
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+            Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-send-email-queue'
           - Sid: AllowAccessAthenaOutputBucket
             Effect: Allow
             Action:
