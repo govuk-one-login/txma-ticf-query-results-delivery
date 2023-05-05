@@ -283,13 +283,6 @@ Resources:
             Action:
               - kms:Decrypt
             Resource: '{{resolve:ssm:DatabaseKmsKeyArn}}'
-          - Sid: AllowSendEmailQueueRead
-            Effect: Allow
-            Action:
-              - sqs:ReceiveMessage
-              - sqs:DeleteMessage
-              - sqs:GetQueueAttributes
-            Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:${AWS::StackName}-${Environment}-send-email-queue'
 
   DownloadWarningFunctionLogs:
     Type: AWS::Logs::LogGroup
@@ -371,6 +364,13 @@ Resources:
             Action:
               - sqs:SendMessage
             Resource: '{{resolve:ssm:CloseZendeskTicketQueueArn}}'
+          - Sid: AllowSendEmailQueueRead
+            Effect: Allow
+            Action:
+              - sqs:ReceiveMessage
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+            Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:${AWS::StackName}-${Environment}-send-email-queue'
           - Sid: UseSqsKmsKey
             Effect: Allow
             Action:
