@@ -301,7 +301,7 @@ Resources:
 
   SendEmailRequestToNotifyFunction:
     #checkov:skip=CKV_AWS_115:Defined in Globals section
-    #checkov:skip=CKV_AWS_116:Unsure of what will call the function currently - need revision at a later point
+    #checkov:skip=CKV_AWS_116:The queue itself has a DLQ
     #checkov:skip=CKV_AWS_117:VPC not required
     Type: AWS::Serverless::Function
     Properties:
@@ -370,7 +370,7 @@ Resources:
               - sqs:ReceiveMessage
               - sqs:DeleteMessage
               - sqs:GetQueueAttributes
-            Resource: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:${AWS::StackName}-${Environment}-send-email-queue'
+            Resource: !GetAtt SendEmailQueue.Arn
           - Sid: UseSqsKmsKey
             Effect: Allow
             Action:
