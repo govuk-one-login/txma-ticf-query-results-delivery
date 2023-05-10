@@ -147,6 +147,8 @@ Resources:
             RestApiId: !Ref ResultsApi
             Method: post
             Path: /secure/{downloadHash}
+      Architectures:
+        - arm64
 
   ConfirmDownloadFunctionRole:
     Type: AWS::IAM::Role
@@ -243,6 +245,8 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-download-warning-page
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Role: !GetAtt DownloadWarningFunctionRole.Arn
+      Architectures:
+        - arm64
 
   DownloadWarningFunctionRole:
     Type: AWS::IAM::Role
@@ -323,6 +327,8 @@ Resources:
           Properties:
             Queue: !GetAtt SendEmailQueue.Arn
             BatchSize: 1
+      Architectures:
+        - arm64
 
   SendEmailRequestToNotifyFunctionRole:
     Type: AWS::IAM::Role
@@ -447,6 +453,8 @@ Resources:
             BatchSize: 1
       FunctionName: !Sub ${AWS::StackName}-generate-download
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      Architectures:
+        - arm64
 
   GenerateDownloadFunctionRole:
     Type: AWS::IAM::Role
