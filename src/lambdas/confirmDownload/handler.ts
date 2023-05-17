@@ -39,7 +39,7 @@ export const handler = async (
       bucket: downloadAvailabilityResult.s3ResultsBucket as string,
       key: downloadAvailabilityResult.s3ResultsKey as string
     })
-    logger.info('Temporary S3 link generated')
+    logger.info('Temporary S3 link generated, hi!')
 
     await decrementDownloadCount(downloadHash)
     logger.info('Download count decremented in database')
