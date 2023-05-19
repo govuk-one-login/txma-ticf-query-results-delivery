@@ -68,10 +68,6 @@ Globals:
     VpcConfig:
       SecurityGroupIds:
         - Fn::ImportValue: !Sub ${VpcStackName}-AWSServicesEndpointSecurityGroupId
-      SubnetIds:
-        - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdA
-        - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdB
-        - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdC
   Api:
     OpenApiVersion: 3.0.1
 
@@ -158,6 +154,11 @@ Resources:
             RestApiId: !Ref ResultsApi
             Method: post
             Path: /secure/{downloadHash}
+      VpcConfig:
+        SubnetIds:
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdA
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdB
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdC
 
   ConfirmDownloadFunctionRole:
     Type: AWS::IAM::Role
@@ -253,6 +254,11 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-download-warning-page
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Role: !GetAtt DownloadWarningFunctionRole.Arn
+      VpcConfig:
+        SubnetIds:
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdA
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdB
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdC
 
   DownloadWarningFunctionRole:
     Type: AWS::IAM::Role
@@ -332,6 +338,11 @@ Resources:
           Properties:
             Queue: !GetAtt SendEmailQueue.Arn
             BatchSize: 1
+      VpcConfig:
+        SubnetIds:
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdA
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdB
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdC
 
   SendEmailRequestToNotifyFunctionRole:
     Type: AWS::IAM::Role
@@ -455,6 +466,11 @@ Resources:
             BatchSize: 1
       FunctionName: !Sub ${AWS::StackName}-generate-download
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      VpcConfig:
+        SubnetIds:
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdA
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdB
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdC
 
   GenerateDownloadFunctionRole:
     Type: AWS::IAM::Role
