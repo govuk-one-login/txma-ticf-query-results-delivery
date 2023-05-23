@@ -41,7 +41,7 @@ jobs:
         run: yarn test
       - name: Validate SAM template
         if: always()
-        run: sam validate
+        run: sam validate --lint
       - name: Run Checkov on SAM template
         if: always()
         uses: bridgecrewio/checkov-action@master
@@ -49,6 +49,7 @@ jobs:
           directory: '.'
           framework: cloudformation
           quiet: true
+          skip_check: CKV_AWS_116
       - name: Build Lambda functions
         run: yarn build
       - name: Upload build artifact

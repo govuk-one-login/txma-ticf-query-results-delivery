@@ -24,6 +24,10 @@ Parameters:
     Type: String
     Description: The ARN of the role that will used for integration tests
     Default: none
+  VpcStackName:
+    Type: String
+    Description: The name of the stack containing the VPC
+    Default: none
 
 Conditions:
   ApiCustomDomain: !Not [!Equals [!Ref Environment, dev]]
@@ -42,7 +46,6 @@ Conditions:
     ]
   UseCodeSigning: !Not [!Equals [!Ref CodeSigningConfigArn, none]]
   UsePermissionsBoundary: !Not [!Equals [!Ref PermissionsBoundary, none]]
-  TestRolePolicy: !Not [!Equals [!Ref TestRoleArn, none]]
   IsStubbedEnvironment:
     !Or [!Equals [!Ref Environment, dev], !Equals [!Ref Environment, build]]
   TestRoleResources:
@@ -50,6 +53,8 @@ Conditions:
 
 Globals:
   Function:
+    Architectures:
+      - 'arm64'
     CodeSigningConfigArn:
       !If [UseCodeSigning, !Ref CodeSigningConfigArn, !Ref AWS::NoValue]
     Environment:
@@ -60,8 +65,9 @@ Globals:
     ReservedConcurrentExecutions: 10
     Runtime: nodejs18.x
     Timeout: 15
-    Architectures:
-      - 'arm64'
+    VpcConfig:
+      SecurityGroupIds:
+        - Fn::ImportValue: !Sub ${VpcStackName}-AWSServicesEndpointSecurityGroupId
   Api:
     OpenApiVersion: 3.0.1
 
@@ -128,8 +134,7 @@ Resources:
 
   ConfirmDownloadFunction:
     #checkov:skip=CKV_AWS_115:Defined in Globals
-    #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
-    #checkov:skip=CKV_AWS_117:VPC not required
+    #checkov:skip=CKV_AWS_117:Defined in Globals
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: dist/confirmDownload/
@@ -149,6 +154,11 @@ Resources:
             RestApiId: !Ref ResultsApi
             Method: post
             Path: /secure/{downloadHash}
+      VpcConfig:
+        SubnetIds:
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdA
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdB
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdC
 
   ConfirmDownloadFunctionRole:
     Type: AWS::IAM::Role
@@ -169,7 +179,7 @@ Resources:
                 - lambda.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         - !Ref ConfirmDownloadFunctionPolicy
 
   ConfirmDownloadFunctionPolicy:
@@ -225,8 +235,7 @@ Resources:
 
   DownloadWarningFunction:
     #checkov:skip=CKV_AWS_115:Defined in Globals
-    #checkov:skip=CKV_AWS_116:Lambda is behind an API gateway, so repeated processing of the same message isn't a problem
-    #checkov:skip=CKV_AWS_117:VPC not required
+    #checkov:skip=CKV_AWS_117:Defined in Globals
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: dist/downloadWarning/
@@ -245,6 +254,11 @@ Resources:
       FunctionName: !Sub ${AWS::StackName}-download-warning-page
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Role: !GetAtt DownloadWarningFunctionRole.Arn
+      VpcConfig:
+        SubnetIds:
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdA
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdB
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdC
 
   DownloadWarningFunctionRole:
     Type: AWS::IAM::Role
@@ -265,7 +279,7 @@ Resources:
                 - lambda.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         - !Ref DownloadWarningFunctionPolicy
 
   DownloadWarningFunctionPolicy:
@@ -302,9 +316,8 @@ Resources:
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   SendEmailRequestToNotifyFunction:
-    #checkov:skip=CKV_AWS_115:Defined in Globals section
-    #checkov:skip=CKV_AWS_116:The queue itself has a DLQ
-    #checkov:skip=CKV_AWS_117:VPC not required
+    #checkov:skip=CKV_AWS_115:Defined in Globals
+    #checkov:skip=CKV_AWS_117:Defined in Globals
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: dist/sendEmailRequestToNotify/
@@ -325,6 +338,11 @@ Resources:
           Properties:
             Queue: !GetAtt SendEmailQueue.Arn
             BatchSize: 1
+      VpcConfig:
+        SubnetIds:
+          - Fn::ImportValue: !Sub ${VpcStackName}-ProtectedSubnetIdA
+          - Fn::ImportValue: !Sub ${VpcStackName}-ProtectedSubnetIdB
+          - Fn::ImportValue: !Sub ${VpcStackName}-ProtectedSubnetIdC
 
   SendEmailRequestToNotifyFunctionRole:
     Type: AWS::IAM::Role
@@ -345,7 +363,7 @@ Resources:
                 - lambda.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         - !Ref SendEmailRequestToNotifyFunctionPolicy
 
   SendEmailRequestToNotifyFunctionPolicy:
@@ -420,9 +438,8 @@ Resources:
       KmsMasterKeyId: '{{resolve:ssm:SqsKmsKeyArn}}'
 
   GenerateDownloadFunction:
-    #checkov:skip=CKV_AWS_117:VPC not required
-    #checkov:skip=CKV_AWS_115:Defined in Globals section
-    #checkov:skip=CKV_AWS_116:Queue we read from has DLQ set up
+    #checkov:skip=CKV_AWS_115:Defined in Globals
+    #checkov:skip=CKV_AWS_117:Defined in Globals
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: dist/generateDownload/
@@ -449,6 +466,11 @@ Resources:
             BatchSize: 1
       FunctionName: !Sub ${AWS::StackName}-generate-download
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
+      VpcConfig:
+        SubnetIds:
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdA
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdB
+          - Fn::ImportValue: !Sub ${VpcStackName}-PrivateSubnetIdC
 
   GenerateDownloadFunctionRole:
     Type: AWS::IAM::Role
@@ -469,7 +491,7 @@ Resources:
                 - lambda.amazonaws.com
             Action: sts:AssumeRole
       ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         - !Ref GenerateDownloadFunctionPolicy
 
   GenerateDownloadFunctionPolicy:
