@@ -145,6 +145,7 @@ Resources:
           LINK_EXPIRY_TIME: '{{resolve:ssm:LINK_EXPIRY_TIME}}'
           AUDIT_DATA_REQUEST_EVENTS_QUEUE_URL: '{{resolve:ssm:AuditDataRequestEventsQueueUrl}}'
       FunctionName: !Sub ${AWS::StackName}-confirm-download-page
+      MemorySize: 256
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Role: !GetAtt ConfirmDownloadFunctionRole.Arn
       Events:
@@ -252,6 +253,7 @@ Resources:
             Method: get
             Path: /secure/{downloadHash}
       FunctionName: !Sub ${AWS::StackName}-download-warning-page
+      MemorySize: 512
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Role: !GetAtt DownloadWarningFunctionRole.Arn
       VpcConfig:
@@ -330,6 +332,7 @@ Resources:
           USE_NOTIFY_MOCK_SERVER: !If [IsStubbedEnvironment, 'true', 'false']
           MOCK_SERVER_BASE_URL: 'https://mockserver.transaction.build.account.gov.uk'
       FunctionName: !Sub ${AWS::StackName}-send-email-request-to-notify
+      MemorySize: 256
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       Role: !GetAtt SendEmailRequestToNotifyFunctionRole.Arn
       Events:
@@ -465,6 +468,7 @@ Resources:
             Queue: !Sub 'arn:aws:sqs:${AWS::Region}:{{resolve:ssm:AuditAccountNumber}}:txma-data-analysis-${Environment}-query-completed-queue'
             BatchSize: 1
       FunctionName: !Sub ${AWS::StackName}-generate-download
+      MemorySize: 512
       KmsKeyArn: '{{resolve:ssm:LambdaKmsKeyArn}}'
       VpcConfig:
         SubnetIds:
