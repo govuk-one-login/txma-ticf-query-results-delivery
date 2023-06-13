@@ -33,9 +33,9 @@
     "notifications-node-client": "5.2.3"
   },
   "devDependencies": {
-    "@aws-sdk/client-cloudformation": "3.224.0",
-    "@aws-sdk/client-lambda": "3.163.0",
-    "@aws-sdk/client-ssm": "3.163.0",
+    "@aws-sdk/client-cloudformation": "3.350.0",
+    "@aws-sdk/client-lambda": "3.350.0",
+    "@aws-sdk/client-ssm": "3.350.0",
     "@types/aws-lambda": "8.10.114",
     "@types/jest": "29.4.0",
     "@types/jest-when": "3.5.2",
