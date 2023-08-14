@@ -317,8 +317,8 @@ const downloadConfirmResponse = (downloadsRemaining: number) => {
             </form>
             <p class="govuk-body">
               You have ${downloadsRemaining} download${
-    downloadsRemaining > 1 ? 's' : ''
-  } remaining.
+                downloadsRemaining > 1 ? 's' : ''
+              } remaining.
             </p>
           </div>
         </main>
