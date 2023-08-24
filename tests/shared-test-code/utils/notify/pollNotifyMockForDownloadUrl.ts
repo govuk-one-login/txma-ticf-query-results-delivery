@@ -35,5 +35,12 @@ const getDownloadUrlFromNotifyMock = async (zendeskId: string) => {
     // having to try/catch.
     validateStatus: () => true
   })
+
+  if (response.status !== 200 && response.status !== 404) {
+    throw Error(
+      `Status code from Notify mock was: ${response.status}. Status text: ${response.statusText}`
+    )
+  }
+
   return response?.data?.secureDownloadUrl
 }
