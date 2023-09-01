@@ -27,9 +27,8 @@ export const handler = async (
     }
     const downloadHash = event.pathParameters.downloadHash as string
 
-    const downloadAvailabilityResult = await getDownloadAvailabilityResult(
-      downloadHash
-    )
+    const downloadAvailabilityResult =
+      await getDownloadAvailabilityResult(downloadHash)
     logger.info('Finished getting download record')
 
     if (!downloadAvailabilityResult.canDownload) {
