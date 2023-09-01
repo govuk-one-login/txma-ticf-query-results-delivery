@@ -47,7 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/parser", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:6.3.0"],\
             ["aws-sdk-client-mock", "npm:3.0.0"],\
             ["aws-sdk-client-mock-jest", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:3.0.0"],\
-            ["axios", "npm:1.4.0"],\
+            ["axios", "npm:1.5.0"],\
             ["esbuild", "npm:0.19.2"],\
             ["eslint", "npm:8.47.0"],\
             ["eslint-config-prettier", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:9.0.0"],\
@@ -4915,15 +4915,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/axios-npm-0.25.0-a1c287d287-2a8a3787c0.zip/node_modules/axios/",\
           "packageDependencies": [\
             ["axios", "npm:0.25.0"],\
-            ["follow-redirects", "virtual:4d7ce8ca3e1e44d82523fba2ad95e1be18c4e9f8dec6d551377587540da3ed75bd8bd3e812280309a3b90cfdb0560f076f3552a20839f7f15665207a4fbd588a#npm:1.15.2"]\
+            ["follow-redirects", "virtual:35a845e191d5a8a7376e256c81e9e855732385142c5dc9e26f0b8393c2fb4673b81fed201d5f2c5ab96fb727142683ac03329eab760f2c4870779d4bda6abe8f#npm:1.15.2"]\
           ],\
           "linkType": "HARD"\
         }],\
-        ["npm:1.4.0", {\
-          "packageLocation": "./.yarn/cache/axios-npm-1.4.0-4d7ce8ca3e-7fb6a4313b.zip/node_modules/axios/",\
+        ["npm:1.5.0", {\
+          "packageLocation": "./.yarn/cache/axios-npm-1.5.0-35a845e191-e7405a5dbb.zip/node_modules/axios/",\
           "packageDependencies": [\
-            ["axios", "npm:1.4.0"],\
-            ["follow-redirects", "virtual:4d7ce8ca3e1e44d82523fba2ad95e1be18c4e9f8dec6d551377587540da3ed75bd8bd3e812280309a3b90cfdb0560f076f3552a20839f7f15665207a4fbd588a#npm:1.15.2"],\
+            ["axios", "npm:1.5.0"],\
+            ["follow-redirects", "virtual:35a845e191d5a8a7376e256c81e9e855732385142c5dc9e26f0b8393c2fb4673b81fed201d5f2c5ab96fb727142683ac03329eab760f2c4870779d4bda6abe8f#npm:1.15.2"],\
             ["form-data", "npm:4.0.0"],\
             ["proxy-from-env", "npm:1.1.0"]\
           ],\
@@ -5631,7 +5631,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/parser", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:6.3.0"],\
             ["aws-sdk-client-mock", "npm:3.0.0"],\
             ["aws-sdk-client-mock-jest", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:3.0.0"],\
-            ["axios", "npm:1.4.0"],\
+            ["axios", "npm:1.5.0"],\
             ["esbuild", "npm:0.19.2"],\
             ["eslint", "npm:8.47.0"],\
             ["eslint-config-prettier", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:9.0.0"],\
@@ -6339,10 +6339,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:4d7ce8ca3e1e44d82523fba2ad95e1be18c4e9f8dec6d551377587540da3ed75bd8bd3e812280309a3b90cfdb0560f076f3552a20839f7f15665207a4fbd588a#npm:1.15.2", {\
-          "packageLocation": "./.yarn/__virtual__/follow-redirects-virtual-359bc4c55c/0/cache/follow-redirects-npm-1.15.2-1ec1dd82be-faa66059b6.zip/node_modules/follow-redirects/",\
+        ["virtual:35a845e191d5a8a7376e256c81e9e855732385142c5dc9e26f0b8393c2fb4673b81fed201d5f2c5ab96fb727142683ac03329eab760f2c4870779d4bda6abe8f#npm:1.15.2", {\
+          "packageLocation": "./.yarn/__virtual__/follow-redirects-virtual-2e83874824/0/cache/follow-redirects-npm-1.15.2-1ec1dd82be-faa66059b6.zip/node_modules/follow-redirects/",\
           "packageDependencies": [\
-            ["follow-redirects", "virtual:4d7ce8ca3e1e44d82523fba2ad95e1be18c4e9f8dec6d551377587540da3ed75bd8bd3e812280309a3b90cfdb0560f076f3552a20839f7f15665207a4fbd588a#npm:1.15.2"],\
+            ["follow-redirects", "virtual:35a845e191d5a8a7376e256c81e9e855732385142c5dc9e26f0b8393c2fb4673b81fed201d5f2c5ab96fb727142683ac03329eab760f2c4870779d4bda6abe8f#npm:1.15.2"],\
             ["@types/debug", null],\
             ["debug", null]\
           ],\
