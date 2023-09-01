@@ -38,9 +38,8 @@ const getDownloadUrlFromNotifyApi = async (
 const queryNotifyEmailRequests = async (
   zendeskId: string
 ): Promise<NotificationObject[] | undefined> => {
-  const response: NotificationsResponse = await getNotificationsFromNotify(
-    zendeskId
-  )
+  const response: NotificationsResponse =
+    await getNotificationsFromNotify(zendeskId)
 
   if (!response.notifications.length) {
     return undefined
