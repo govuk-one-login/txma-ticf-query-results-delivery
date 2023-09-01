@@ -41,7 +41,7 @@
     "@types/jest-when": "3.5.2",
     "@types/jsonwebtoken": "9.0.2",
     "@types/node": "18.17.5",
-    "@typescript-eslint/eslint-plugin": "6.3.0",
+    "@typescript-eslint/eslint-plugin": "6.5.0",
     "@typescript-eslint/parser": "6.3.0",
     "aws-sdk-client-mock": "3.0.0",
     "aws-sdk-client-mock-jest": "3.0.0",
