@@ -4598,7 +4598,7 @@ __metadata:
     jest-when: 3.6.0
     jsonwebtoken: 9.0.1
     lint-staged: 14.0.0
-    node-html-parser: 6.1.5
+    node-html-parser: 6.1.6
     notifications-node-client: 7.0.3
     prettier: 3.0.1
     ts-jest: 29.1.1
@@ -6868,13 +6868,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-html-parser@npm:6.1.5":
-  version: 6.1.5
-  resolution: "node-html-parser@npm:6.1.5"
+"node-html-parser@npm:6.1.6":
+  version: 6.1.6
+  resolution: "node-html-parser@npm:6.1.6"
   dependencies:
     css-select: ^5.1.0
     he: 1.2.0
-  checksum: b54257b31954be17d473c86a2fede53d5e238708f3d88577c98881c28ab66013fd37044903f6f3cd662b56d882681fb511bca75a80a80b62f7111b32b39eebae
+  checksum: 594dd7daf9c4894be632070e08491e2ac0397c64fabd2cba15c5e7f62f74c6f2d7e3be40931c22033233525dd8fb98ebf3e3017001d7030fa7d0d387f2a18680
   languageName: node
   linkType: hard
 
