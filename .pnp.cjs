@@ -42,7 +42,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jest", "npm:29.5.3"],\
             ["@types/jest-when", "npm:3.5.2"],\
             ["@types/jsonwebtoken", "npm:9.0.2"],\
-            ["@types/node", "npm:18.17.5"],\
+            ["@types/node", "npm:18.17.12"],\
             ["@typescript-eslint/eslint-plugin", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:6.3.0"],\
             ["@typescript-eslint/parser", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:6.3.0"],\
             ["aws-sdk-client-mock", "npm:3.0.0"],\
@@ -4275,17 +4275,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/node", [\
+        ["npm:18.17.12", {\
+          "packageLocation": "./.yarn/cache/@types-node-npm-18.17.12-b09ca14003-79f8bcca30.zip/node_modules/@types/node/",\
+          "packageDependencies": [\
+            ["@types/node", "npm:18.17.12"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
         ["npm:18.17.4", {\
           "packageLocation": "./.yarn/cache/@types-node-npm-18.17.4-7b6cd3731e-d4c458202d.zip/node_modules/@types/node/",\
           "packageDependencies": [\
             ["@types/node", "npm:18.17.4"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
-        ["npm:18.17.5", {\
-          "packageLocation": "./.yarn/cache/@types-node-npm-18.17.5-e736eb2acc-b8c658a992.zip/node_modules/@types/node/",\
-          "packageDependencies": [\
-            ["@types/node", "npm:18.17.5"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -5626,7 +5626,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jest", "npm:29.5.3"],\
             ["@types/jest-when", "npm:3.5.2"],\
             ["@types/jsonwebtoken", "npm:9.0.2"],\
-            ["@types/node", "npm:18.17.5"],\
+            ["@types/node", "npm:18.17.12"],\
             ["@typescript-eslint/eslint-plugin", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:6.3.0"],\
             ["@typescript-eslint/parser", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:6.3.0"],\
             ["aws-sdk-client-mock", "npm:3.0.0"],\
@@ -9305,7 +9305,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@tsconfig/node12", "npm:1.0.11"],\
             ["@tsconfig/node14", "npm:1.0.3"],\
             ["@tsconfig/node16", "npm:1.0.3"],\
-            ["@types/node", "npm:18.17.5"],\
+            ["@types/node", "npm:18.17.12"],\
             ["@types/swc__core", null],\
             ["@types/swc__wasm", null],\
             ["@types/typescript", null],\
