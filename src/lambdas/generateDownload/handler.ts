@@ -1,8 +1,5 @@
 import { Context, SQSEvent } from 'aws-lambda'
-import {
-  isQueryCompleteMessage,
-  QueryCompleteMessage
-} from '../../types/queryCompleteMessage'
+import { isQueryCompleteMessage } from '../../types/queryCompleteMessage'
 import { isEmpty } from '../../utils/isEmpty'
 import { tryParseJSON } from '../../utils/tryParseJson'
 import { copyDataFromAthenaOutputBucket } from './copyDataFromAthenaOutputBucket'
@@ -29,25 +26,24 @@ export const handler = async (event: SQSEvent, context: Context) => {
     throw new Error('Event data was not of the correct type')
   }
 
-  const queryCompleteMessage = eventData as QueryCompleteMessage
-  appendZendeskIdToLogger(queryCompleteMessage.zendeskTicketId)
+  appendZendeskIdToLogger(eventData.zendeskTicketId)
 
   const downloadHash = generateSecureDownloadHash()
-  await copyDataFromAthenaOutputBucket(queryCompleteMessage.athenaQueryId)
+  await copyDataFromAthenaOutputBucket(eventData.athenaQueryId)
   logger.info('Finished copying data from Athena output bucket')
 
   await writeOutSecureDownloadRecord({
-    athenaQueryId: queryCompleteMessage.athenaQueryId,
+    athenaQueryId: eventData.athenaQueryId,
     downloadHash: downloadHash,
-    zendeskId: queryCompleteMessage.zendeskTicketId
+    zendeskId: eventData.zendeskTicketId
   })
   logger.info('Finished writing out secure download record')
 
   await queueSendResultsReadyEmail({
     downloadHash: downloadHash,
-    zendeskTicketId: queryCompleteMessage.zendeskTicketId,
-    recipientEmail: queryCompleteMessage.recipientEmail,
-    recipientName: queryCompleteMessage.recipientName
+    zendeskTicketId: eventData.zendeskTicketId,
+    recipientEmail: eventData.recipientEmail,
+    recipientName: eventData.recipientName
   })
 
   return {}

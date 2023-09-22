@@ -22,7 +22,7 @@ export const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   initialiseLogger(context)
   try {
-    if (!event.pathParameters || !event.pathParameters.downloadHash) {
+    if (!event.pathParameters?.downloadHash) {
       return invalidParametersResponse()
     }
     const downloadHash = event.pathParameters.downloadHash as string

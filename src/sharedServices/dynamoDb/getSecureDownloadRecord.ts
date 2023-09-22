@@ -14,7 +14,7 @@ export const getSecureDownloadRecord = async (
   }
 
   const data = await ddbClient.send(new GetItemCommand(params))
-  if (!data || !data.Item) {
+  if (!data?.Item) {
     return null
   }
 
@@ -37,5 +37,5 @@ export const getSecureDownloadRecord = async (
     )
   }
 
-  return record as SecureDownloadRecord
+  return record
 }
