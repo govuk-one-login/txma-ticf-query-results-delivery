@@ -40,7 +40,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@aws-sdk/util-endpoints", "npm:3.398.0"],\
             ["@types/aws-lambda", "npm:8.10.119"],\
             ["@types/jest", "npm:29.5.4"],\
-            ["@types/jest-when", "npm:3.5.2"],\
+            ["@types/jest-when", "npm:3.5.3"],\
             ["@types/jsonwebtoken", "npm:9.0.2"],\
             ["@types/node", "npm:18.17.12"],\
             ["@typescript-eslint/eslint-plugin", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:6.5.0"],\
@@ -3588,10 +3588,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/jest-when", [\
-        ["npm:3.5.2", {\
-          "packageLocation": "./.yarn/cache/@types-jest-when-npm-3.5.2-8b6f3f4c13-106230dd71.zip/node_modules/@types/jest-when/",\
+        ["npm:3.5.3", {\
+          "packageLocation": "./.yarn/cache/@types-jest-when-npm-3.5.3-0e9eb05086-5dc2661ad5.zip/node_modules/@types/jest-when/",\
           "packageDependencies": [\
-            ["@types/jest-when", "npm:3.5.2"],\
+            ["@types/jest-when", "npm:3.5.3"],\
             ["@types/jest", "npm:29.5.3"]\
           ],\
           "linkType": "HARD"\
@@ -4965,7 +4965,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@aws-sdk/util-endpoints", "npm:3.398.0"],\
             ["@types/aws-lambda", "npm:8.10.119"],\
             ["@types/jest", "npm:29.5.4"],\
-            ["@types/jest-when", "npm:3.5.2"],\
+            ["@types/jest-when", "npm:3.5.3"],\
             ["@types/jsonwebtoken", "npm:9.0.2"],\
             ["@types/node", "npm:18.17.12"],\
             ["@typescript-eslint/eslint-plugin", "virtual:f4cf8062f4bd40411a2f1b25fa93bd007018ede5c1086a59c7aba3ef16b0a24692bce57467a2372cec2aa9d44bdbe3fb8b7e0197194e0dbf63891b44950233f9#npm:6.5.0"],\
