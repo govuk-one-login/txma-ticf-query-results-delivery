@@ -38,7 +38,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@aws-sdk/client-ssm", "npm:3.398.0"],\
             ["@aws-sdk/s3-request-presigner", "npm:3.400.0"],\
             ["@aws-sdk/util-endpoints", "npm:3.398.0"],\
-            ["@types/aws-lambda", "npm:8.10.119"],\
+            ["@types/aws-lambda", "npm:8.10.122"],\
             ["@types/jest", "npm:29.5.4"],\
             ["@types/jest-when", "npm:3.5.2"],\
             ["@types/jsonwebtoken", "npm:9.0.2"],\
@@ -3466,10 +3466,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/aws-lambda", [\
-        ["npm:8.10.119", {\
-          "packageLocation": "./.yarn/cache/@types-aws-lambda-npm-8.10.119-a048853c12-56328bd147.zip/node_modules/@types/aws-lambda/",\
+        ["npm:8.10.122", {\
+          "packageLocation": "./.yarn/cache/@types-aws-lambda-npm-8.10.122-05da57bf10-5c2e02ae8f.zip/node_modules/@types/aws-lambda/",\
           "packageDependencies": [\
-            ["@types/aws-lambda", "npm:8.10.119"]\
+            ["@types/aws-lambda", "npm:8.10.122"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -4963,7 +4963,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@aws-sdk/client-ssm", "npm:3.398.0"],\
             ["@aws-sdk/s3-request-presigner", "npm:3.400.0"],\
             ["@aws-sdk/util-endpoints", "npm:3.398.0"],\
-            ["@types/aws-lambda", "npm:8.10.119"],\
+            ["@types/aws-lambda", "npm:8.10.122"],\
             ["@types/jest", "npm:29.5.4"],\
             ["@types/jest-when", "npm:3.5.2"],\
             ["@types/jsonwebtoken", "npm:9.0.2"],\
