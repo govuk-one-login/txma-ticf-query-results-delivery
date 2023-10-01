@@ -23,7 +23,7 @@
     "test:e2e:dev": "jest --setupFiles '<rootDir>/.env' -c tests/e2e-tests/jest.e2e.config.ts"
   },
   "dependencies": {
-    "@aws-lambda-powertools/logger": "1.12.1",
+    "@aws-lambda-powertools/logger": "1.14.0",
     "@aws-sdk/client-dynamodb": "3.398.0",
     "@aws-sdk/client-s3": "3.400.0",
     "@aws-sdk/client-secrets-manager": "3.398.0",
