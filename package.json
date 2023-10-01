@@ -45,7 +45,7 @@
     "@typescript-eslint/parser": "6.5.0",
     "aws-sdk-client-mock": "3.0.0",
     "aws-sdk-client-mock-jest": "3.0.0",
-    "axios": "1.5.0",
+    "axios": "1.5.1",
     "esbuild": "0.19.2",
     "eslint": "8.48.0",
     "eslint-config-prettier": "9.0.0",
