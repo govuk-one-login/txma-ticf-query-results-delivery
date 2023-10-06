@@ -47,7 +47,7 @@
     "aws-sdk-client-mock-jest": "3.0.0",
     "axios": "1.5.1",
     "esbuild": "0.19.4",
-    "eslint": "8.48.0",
+    "eslint": "8.50.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-jest": "27.4.2",
     "husky": "8.0.3",
