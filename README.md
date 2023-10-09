@@ -41,7 +41,7 @@ process.env.STACK_NAME='Set as a jest global. Value in AWS Cloudformation'
 ```
 
 You also need permissions to access AWS resources, which
-we do by authenticating against the desired AWS account (some options are the gds cli or running the script `assumeRole.sh` in the `di-txma-ticf-integration` repo).
+we do by authenticating against the desired AWS account (some options are the gds cli or running the script `assumeRole.sh` in the `txma-ticf-integration` repo).
 
 To run the tests:
 
