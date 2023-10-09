@@ -1,9 +1,9 @@
 {
-  "name": "di-txma-ticf-query-results-delivery",
+  "name": "txma-ticf-query-results-delivery",
   "description": "Deliver results of Athena queries to TICF analysts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alphagov/di-txma-ticf-query-results-delivery.git"
+    "url": "https://github.com/govuk-one-login/txma-ticf-query-results-delivery.git"
   },
   "author": "GDS",
   "license": "MIT",
