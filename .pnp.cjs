@@ -47,7 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/parser", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:6.8.0"],\
             ["aws-sdk-client-mock", "npm:3.0.0"],\
             ["aws-sdk-client-mock-jest", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:3.0.0"],\
-            ["axios", "npm:1.6.0"],\
+            ["axios", "npm:1.6.2"],\
             ["esbuild", "npm:0.19.5"],\
             ["eslint", "npm:8.51.0"],\
             ["eslint-config-prettier", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:9.0.0"],\
@@ -4138,15 +4138,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/axios-npm-0.25.0-a1c287d287-2a8a3787c0.zip/node_modules/axios/",\
           "packageDependencies": [\
             ["axios", "npm:0.25.0"],\
-            ["follow-redirects", "virtual:b0f6015a963175f08000990853b55c1a6d1a3722c7c1d5e0885425211ae7ee63bf6b96b7e997f23d1bc9573bb78556c981010ca3a2873c90fc1ce293c6dd5667#npm:1.15.2"]\
+            ["follow-redirects", "virtual:2334cb6eeeb6b3dfd608966f28539c2de97a7f40c2b9762074181b72a63a8cdcab5646db63b491e1572f204e304748e40aff79a28dbdc8ee85d2dd16cd3803c7#npm:1.15.2"]\
           ],\
           "linkType": "HARD"\
         }],\
-        ["npm:1.6.0", {\
-          "packageLocation": "./.yarn/cache/axios-npm-1.6.0-b0f6015a96-c7c9f2ae9e.zip/node_modules/axios/",\
+        ["npm:1.6.2", {\
+          "packageLocation": "./.yarn/cache/axios-npm-1.6.2-2334cb6eee-4a7429e2b7.zip/node_modules/axios/",\
           "packageDependencies": [\
-            ["axios", "npm:1.6.0"],\
-            ["follow-redirects", "virtual:b0f6015a963175f08000990853b55c1a6d1a3722c7c1d5e0885425211ae7ee63bf6b96b7e997f23d1bc9573bb78556c981010ca3a2873c90fc1ce293c6dd5667#npm:1.15.2"],\
+            ["axios", "npm:1.6.2"],\
+            ["follow-redirects", "virtual:2334cb6eeeb6b3dfd608966f28539c2de97a7f40c2b9762074181b72a63a8cdcab5646db63b491e1572f204e304748e40aff79a28dbdc8ee85d2dd16cd3803c7#npm:1.15.2"],\
             ["form-data", "npm:4.0.0"],\
             ["proxy-from-env", "npm:1.1.0"]\
           ],\
@@ -5515,10 +5515,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:b0f6015a963175f08000990853b55c1a6d1a3722c7c1d5e0885425211ae7ee63bf6b96b7e997f23d1bc9573bb78556c981010ca3a2873c90fc1ce293c6dd5667#npm:1.15.2", {\
-          "packageLocation": "./.yarn/__virtual__/follow-redirects-virtual-3a716be5a9/0/cache/follow-redirects-npm-1.15.2-1ec1dd82be-faa66059b6.zip/node_modules/follow-redirects/",\
+        ["virtual:2334cb6eeeb6b3dfd608966f28539c2de97a7f40c2b9762074181b72a63a8cdcab5646db63b491e1572f204e304748e40aff79a28dbdc8ee85d2dd16cd3803c7#npm:1.15.2", {\
+          "packageLocation": "./.yarn/__virtual__/follow-redirects-virtual-61293b4c97/0/cache/follow-redirects-npm-1.15.2-1ec1dd82be-faa66059b6.zip/node_modules/follow-redirects/",\
           "packageDependencies": [\
-            ["follow-redirects", "virtual:b0f6015a963175f08000990853b55c1a6d1a3722c7c1d5e0885425211ae7ee63bf6b96b7e997f23d1bc9573bb78556c981010ca3a2873c90fc1ce293c6dd5667#npm:1.15.2"],\
+            ["follow-redirects", "virtual:2334cb6eeeb6b3dfd608966f28539c2de97a7f40c2b9762074181b72a63a8cdcab5646db63b491e1572f204e304748e40aff79a28dbdc8ee85d2dd16cd3803c7#npm:1.15.2"],\
             ["@types/debug", null],\
             ["debug", null]\
           ],\
@@ -8633,7 +8633,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/parser", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:6.8.0"],\
             ["aws-sdk-client-mock", "npm:3.0.0"],\
             ["aws-sdk-client-mock-jest", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:3.0.0"],\
-            ["axios", "npm:1.6.0"],\
+            ["axios", "npm:1.6.2"],\
             ["esbuild", "npm:0.19.5"],\
             ["eslint", "npm:8.51.0"],\
             ["eslint-config-prettier", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:9.0.0"],\
