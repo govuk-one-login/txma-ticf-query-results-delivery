@@ -60,7 +60,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jsonwebtoken", "npm:9.0.2"],\
             ["lint-staged", "npm:14.0.1"],\
             ["node-html-parser", "npm:6.1.10"],\
-            ["notifications-node-client", "npm:7.0.3"],\
+            ["notifications-node-client", "npm:7.0.6"],\
             ["prettier", "npm:3.0.3"],\
             ["ts-jest", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:29.1.1"],\
             ["ts-node", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:10.9.1"],\
@@ -4134,14 +4134,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["axios", [\
-        ["npm:0.25.0", {\
-          "packageLocation": "./.yarn/cache/axios-npm-0.25.0-a1c287d287-2a8a3787c0.zip/node_modules/axios/",\
-          "packageDependencies": [\
-            ["axios", "npm:0.25.0"],\
-            ["follow-redirects", "virtual:d7b9974d1bba76881cc57a280a16dd4914416a6fc4923c2efbb6328057412974da1e719cef1530b7a62b97d85d828f7e1d49b5f6de3b5b0854d49902ec87827c#npm:1.15.5"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:1.6.7", {\
           "packageLocation": "./.yarn/cache/axios-npm-1.6.7-d7b9974d1b-87d4d42992.zip/node_modules/axios/",\
           "packageDependencies": [\
@@ -7486,11 +7478,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["notifications-node-client", [\
-        ["npm:7.0.3", {\
-          "packageLocation": "./.yarn/cache/notifications-node-client-npm-7.0.3-b20ee09601-5e3ab2bd02.zip/node_modules/notifications-node-client/",\
+        ["npm:7.0.6", {\
+          "packageLocation": "./.yarn/cache/notifications-node-client-npm-7.0.6-47f74c20a5-91025e05a0.zip/node_modules/notifications-node-client/",\
           "packageDependencies": [\
-            ["notifications-node-client", "npm:7.0.3"],\
-            ["axios", "npm:0.25.0"],\
+            ["notifications-node-client", "npm:7.0.6"],\
+            ["axios", "npm:1.6.7"],\
             ["jsonwebtoken", "npm:9.0.2"]\
           ],\
           "linkType": "HARD"\
@@ -8646,7 +8638,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["jsonwebtoken", "npm:9.0.2"],\
             ["lint-staged", "npm:14.0.1"],\
             ["node-html-parser", "npm:6.1.10"],\
-            ["notifications-node-client", "npm:7.0.3"],\
+            ["notifications-node-client", "npm:7.0.6"],\
             ["prettier", "npm:3.0.3"],\
             ["ts-jest", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:29.1.1"],\
             ["ts-node", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:10.9.1"],\
