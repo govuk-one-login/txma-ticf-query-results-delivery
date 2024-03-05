@@ -3256,23 +3256,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.6.2":
-  version: 1.6.2
-  resolution: "axios@npm:1.6.2"
+"axios@npm:1.6.7, axios@npm:^1.6.1":
+  version: 1.6.7
+  resolution: "axios@npm:1.6.7"
   dependencies:
-    follow-redirects: ^1.15.0
+    follow-redirects: ^1.15.4
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
-  checksum: 4a7429e2b784be0f2902ca2680964391eae7236faa3967715f30ea45464b98ae3f1c6f631303b13dfe721b17126b01f486c7644b9ef276bfc63112db9fd379f8
-  languageName: node
-  linkType: hard
-
-"axios@npm:^0.25.0":
-  version: 0.25.0
-  resolution: "axios@npm:0.25.0"
-  dependencies:
-    follow-redirects: ^1.14.7
-  checksum: 2a8a3787c05f2a0c9c3878f49782357e2a9f38945b93018fb0c4fd788171c43dceefbb577988628e09fea53952744d1ecebde234b561f1e703aa43e0a598a3ad
+  checksum: 87d4d429927d09942771f3b3a6c13580c183e31d7be0ee12f09be6d5655304996bb033d85e54be81606f4e89684df43be7bf52d14becb73a12727bf33298a082
   languageName: node
   linkType: hard
 
@@ -4448,13 +4439,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.14.7, follow-redirects@npm:^1.15.0":
-  version: 1.15.4
-  resolution: "follow-redirects@npm:1.15.4"
+"follow-redirects@npm:^1.15.4":
+  version: 1.15.5
+  resolution: "follow-redirects@npm:1.15.5"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: e178d1deff8b23d5d24ec3f7a94cde6e47d74d0dc649c35fc9857041267c12ec5d44650a0c5597ef83056ada9ea6ca0c30e7c4f97dbf07d035086be9e6a5b7b6
+  checksum: 5ca49b5ce6f44338cbfc3546823357e7a70813cecc9b7b768158a1d32c1e62e7407c944402a918ea8c38ae2e78266312d617dc68783fac502cbb55e1047b34ec
   languageName: node
   linkType: hard
 
@@ -6158,13 +6149,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"notifications-node-client@npm:7.0.3":
-  version: 7.0.3
-  resolution: "notifications-node-client@npm:7.0.3"
+"notifications-node-client@npm:7.0.6":
+  version: 7.0.6
+  resolution: "notifications-node-client@npm:7.0.6"
   dependencies:
-    axios: ^0.25.0
+    axios: ^1.6.1
     jsonwebtoken: ^9.0.0
-  checksum: 5e3ab2bd02c8ca72b9b77fde2c3be67690dad4b00564506846fc80a375aa8919ed3a04d0475509d15de275f3c9af5209ad0ebd0b146cae78440f0c441d1824e4
+  checksum: 91025e05a0d4c34459b15e7bb8a256222a59ce39ed0d74d6245ed749a6d03ad52d511413a931295064b0f4db27a7c670054ac60dfd823432cf8bcd7beb7bba21
   languageName: node
   linkType: hard
 
@@ -7134,7 +7125,7 @@ __metadata:
     "@typescript-eslint/parser": 6.8.0
     aws-sdk-client-mock: 3.0.0
     aws-sdk-client-mock-jest: 3.0.0
-    axios: 1.6.2
+    axios: 1.6.7
     esbuild: 0.19.5
     eslint: 8.51.0
     eslint-config-prettier: 9.0.0
@@ -7147,7 +7138,7 @@ __metadata:
     jsonwebtoken: 9.0.2
     lint-staged: 14.0.1
     node-html-parser: 6.1.10
-    notifications-node-client: 7.0.3
+    notifications-node-client: 7.0.6
     prettier: 3.0.3
     ts-jest: 29.1.1
     ts-node: 10.9.1
