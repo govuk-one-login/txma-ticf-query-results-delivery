@@ -42,7 +42,7 @@ const readEnvVarsFromSecrets = async () => {
 
 const setMockServerNotifyDetails = () => {
   process.env['NOTIFY_API_KEY'] = 'someFakeNotifyKey'
-  process.env['EMAIL_RECIPIENT'] = 'testRecipient@test.gov.uk'
+  process.env['EMAIL_RECIPIENT'] = 'testRecipient@example.gov.uk'
 }
 
 const readEnvVarsFromSSM = async () => {
