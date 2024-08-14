@@ -3388,7 +3388,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.7.4":
+"axios@npm:^1.6.1":
   version: 1.7.4
   resolution: "axios@npm:1.7.4"
   dependencies:
@@ -3396,17 +3396,6 @@ __metadata:
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
   checksum: 0c17039a9acfe6a566fca8431ba5c1b455c83d30ea6157fec68a6722878fcd30f3bd32d172f6bee0c51fe75ca98e6414ddcd968a87b5606b573731629440bfaf
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.6.1":
-  version: 1.7.3
-  resolution: "axios@npm:1.7.3"
-  dependencies:
-    follow-redirects: ^1.15.6
-    form-data: ^4.0.0
-    proxy-from-env: ^1.1.0
-  checksum: bc304d6da974922342aed7c33155934354429cdc7e1ba9d399ab9ff3ac76103f3697eeedf042a634d43cdae682182bcffd942291db42d2be45b750597cdd5eef
   languageName: node
   linkType: hard
 
@@ -7240,7 +7229,6 @@ __metadata:
     "@typescript-eslint/parser": 6.21.0
     aws-sdk-client-mock: 3.1.0
     aws-sdk-client-mock-jest: 3.1.0
-    axios: 1.7.4
     esbuild: 0.23.0
     eslint: 8.57.0
     eslint-config-prettier: 9.1.0
