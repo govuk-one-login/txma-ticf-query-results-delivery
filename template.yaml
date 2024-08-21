@@ -674,3 +674,84 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt IntegrationTestsSqsOperationsFunctionNameParameter.Value
       Principal: !Ref TestRoleArn
+
+  ConfirmDownloadRequestLambdaFilter:
+    Type: AWS::Logs::MetricFilter
+    Properties:
+      FilterPattern: 'Error while handling confirm download request'
+      LogGroupName: !Ref ConfirmDownloadFunctionLogs
+      MetricTransformations:
+        - MetricValue: '1'
+          MetricNamespace: TxMA/TICFIntegration/Logs
+          MetricName: 'ConfirmDownloadRequestLambdaMetric'
+
+  DownloadWarningLambdaFilter:
+    Type: AWS::Logs::MetricFilter
+    Properties:
+      FilterPattern: 'Error while handling download warning request'
+      LogGroupName: !Ref DownloadWarningFunctionLogs
+      MetricTransformations:
+        - MetricValue: '1'
+          MetricNamespace: TxMA/TICFIntegration/Logs
+          MetricName: 'DownloadWarningLambdaMetric'
+
+  SendEmailRequestToNotifyLambdaFilter:
+    Type: AWS::Logs::MetricFilter
+    Properties:
+      FilterPattern: 'requestNotSentToNotify'
+      LogGroupName: !Ref SendEmailRequestToNotifyLogs
+      MetricTransformations:
+        - MetricValue: '1'
+          MetricNamespace: TxMA/TICFIntegration/Logs
+          MetricName: 'SendEmailRequestToNotifyLambdaMetric'
+
+  ConfirmDownloadRequestLambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions:
+        - !ImportValue txma-alarms-slack-alerts-BuildNotificationTopicArn
+      AlarmDescription: 'An alarm that is triggered by an error within the ConfirmDownloadRequestFunction lambda.'
+      AlarmName: !Sub ${AWS::StackName}-confirm-download-lambda-alarm
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      DatapointsToAlarm: 1
+      EvaluationPeriods: 1
+      MetricName: ConfirmDownloadRequestLambdaMetric
+      Namespace: TxMA/TICFIntegration/Logs
+      Period: 3600
+      Statistic: Sum
+      Threshold: 1
+      TreatMissingData: notBreaching
+
+  DownloadWarningLambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions:
+        - !ImportValue txma-alarms-slack-alerts-BuildNotificationTopicArn
+      AlarmDescription: 'An alarm that is triggered by an error within the DownloadWarningFunction lambda.'
+      AlarmName: !Sub ${AWS::StackName}-download-warning-lambda-alarm
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      DatapointsToAlarm: 1
+      EvaluationPeriods: 1
+      MetricName: DownloadWarningLambdaMetric
+      Namespace: TxMA/TICFIntegration/Logs
+      Period: 3600
+      Statistic: Sum
+      Threshold: 1
+      TreatMissingData: notBreaching
+
+  SendEmailRequestToNotifyLambdaAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions:
+        - !ImportValue txma-alarms-slack-alerts-BuildNotificationTopicArn
+      AlarmDescription: 'An alarm that is triggered by an error with the event body or with trying to send the email in the SendEmailRequestToNotifyFunction lambda.'
+      AlarmName: !Sub ${AWS::StackName}-send-email-request-to-notify-lambda-alarm
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      DatapointsToAlarm: 1
+      EvaluationPeriods: 1
+      MetricName: SendEmailRequestToNotifyLambdaMetric
+      Namespace: TxMA/TICFIntegration/Logs
+      Period: 3600
+      Statistic: Sum
+      Threshold: 1
+      TreatMissingData: notBreaching
