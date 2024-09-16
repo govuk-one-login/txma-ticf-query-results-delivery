@@ -49,6 +49,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/parser", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:6.21.0"],\
             ["aws-sdk-client-mock", "npm:3.1.0"],\
             ["aws-sdk-client-mock-jest", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:3.1.0"],\
+            ["axios", "npm:1.7.4"],\
             ["esbuild", "npm:0.23.0"],\
             ["eslint", "npm:8.57.0"],\
             ["eslint-config-prettier", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:9.1.0"],\
@@ -7570,7 +7571,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@sinonjs/fake-timers", "npm:11.2.2"],\
             ["@sinonjs/text-encoding", "npm:0.7.2"],\
             ["just-extend", "npm:6.2.0"],\
-            ["path-to-regexp", "npm:6.2.2"]\
+            ["path-to-regexp", "npm:6.3.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7868,10 +7869,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["path-to-regexp", [\
-        ["npm:6.2.2", {\
-          "packageLocation": "./.yarn/cache/path-to-regexp-npm-6.2.2-0bf7f6805c-b7b0005c36.zip/node_modules/path-to-regexp/",\
+        ["npm:6.3.0", {\
+          "packageLocation": "./.yarn/cache/path-to-regexp-npm-6.3.0-ee2cdde576-eca78602e6.zip/node_modules/path-to-regexp/",\
           "packageDependencies": [\
-            ["path-to-regexp", "npm:6.2.2"]\
+            ["path-to-regexp", "npm:6.3.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -8785,6 +8786,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/parser", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:6.21.0"],\
             ["aws-sdk-client-mock", "npm:3.1.0"],\
             ["aws-sdk-client-mock-jest", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:3.1.0"],\
+            ["axios", "npm:1.7.4"],\
             ["esbuild", "npm:0.23.0"],\
             ["eslint", "npm:8.57.0"],\
             ["eslint-config-prettier", "virtual:5ced7e7435049ac2066b94634bd3374d4efdbf3bef09279d397541a7e8c6ea94bd35d427dad17e269736fec1229295fa96bd5b3ee70401e8fba424ff7fa03bf6#npm:9.1.0"],\
