@@ -501,7 +501,7 @@ Resources:
   SendEmailDeadLetterQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: !Sub ${AWS::StackName}-${Environment}-send-email-dead-letter-queue
+      QueueName: !Sub ${AWS::StackName}-${Environment}-send-email-dlq
       KmsMasterKeyId: '{{resolve:ssm:SqsKmsKeyArn}}'
 
   GenerateDownloadFunction:
