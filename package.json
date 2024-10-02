@@ -32,6 +32,9 @@
     "@aws-sdk/util-endpoints": "3.614.0",
     "notifications-node-client": "7.0.6"
   },
+  "resolutions": {
+    "micromatch": "4.0.8"
+  },
   "devDependencies": {
     "@aws-sdk/client-cloudformation": "3.624.0",
     "@aws-sdk/client-lambda": "3.624.0",
