@@ -1,9 +1,6 @@
-import {
-  CopyObjectCommand,
-  CopyObjectCommandInput,
-  S3Client
-} from '@aws-sdk/client-s3'
+import { CopyObjectCommand, CopyObjectCommandInput } from '@aws-sdk/client-s3'
 import { getEnv } from '../../utils/getEnv'
+import { s3Client } from '../../utils/awsSdkClients'
 
 export const copyDataFromAthenaOutputBucket = async (athenaQueryId: string) => {
   const copyObjectCommandInput: CopyObjectCommandInput = {
@@ -11,6 +8,5 @@ export const copyDataFromAthenaOutputBucket = async (athenaQueryId: string) => {
     Bucket: getEnv('QUERY_RESULTS_BUCKET_NAME'),
     Key: `${athenaQueryId}.csv`
   }
-  const client = new S3Client({ region: getEnv('AWS_REGION') })
-  await client.send(new CopyObjectCommand(copyObjectCommandInput))
+  await s3Client.send(new CopyObjectCommand(copyObjectCommandInput))
 }
