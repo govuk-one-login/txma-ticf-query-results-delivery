@@ -1,4 +1,4 @@
-import { ddbClient } from './dynamoDbClient'
+import { ddbClient } from '../../utils/awsSdkClients'
 import { getEnv } from '../../utils/getEnv'
 import { UpdateItemCommand } from '@aws-sdk/client-dynamodb'
 
