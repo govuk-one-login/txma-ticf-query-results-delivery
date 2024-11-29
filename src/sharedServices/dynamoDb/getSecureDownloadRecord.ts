@@ -4,7 +4,7 @@ import {
   SecureDownloadRecord
 } from '../../types/secureDownloadRecord'
 import { getEnv } from '../../utils/getEnv'
-import { ddbClient } from './dynamoDbClient'
+import { ddbClient } from '../../utils/awsSdkClients'
 export const getSecureDownloadRecord = async (
   downloadHash: string
 ): Promise<SecureDownloadRecord | null> => {
