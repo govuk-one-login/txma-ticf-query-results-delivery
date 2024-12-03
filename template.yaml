@@ -178,6 +178,9 @@ Resources:
       Name: !Sub ${AWS::StackName}-secure-fraud-site-api
       StageName: !Ref Environment
       TracingEnabled: true
+      Tags:
+        FMSRegionalPolicy: false
+        CustomPolicy: true
 
   ResultsApiBasePathMapping:
     Condition: ApiCustomDomain
