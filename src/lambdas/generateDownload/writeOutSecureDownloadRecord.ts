@@ -1,5 +1,5 @@
 import { PutItemCommand, PutItemCommandInput } from '@aws-sdk/client-dynamodb'
-import { ddbClient } from '../../sharedServices/dynamoDb/dynamoDbClient'
+import { ddbClient } from '../../utils/awsSdkClients'
 import {
   currentDateEpochMilliseconds,
   currentDateEpochSeconds
