@@ -53,14 +53,6 @@ Conditions:
   UseCanaryDeploy: !Or
     - !Equals [!Ref Environment, production]
     - !Equals [!Ref Environment, integration]
-  # temporary condition to progressively remove WebACL related resources as FMS migration progresses
-  NotFMSMigratedEnvironment:
-    !Or [
-      !Equals [!Ref Environment, build],
-      !Equals [!Ref Environment, staging],
-      !Equals [!Ref Environment, integration],
-      !Equals [!Ref Environment, production]
-    ]
 
 Mappings:
   EnvironmentConfiguration:
@@ -204,13 +196,6 @@ Resources:
       LogGroupName: !Ref ResultsApiAccessLogs
       FilterPattern: ''
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
-
-  SecureFraudApiWafAssociation:
-    Type: AWS::WAFv2::WebACLAssociation
-    Condition: NotFMSMigratedEnvironment
-    Properties:
-      ResourceArn: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}::/restapis/${ResultsApi}/stages/${ResultsApi.Stage}
-      WebACLArn: '{{resolve:ssm:SecureFraudApiWafAclArn}}'
 
   LambdaDeployRole:
     Type: AWS::IAM::Role
