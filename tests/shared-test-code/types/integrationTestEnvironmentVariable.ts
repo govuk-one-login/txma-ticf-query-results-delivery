@@ -1,4 +1,4 @@
-export type IntegrationTestEnvironmentVariable = {
+export interface IntegrationTestEnvironmentVariable {
   name:
     | 'AWS_REGION'
     | 'SQS_OPERATIONS_FUNCTION_NAME'

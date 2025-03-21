@@ -1,7 +1,7 @@
 import type { JestConfigWithTsJest } from 'ts-jest'
 
 const config: JestConfigWithTsJest = {
-  coveragePathIgnorePatterns: ['/.yarn/', '/dist/'],
+  coveragePathIgnorePatterns: ['/dist/'],
   globals: {
     NOTIFY_MOCK_SERVER_BASE_URL:
       'https://mockserver.transaction.build.account.gov.uk',

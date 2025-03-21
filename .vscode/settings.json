@@ -1,12 +1,12 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "eslint.nodePath": ".yarn/sdks",
-  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "eslint.nodePath": "./node_modules/eslint",
+  "prettier.prettierPath": "./node_modules/prettier/index.js",
   "search.exclude": {
-    "**/.yarn": true,
-    "**/.pnp.*": true
+    "**/node_modules": true,
+    "**/dist": true
   },
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "yaml.customTags": [
     "!Base64 scalar",

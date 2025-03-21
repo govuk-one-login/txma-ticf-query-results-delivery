@@ -1,4 +1,4 @@
-export type SQSPayload = {
+export interface SQSPayload {
   message: string
   queueUrl: string
 }

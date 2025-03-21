@@ -6,12 +6,9 @@
 .gitignore
 .husky
 .prettierignore
-.pnp.*
-.yarn
 CODEOWNERS
 coverage/
 dist/
 Dockerfile
 sonar-project.properties
-yarn.lock
 .nvmrc

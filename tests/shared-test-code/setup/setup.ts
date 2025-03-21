@@ -16,6 +16,7 @@ const isMainStack = stack === 'txma-query-results'
 
 module.exports = async () => {
   setEnvVarsFromJestGlobals()
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   isMainStack ? await readEnvVarsFromSecrets() : setMockServerNotifyDetails()
   await readEnvVarsFromSSM()
 }

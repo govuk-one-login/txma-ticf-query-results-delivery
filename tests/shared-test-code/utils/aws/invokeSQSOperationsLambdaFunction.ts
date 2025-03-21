@@ -32,8 +32,8 @@ const uint8ArrayToJson = (binArray: Uint8Array | undefined) => {
 
   let str = ''
 
-  for (let i = 0; i < binArray.length; i++) {
-    str += String.fromCharCode(binArray[i])
+  for (const byte of binArray) {
+    str += String.fromCharCode(byte)
   }
 
   return JSON.parse(str)

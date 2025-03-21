@@ -2,6 +2,7 @@ import {
   AttributeValue,
   DynamoDBClient,
   GetItemCommand,
+  GetItemCommandOutput,
   GetItemOutput
 } from '@aws-sdk/client-dynamodb'
 import {
@@ -49,7 +50,9 @@ describe('dynamoDBGet', () => {
   })
 
   it('Returns null if nothing found for hash', async () => {
-    dynamoMock.on(GetItemCommand).resolves(null)
+    dynamoMock
+      .on(GetItemCommand)
+      .resolves(null as unknown as GetItemCommandOutput)
 
     const result = await getSecureDownloadRecord(DOWNLOAD_HASH)
     expect(result).toBe(null)

@@ -12,9 +12,9 @@ jest.mock('./retrieveSecrets', () => ({
 }))
 
 const mockRetrieveSecrets = retrieveSecrets as jest.Mock<
-  Promise<{ [key: string]: string }>
+  Promise<Record<string, string>>
 >
-const givenSecretKeysSet = (secrets: { [key: string]: string }) => {
+const givenSecretKeysSet = (secrets: Record<string, string>) => {
   mockRetrieveSecrets.mockResolvedValue(secrets)
 }
 const allSecretKeys = {
@@ -38,7 +38,7 @@ describe('retrieveNotifySecrets', () => {
   it.each(['NOTIFY_API_KEY', 'NOTIFY_TEMPLATE_ID'])(
     `should throw an error when %p is not set`,
     async (keyToOmit) => {
-      const secretCollection: { [key: string]: string } = {
+      const secretCollection: Record<string, string> = {
         ...allSecretKeys
       }
       delete secretCollection[keyToOmit]

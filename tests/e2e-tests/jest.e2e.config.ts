@@ -1,7 +1,7 @@
 import type { JestConfigWithTsJest } from 'ts-jest'
 
 const config: JestConfigWithTsJest = {
-  coveragePathIgnorePatterns: ['/.yarn/', '/dist/'],
+  coveragePathIgnorePatterns: ['/dist/'],
   globals: {
     STACK_NAME: 'txma-query-results',
     AWS_REGION: 'eu-west-2'
