@@ -115,7 +115,7 @@ describe('initiate sendEmailRequest handler', () => {
         firstName: TEST_NOTIFY_NAME,
         secureDownloadUrl: TEST_SECURE_DOWNLOAD_URL,
         zendeskId: TEST_ZENDESK_TICKET_ID
-      } as { [key: string]: string }
+      } as Record<string, string>
       delete eventBodyParams[missingPropertyName]
 
       await expect(
@@ -140,7 +140,7 @@ describe('initiate sendEmailRequest handler', () => {
         firstName: TEST_NOTIFY_NAME,
         secureDownloadUrl: TEST_SECURE_DOWNLOAD_URL,
         zendeskId: TEST_ZENDESK_TICKET_ID
-      } as { [key: string]: string }
+      } as Record<string, string>
       eventBodyParams[emptyStringPropertyName] = ''
 
       await expect(
