@@ -4,7 +4,7 @@ const config: JestConfigWithTsJest = {
   coveragePathIgnorePatterns: ['/dist/'],
   preset: 'ts-jest',
   setupFiles: ['<rootDir>/common/utils/tests/setup/testEnvVars.ts'],
-  testMatch: ['<rootDir>/src/**/*.test.ts'],
+  testMatch: ['<rootDir>/src/**/*.test.ts', '<rootDir>/common/**/*.test.ts'],
   verbose: true
 }
 
