@@ -6,7 +6,7 @@ import {
   TEST_ATHENA_OUTPUT_LOCATION,
   TEST_ATHENA_QUERY_ID,
   TEST_QUERY_RESULTS_BUCKET_NAME
-} from '../../utils/tests/setup/testConstants'
+} from '../../../common/utils/tests/setup/testConstants'
 
 const s3MockClient = mockClient(S3Client)
 describe('copyDataFromAthenaOutputBucket', () => {

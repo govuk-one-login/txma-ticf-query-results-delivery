@@ -1,5 +1,5 @@
 import { checkSecretsSet } from './checkSecrets'
-import { getEnv } from '../../utils/getEnv'
+import { getEnv } from '../../../common/utils/getEnv'
 import { retrieveSecrets } from './retrieveSecrets'
 
 export const retrieveNotifySecrets = async () => {

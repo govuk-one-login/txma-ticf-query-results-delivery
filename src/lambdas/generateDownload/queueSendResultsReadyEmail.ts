@@ -1,6 +1,6 @@
-import { logger } from '../../sharedServices/logger'
-import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
-import { getEnv } from '../../utils/getEnv'
+import { logger } from '../../../common/sharedServices/logger'
+import { sendSqsMessage } from '../../../common/sharedServices/queue/sendSqsMessage'
+import { getEnv } from '../../../common/utils/getEnv'
 export const queueSendResultsReadyEmail = async (parameters: {
   downloadHash: string
   zendeskTicketId: string

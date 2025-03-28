@@ -1,20 +1,23 @@
-import { defaultApiRequest } from '../../utils/tests/defaultApiRequest'
+import { defaultApiRequest } from '../../../common/utils/tests/defaultApiRequest'
 import { handler } from './handler'
-import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
+import { getDownloadAvailabilityResult } from '../../../common/sharedServices/getDownloadAvailabilityResult'
 import { when } from 'jest-when'
-import { logger } from '../../sharedServices/logger'
+import { logger } from '../../../common/sharedServices/logger'
 import {
   DOWNLOAD_HASH,
   TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_S3_OBJECT_KEY,
   TEST_ZENDESK_TICKET_ID
-} from '../../utils/tests/setup/testConstants'
-import { mockLambdaContext } from '../../utils/tests/mocks/mockLambdaContext'
-import { assertSecurityHeadersSet } from '../../utils/tests/assertSecurityHeadersSet'
+} from '../../../common/utils/tests/setup/testConstants'
+import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
+import { assertSecurityHeadersSet } from '../../../common/utils/tests/assertSecurityHeadersSet'
 
-jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
-  getDownloadAvailabilityResult: jest.fn()
-}))
+jest.mock(
+  '../../../common/sharedServices/getDownloadAvailabilityResult',
+  () => ({
+    getDownloadAvailabilityResult: jest.fn()
+  })
+)
 
 const TEST_DOWNLOADS_REMAINING = 3
 

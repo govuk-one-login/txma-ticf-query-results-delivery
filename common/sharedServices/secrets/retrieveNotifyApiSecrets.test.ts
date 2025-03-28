@@ -5,7 +5,7 @@ import { retrieveSecrets } from './retrieveSecrets'
 import {
   TEST_NOTIFY_API_SECRETS_ARN,
   ALL_NOTIFY_SECRETS
-} from '../../utils/tests/setup/testConstants'
+} from '../../../common/utils/tests/setup/testConstants'
 
 jest.mock('./retrieveSecrets', () => ({
   retrieveSecrets: jest.fn()

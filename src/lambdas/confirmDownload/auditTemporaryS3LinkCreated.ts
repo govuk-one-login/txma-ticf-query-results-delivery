@@ -1,7 +1,7 @@
-import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
-import { currentDateEpochSeconds } from '../../utils/currentDateEpoch'
-import { getEnv } from '../../utils/getEnv'
-import { logger } from '../../sharedServices/logger'
+import { sendSqsMessage } from '../../../common/sharedServices/queue/sendSqsMessage'
+import { currentDateEpochSeconds } from '../../../common/utils/currentDateEpoch'
+import { getEnv } from '../../../common/utils/getEnv'
+import { logger } from '../../../common/sharedServices/logger'
 export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
   try {
     const messageId = await sendSqsMessage(

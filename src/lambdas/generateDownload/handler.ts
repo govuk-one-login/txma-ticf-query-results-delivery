@@ -1,7 +1,7 @@
 import { Context, SQSEvent } from 'aws-lambda'
-import { isQueryCompleteMessage } from '../../types/queryCompleteMessage'
-import { isEmpty } from '../../utils/isEmpty'
-import { tryParseJSON } from '../../utils/tryParseJson'
+import { isQueryCompleteMessage } from '../../../common/types/queryCompleteMessage'
+import { isEmpty } from '../../../common/utils/isEmpty'
+import { tryParseJSON } from '../../../common/utils/tryParseJson'
 import { copyDataFromAthenaOutputBucket } from './copyDataFromAthenaOutputBucket'
 import { generateSecureDownloadHash } from './generateSecureDownloadHash'
 import { queueSendResultsReadyEmail } from './queueSendResultsReadyEmail'
@@ -10,7 +10,7 @@ import {
   appendZendeskIdToLogger,
   initialiseLogger,
   logger
-} from '../../sharedServices/logger'
+} from '../../../common/sharedServices/logger'
 
 export const handler = async (event: SQSEvent, context: Context) => {
   initialiseLogger(context)

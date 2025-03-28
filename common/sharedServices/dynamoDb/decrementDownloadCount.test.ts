@@ -2,8 +2,8 @@ import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb'
 import {
   DOWNLOAD_HASH,
   TEST_FRAUD_TABLE
-} from '../../utils/tests/setup/testConstants'
-import { decrementDownloadCount } from './decrementDownloadCount'
+} from '../../../common/utils/tests/setup/testConstants'
+import { decrementDownloadCount } from '../../../common/sharedServices/dynamoDb/decrementDownloadCount'
 import { mockClient } from 'aws-sdk-client-mock'
 import 'aws-sdk-client-mock-jest'
 

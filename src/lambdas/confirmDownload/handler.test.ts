@@ -1,32 +1,38 @@
-import { defaultApiRequest } from '../../utils/tests/defaultApiRequest'
+import { defaultApiRequest } from '../../../common/utils/tests/defaultApiRequest'
 import { handler } from './handler'
-import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
+import { getDownloadAvailabilityResult } from '../../../common/sharedServices/getDownloadAvailabilityResult'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
-import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
+import { decrementDownloadCount } from '../../../common/sharedServices/dynamoDb/decrementDownloadCount'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 import { when } from 'jest-when'
-import { logger } from '../../sharedServices/logger'
+import { logger } from '../../../common/sharedServices/logger'
 import {
   DOWNLOAD_HASH,
   TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_S3_OBJECT_KEY,
   TEST_SIGNED_URL,
   TEST_ZENDESK_TICKET_ID
-} from '../../utils/tests/setup/testConstants'
-import { mockLambdaContext } from '../../utils/tests/mocks/mockLambdaContext'
-import { assertSecurityHeadersSet } from '../../utils/tests/assertSecurityHeadersSet'
+} from '../../../common/utils/tests/setup/testConstants'
+import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
+import { assertSecurityHeadersSet } from '../../../common/utils/tests/assertSecurityHeadersSet'
 
-jest.mock('../../sharedServices/getDownloadAvailabilityResult', () => ({
-  getDownloadAvailabilityResult: jest.fn()
-}))
+jest.mock(
+  '../../../common/sharedServices/getDownloadAvailabilityResult',
+  () => ({
+    getDownloadAvailabilityResult: jest.fn()
+  })
+)
 
 jest.mock('./createTemporaryS3Link', () => ({
   createTemporaryS3Link: jest.fn()
 }))
 
-jest.mock('../../sharedServices/dynamoDb/decrementDownloadCount', () => ({
-  decrementDownloadCount: jest.fn()
-}))
+jest.mock(
+  '../../../common/sharedServices/dynamoDb/decrementDownloadCount',
+  () => ({
+    decrementDownloadCount: jest.fn()
+  })
+)
 
 jest.mock('./auditTemporaryS3LinkCreated', () => ({
   auditTemporaryS3LinkCreated: jest.fn()

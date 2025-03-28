@@ -11,16 +11,16 @@ import {
   TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_ZENDESK_TICKET_ID,
   TEST_DATABASE_TTL_HOURS
-} from '../../utils/tests/setup/testConstants'
+} from '../../../common/utils/tests/setup/testConstants'
 import {
   currentDateEpochMilliseconds,
   currentDateEpochSeconds
-} from '../../utils/currentDateEpoch'
+} from '../../../common/utils/currentDateEpoch'
 import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
 import { when } from 'jest-when'
 import 'aws-sdk-client-mock-jest'
 
-jest.mock('../../utils/currentDateEpoch', () => ({
+jest.mock('../../../common/utils/currentDateEpoch', () => ({
   currentDateEpochMilliseconds: jest.fn(),
   currentDateEpochSeconds: jest.fn()
 }))

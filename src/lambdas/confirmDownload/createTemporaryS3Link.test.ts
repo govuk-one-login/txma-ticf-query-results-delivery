@@ -6,7 +6,7 @@ import {
   TEST_QUERY_RESULTS_BUCKET_NAME,
   TEST_S3_OBJECT_KEY,
   TEST_SIGNED_URL
-} from '../../utils/tests/setup/testConstants'
+} from '../../../common/utils/tests/setup/testConstants'
 
 jest.mock('@aws-sdk/client-s3', () => ({
   S3Client: jest.fn().mockReturnValue({}),

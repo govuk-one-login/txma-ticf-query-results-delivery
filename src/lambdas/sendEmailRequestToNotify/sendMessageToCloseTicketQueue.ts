@@ -1,8 +1,8 @@
-import { notifyCopy } from '../../constants/notifyCopy'
-import { logger } from '../../sharedServices/logger'
-import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
-import { getEnv } from '../../utils/getEnv'
-import { interpolateTemplate } from '../../utils/interpolateTemplate'
+import { notifyCopy } from '../../../common/constants/notifyCopy'
+import { logger } from '../../../common/sharedServices/logger'
+import { sendSqsMessage } from '../../../common/sharedServices/queue/sendSqsMessage'
+import { getEnv } from '../../../common/utils/getEnv'
+import { interpolateTemplate } from '../../../common/utils/interpolateTemplate'
 
 export const sendMessageToCloseTicketQueue = async (
   zendeskId: string,

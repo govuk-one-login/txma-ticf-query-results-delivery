@@ -3,13 +3,13 @@ import {
   TEST_NOTIFY_NAME,
   TEST_SECURE_DOWNLOAD_URL,
   TEST_ZENDESK_TICKET_ID
-} from '../../utils/tests/setup/testConstants'
+} from '../../../common/utils/tests/setup/testConstants'
 import { handler } from './handler'
 import { sendEmailToNotify } from './sendEmailToNotify'
-import { constructSqsEvent } from '../../utils/tests/events/sqsEvent'
+import { constructSqsEvent } from '../../../common/utils/tests/events/sqsEvent'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
-import { logger } from '../../sharedServices/logger'
-import { mockLambdaContext } from '../../utils/tests/mocks/mockLambdaContext'
+import { logger } from '../../../common/sharedServices/logger'
+import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
 
 jest.mock('./sendEmailToNotify', () => ({
   sendEmailToNotify: jest.fn()

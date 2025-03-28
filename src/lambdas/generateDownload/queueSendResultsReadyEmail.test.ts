@@ -1,4 +1,4 @@
-import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
+import { sendSqsMessage } from '../../../common/sharedServices/queue/sendSqsMessage'
 import {
   DOWNLOAD_HASH,
   TEST_RECIPIENT_EMAIL,
@@ -6,8 +6,8 @@ import {
   TEST_SECURE_DOWNLOAD_LINK_BASE_URL,
   TEST_SEND_TO_EMAIL_QUEUE_URL,
   TEST_ZENDESK_TICKET_ID
-} from '../../utils/tests/setup/testConstants'
-jest.mock('../../sharedServices/queue/sendSqsMessage', () => ({
+} from '../../../common/utils/tests/setup/testConstants'
+jest.mock('../../../common/sharedServices/queue/sendSqsMessage', () => ({
   sendSqsMessage: jest.fn()
 }))
 import { queueSendResultsReadyEmail } from './queueSendResultsReadyEmail'

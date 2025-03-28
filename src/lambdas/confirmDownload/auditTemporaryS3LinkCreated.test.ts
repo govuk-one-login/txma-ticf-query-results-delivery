@@ -1,19 +1,19 @@
-import { sendSqsMessage } from '../../sharedServices/queue/sendSqsMessage'
-import { currentDateEpochSeconds } from '../../utils/currentDateEpoch'
+import { sendSqsMessage } from '../../../common/sharedServices/queue/sendSqsMessage'
+import { currentDateEpochSeconds } from '../../../common/utils/currentDateEpoch'
 import {
   TEST_AUDIT_DATA_REQUEST_EVENTS_QUEUE_URL,
   TEST_CURRENT_TIME_EPOCH_SECONDS,
   TEST_ZENDESK_TICKET_ID
-} from '../../utils/tests/setup/testConstants'
+} from '../../../common/utils/tests/setup/testConstants'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 import { when } from 'jest-when'
-import { logger } from '../../sharedServices/logger'
+import { logger } from '../../../common/sharedServices/logger'
 
-jest.mock('../../sharedServices/queue/sendSqsMessage', () => ({
+jest.mock('../../../common/sharedServices/queue/sendSqsMessage', () => ({
   sendSqsMessage: jest.fn()
 }))
 
-jest.mock('../../utils/currentDateEpoch', () => ({
+jest.mock('../../../common/utils/currentDateEpoch', () => ({
   currentDateEpochSeconds: jest.fn()
 }))
 
