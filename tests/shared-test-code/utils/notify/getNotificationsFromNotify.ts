@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { NotificationsResponse } from '../../types/notify/notificationsResponse'
+import { NotificationsResponse } from '../../../../common/types/notify/notificationsResponse'
 import { getIntegrationTestEnvironmentVariable } from '../getIntegrationTestEnvironmentVariable'
 import { generateNotifyToken } from './generateNotifyToken'
 
