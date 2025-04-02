@@ -1,6 +1,6 @@
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { GetObjectCommand } from '@aws-sdk/client-s3'
-import { s3Client } from '../../utils/awsSdkClients'
+import { s3Client } from '../../../common/utils/awsSdkClients'
 
 const SIGNED_URL_EXPIRY_SECONDS = 300
 

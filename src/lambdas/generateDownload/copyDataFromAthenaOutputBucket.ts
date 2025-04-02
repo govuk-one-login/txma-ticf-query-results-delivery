@@ -1,6 +1,6 @@
 import { CopyObjectCommand, CopyObjectCommandInput } from '@aws-sdk/client-s3'
-import { getEnv } from '../../utils/getEnv'
-import { s3Client } from '../../utils/awsSdkClients'
+import { getEnv } from '../../../common/utils/getEnv'
+import { s3Client } from '../../../common/utils/awsSdkClients'
 
 export const copyDataFromAthenaOutputBucket = async (athenaQueryId: string) => {
   const copyObjectCommandInput: CopyObjectCommandInput = {

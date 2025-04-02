@@ -1,16 +1,16 @@
 import { Context, SQSEvent } from 'aws-lambda'
 import { sendEmailToNotify } from './sendEmailToNotify'
-import { PersonalisationOptions } from '../../types/notify/personalisationOptions'
-import { tryParseJSON } from '../../utils/tryParseJson'
-import { interpolateTemplate } from '../../utils/interpolateTemplate'
-import { notifyCopy } from '../../constants/notifyCopy'
-import { NotifyError } from '../../types/notify/notifyError'
+import { PersonalisationOptions } from '../../../common/types/notify/personalisationOptions'
+import { tryParseJSON } from '../../../common/utils/tryParseJson'
+import { interpolateTemplate } from '../../../common/utils/interpolateTemplate'
+import { notifyCopy } from '../../../common/constants/notifyCopy'
+import { NotifyError } from '../../../common/types/notify/notifyError'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
 import {
   appendZendeskIdToLogger,
   initialiseLogger,
   logger
-} from '../../sharedServices/logger'
+} from '../../../common/sharedServices/logger'
 
 export const handler = async (event: SQSEvent, context: Context) => {
   initialiseLogger(context)

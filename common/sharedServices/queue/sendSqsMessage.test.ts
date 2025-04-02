@@ -1,6 +1,9 @@
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs'
-import { sendSqsMessage, sendSqsMessageWithStringBody } from './sendSqsMessage'
-import { testSqsMessageBody } from '../../utils/tests/setup/testSqsMessageBody'
+import {
+  sendSqsMessage,
+  sendSqsMessageWithStringBody
+} from '../../../common/sharedServices/queue/sendSqsMessage'
+import { testSqsMessageBody } from '../../../common/utils/tests/setup/testSqsMessageBody'
 import { mockClient } from 'aws-sdk-client-mock'
 import 'aws-sdk-client-mock-jest'
 

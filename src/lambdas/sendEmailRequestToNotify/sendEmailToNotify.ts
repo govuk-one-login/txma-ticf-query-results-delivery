@@ -1,8 +1,8 @@
 import { NotifyClient } from 'notifications-node-client'
-import { logger } from '../../sharedServices/logger'
-import { retrieveNotifySecrets } from '../../sharedServices/secrets/retrieveNotifyApiSecrets'
-import { PersonalisationOptions } from '../../types/notify/personalisationOptions'
-import { getEnv } from '../../utils/getEnv'
+import { logger } from '../../../common/sharedServices/logger'
+import { retrieveNotifySecrets } from '../../../common/sharedServices/secrets/retrieveNotifyApiSecrets'
+import { PersonalisationOptions } from '../../../common/types/notify/personalisationOptions'
+import { getEnv } from '../../../common/utils/getEnv'
 
 export const sendEmailToNotify = async (
   requestDetails: PersonalisationOptions

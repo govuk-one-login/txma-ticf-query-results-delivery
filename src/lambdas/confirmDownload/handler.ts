@@ -3,18 +3,18 @@ import {
   APIGatewayProxyEvent,
   Context
 } from 'aws-lambda'
-import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
+import { getDownloadAvailabilityResult } from '../../../common/sharedServices/getDownloadAvailabilityResult'
 import {
   invalidParametersResponse,
   notFoundResponse,
   serverErrorResponse,
   htmlResponse
-} from '../../sharedServices/responseHelpers'
+} from '../../../common/sharedServices/responseHelpers'
 import { createTemporaryS3Link } from './createTemporaryS3Link'
-import { decrementDownloadCount } from '../../sharedServices/dynamoDb/decrementDownloadCount'
+import { decrementDownloadCount } from '../../../common/sharedServices/dynamoDb/decrementDownloadCount'
 import { createDownloadPageResponse } from './createDownloadPageResponse'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
-import { initialiseLogger, logger } from '../../sharedServices/logger'
+import { initialiseLogger, logger } from '../../../common/sharedServices/logger'
 
 export const handler = async (
   event: APIGatewayProxyEvent,

@@ -1,6 +1,6 @@
 import { sendEmailToNotify } from './sendEmailToNotify'
 import { NotifyClient } from 'notifications-node-client'
-import { retrieveNotifySecrets } from '../../sharedServices/secrets/retrieveNotifyApiSecrets'
+import { retrieveNotifySecrets } from '../../../common/sharedServices/secrets/retrieveNotifyApiSecrets'
 import {
   ALL_NOTIFY_SECRETS,
   TEST_NOTIFY_EMAIL,
@@ -8,18 +8,21 @@ import {
   TEST_NOTIFY_RESPONSE_ID,
   TEST_SECURE_DOWNLOAD_URL,
   TEST_ZENDESK_TICKET_ID
-} from '../../utils/tests/setup/testConstants'
-import { testSuccessfulNotifyResponse } from '../../utils/tests/setup/testNotifyResponses'
-import { logger } from '../../sharedServices/logger'
+} from '../../../common/utils/tests/setup/testConstants'
+import { testSuccessfulNotifyResponse } from '../../../common/utils/tests/setup/testNotifyResponses'
+import { logger } from '../../../common/sharedServices/logger'
 
 jest.mock('notifications-node-client', () => ({
   NotifyClient: jest.fn().mockImplementation(() => {
     return { sendEmail: mockSendEmail }
   })
 }))
-jest.mock('../../sharedServices/secrets/retrieveNotifyApiSecrets', () => ({
-  retrieveNotifySecrets: jest.fn()
-}))
+jest.mock(
+  '../../../common/sharedServices/secrets/retrieveNotifyApiSecrets',
+  () => ({
+    retrieveNotifySecrets: jest.fn()
+  })
+)
 
 const mockRetrieveNotifySecrets = retrieveNotifySecrets as jest.Mock
 const mockSendEmail = jest.fn()

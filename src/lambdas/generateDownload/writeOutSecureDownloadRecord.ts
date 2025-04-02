@@ -1,10 +1,10 @@
 import { PutItemCommand, PutItemCommandInput } from '@aws-sdk/client-dynamodb'
-import { ddbClient } from '../../utils/awsSdkClients'
+import { ddbClient } from '../../../common/utils/awsSdkClients'
 import {
   currentDateEpochMilliseconds,
   currentDateEpochSeconds
-} from '../../utils/currentDateEpoch'
-import { getEnv } from '../../utils/getEnv'
+} from '../../../common/utils/currentDateEpoch'
+import { getEnv } from '../../../common/utils/getEnv'
 
 export const writeOutSecureDownloadRecord = async (parameters: {
   athenaQueryId: string

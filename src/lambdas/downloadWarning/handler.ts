@@ -3,14 +3,14 @@ import {
   APIGatewayProxyEvent,
   Context
 } from 'aws-lambda'
-import { getDownloadAvailabilityResult } from '../../sharedServices/getDownloadAvailabilityResult'
+import { getDownloadAvailabilityResult } from '../../../common/sharedServices/getDownloadAvailabilityResult'
 import {
   htmlResponse,
   invalidParametersResponse,
   notFoundResponse,
   serverErrorResponse
-} from '../../sharedServices/responseHelpers'
-import { initialiseLogger, logger } from '../../sharedServices/logger'
+} from '../../../common/sharedServices/responseHelpers'
+import { initialiseLogger, logger } from '../../../common/sharedServices/logger'
 
 export const handler = async (
   event: APIGatewayProxyEvent,

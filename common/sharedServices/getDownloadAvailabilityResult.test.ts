@@ -6,10 +6,10 @@ import {
   TEST_CREATED_DATE,
   TEST_LINK_EXPIRY_TIME,
   TEST_ZENDESK_TICKET_ID
-} from '../utils/tests/setup/testConstants'
+} from '../../common/utils/tests/setup/testConstants'
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
-import { getDownloadAvailabilityResult } from './getDownloadAvailabilityResult'
-import { isDateOverDaysLimit } from './isDateOverDaysLimit'
+import { getDownloadAvailabilityResult } from '../../common/sharedServices/getDownloadAvailabilityResult'
+import { isDateOverDaysLimit } from '../../common/sharedServices/isDateOverDaysLimit'
 jest.mock('./isDateOverDaysLimit', () => ({
   isDateOverDaysLimit: jest.fn()
 }))

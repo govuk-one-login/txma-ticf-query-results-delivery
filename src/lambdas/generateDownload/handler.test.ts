@@ -1,5 +1,5 @@
 import { handler } from './handler'
-import { constructSqsEvent } from '../../utils/tests/constructSqsEvent'
+import { constructSqsEvent } from '../../../common/utils/tests/constructSqsEvent'
 import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
 import { generateSecureDownloadHash } from './generateSecureDownloadHash'
 import { copyDataFromAthenaOutputBucket } from './copyDataFromAthenaOutputBucket'
@@ -11,8 +11,8 @@ import {
   TEST_RECIPIENT_EMAIL,
   TEST_RECIPIENT_NAME,
   TEST_ZENDESK_TICKET_ID
-} from '../../utils/tests/setup/testConstants'
-import { mockLambdaContext } from '../../utils/tests/mocks/mockLambdaContext'
+} from '../../../common/utils/tests/setup/testConstants'
+import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
 
 jest.mock('./writeOutSecureDownloadRecord', () => ({
   writeOutSecureDownloadRecord: jest.fn()
