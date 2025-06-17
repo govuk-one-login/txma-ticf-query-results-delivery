@@ -8,6 +8,9 @@
   "author": "GDS",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": "^22.0.0"
+  },
   "scripts": {
     "build": "tsc --noEmit && ts-node ./esbuild.config.ts",
     "lint": "prettier . --check || exit 1 ; eslint . --max-warnings=0",
