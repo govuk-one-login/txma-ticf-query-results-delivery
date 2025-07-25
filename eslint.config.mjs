@@ -3,7 +3,6 @@ import pluginJs from '@eslint/js'
 import tsEslint from 'typescript-eslint'
 import tsEslintParser from '@typescript-eslint/parser'
 import eslintConfigPrettier from 'eslint-config-prettier'
-import eslintPluginJest from 'eslint-plugin-jest'
 
 export default [
   { files: ['**/*.{js,ts}'] },
