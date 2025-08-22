@@ -19,6 +19,22 @@ This is an API Gateway, 2 AWS Lambda functions, a DynamoDB table and an S3 bucke
   - Send an HTTP Redirect to the user to the expiring link just generated
     - This will ensure that even if the user shares the link it cannot be downloaded unless they download it within the time above
 
+## Unit tests
+
+To run the unit tests, use the following command:
+
+```sh
+npm run test
+```
+
+You can also view code coverage reports by running this command:
+
+```sh
+npm run test:cov
+```
+
+And then opening the `coverage/lcov-report/index.html` page in your browser.
+
 ## Integration tests
 
 As well as the usual unit tests, we have some tests which hit the deployed Lambdas, including resources that help the tests set up the data that they need.
@@ -59,8 +75,11 @@ aws sso login
 
 To run the tests:
 
-run `npm run test:integration` (against your authenticated environment) OR
-`npm run test:integration:dev` (using environment variables from local .env file in the integration tests directory)
+- run `npm run test:integration` (against your authenticated environment)
+
+Or
+
+- run `npm run test:integration:dev` (using environment variables from local .env file in the integration tests directory)
 
 ## Using Docker locally
 

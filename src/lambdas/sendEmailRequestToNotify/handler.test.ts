@@ -1,3 +1,5 @@
+import { NotifyError } from '../../../common/types/notify/notifyError'
+
 import {
   TEST_NOTIFY_EMAIL,
   TEST_NOTIFY_NAME,
@@ -183,6 +185,28 @@ describe('initiate sendEmailRequest handler', () => {
     expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
       TEST_ZENDESK_TICKET_ID,
       successfulCommentCopyReference
+    )
+  })
+
+  it('formats notify errors correctly when notify service returns structured error', async () => {
+    const notifyError = new Error('Notify error') as Error & NotifyError
+    notifyError.response = {
+      data: {
+        errors: ['Email address is not valid']
+      }
+    }
+
+    mockSendEmailToNotify.mockImplementation(() => {
+      throw notifyError
+    })
+
+    await expect(callHandlerWithBody(validEventBody)).rejects.toThrow(
+      'Notify error'
+    )
+
+    expect(logger.error).toHaveBeenCalledWith(
+      'Could not send a request to Notify: Email address is not valid',
+      notifyError
     )
   })
 })

@@ -23,9 +23,11 @@ jobs:
           cache: npm
           cache-dependancy-path: package-lock.json
       - name: Install dependencies
-        run: npm install
+        run: npm ci # Use npm ci for deterministic installs
+      - name: Clear Jest cache
+        run: npx jest --clearCache
       - name: Generate coverage report
-        run: npm run test:cov
+        run: npm run test:cov -- --maxWorkers=2
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8 # v5.0.0
         env:
