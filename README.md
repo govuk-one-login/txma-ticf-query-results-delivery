@@ -75,8 +75,11 @@ aws sso login
 
 To run the tests:
 
-run `npm run test:integration` (against your authenticated environment) OR
-`npm run test:integration:dev` (using environment variables from local .env file in the integration tests directory)
+- run `npm run test:integration` (against your authenticated environment)
+
+Or
+
+- run `npm run test:integration:dev` (using environment variables from local .env file in the integration tests directory)
 
 ## Using Docker locally
 

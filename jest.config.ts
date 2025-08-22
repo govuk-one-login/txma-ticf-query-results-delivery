@@ -10,7 +10,6 @@ const baseCoverage = [
   '!**/interfaces/**',
   '!**/type/**',
   '!**/types/**',
-  // The buildLogger function doesn't have anything we can meaningfully test
   '!**/logger.ts',
   // ignoring the tests folder
   '!**/tests/**',
