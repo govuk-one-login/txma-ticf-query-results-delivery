@@ -1,11 +1,48 @@
 import type { JestConfigWithTsJest } from 'ts-jest'
 
+const baseCoverage = [
+  // scan all files
+  '<rootDir>/**/*.ts',
+  // scripts can be ignored
+  '!**/scripts/**',
+  // types can be ignored
+  '!**/interface/**',
+  '!**/interfaces/**',
+  '!**/type/**',
+  '!**/types/**',
+  // The buildLogger function doesn't have anything we can meaningfully test
+  '!**/logger.ts',
+  // ignoring the tests folder
+  '!**/tests/**',
+  // ignore config files
+  '!**/*.config.ts',
+  // ignore dotfiles
+  '!**/.*'
+]
+
 const config: JestConfigWithTsJest = {
-  coveragePathIgnorePatterns: ['/dist/'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '/build/'],
+  coverageProvider: 'v8',
   preset: 'ts-jest',
-  setupFiles: ['<rootDir>/common/utils/tests/setup/testEnvVars.ts'],
+  verbose: true,
+  testEnvironment: 'node',
   testMatch: ['<rootDir>/src/**/*.test.ts', '<rootDir>/common/**/*.test.ts'],
-  verbose: true
+  setupFiles: ['<rootDir>/common/utils/tests/setup/testEnvVars.ts'],
+  collectCoverageFrom: baseCoverage,
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: -10
+    },
+    '**/*.ts': {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: -10
+    }
+  }
 }
 
 export default config
