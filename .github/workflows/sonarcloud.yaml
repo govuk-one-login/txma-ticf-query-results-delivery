@@ -24,8 +24,6 @@ jobs:
           cache-dependancy-path: package-lock.json
       - name: Install dependencies
         run: npm ci
-      - name: Clear Jest cache
-        run: npx jest --clearCache
       - name: Generate coverage report
         run: npm run test:cov
       - name: SonarCloud Scan
