@@ -51,11 +51,23 @@ const requestDetails = {
 }
 
 describe('sendEmailToNotify', () => {
+  const originalEnv = process.env
+
+  beforeEach(() => {
+    process.env = { ...originalEnv }
+  })
+
   afterEach(() => {
     jest.clearAllMocks()
   })
+
+  afterAll(() => {
+    process.env = originalEnv
+  })
+
   it('given correct parameters, sends an email and logs the response information', async () => {
     jest.spyOn(logger, 'info')
+    process.env.USE_NOTIFY_MOCK_SERVER = 'false'
     givenNotifySecretsAvailable()
     givenSuccessfulSendEmailRequest()
 
@@ -82,7 +94,24 @@ describe('sendEmailToNotify', () => {
       }
     )
   })
+
+  it('given correct parameters and mock server enabled, uses mock server base URL', async () => {
+    jest.spyOn(logger, 'info')
+    process.env.USE_NOTIFY_MOCK_SERVER = 'true'
+    process.env.MOCK_SERVER_BASE_URL = 'http://mock-server'
+    givenNotifySecretsAvailable()
+    givenSuccessfulSendEmailRequest()
+
+    await sendEmailToNotify(requestDetails)
+
+    expect(NotifyClient).toHaveBeenCalledWith(
+      'http://mock-server',
+      ALL_NOTIFY_SECRETS.notifyApiKey
+    )
+  })
+
   it('given correct parameters and send email fails an error is thrown', async () => {
+    process.env.USE_NOTIFY_MOCK_SERVER = 'false'
     givenNotifySecretsAvailable()
     givenUnsuccessfulSendEmailRequest()
 
@@ -90,7 +119,9 @@ describe('sendEmailToNotify', () => {
       'A Notify related error'
     )
   })
+
   it('given correct parameters and no secrets are available, an error is thrown', async () => {
+    process.env.USE_NOTIFY_MOCK_SERVER = 'false'
     givenNotifySecretsUnavailable()
 
     await expect(sendEmailToNotify(requestDetails)).rejects.toThrow(
