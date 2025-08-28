@@ -23,7 +23,7 @@ COPY common ./common
 COPY tests/run-tests.sh /
 
 RUN corepack enable
-RUN npm install
+RUN npm ci
 RUN chmod +x /run-tests.sh
 
 WORKDIR /test-app/tests
