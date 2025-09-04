@@ -37,9 +37,9 @@
     "micromatch": "4.0.8"
   },
   "devDependencies": {
-    "@aws-sdk/client-cloudformation": "3.876.0",
-    "@aws-sdk/client-lambda": "3.876.0",
-    "@aws-sdk/client-ssm": "3.876.0",
+    "@aws-sdk/client-cloudformation": "3.879.0",
+    "@aws-sdk/client-lambda": "3.879.0",
+    "@aws-sdk/client-ssm": "3.879.0",
     "@eslint/js": "^9.34.0",
     "@types/aws-lambda": "8.10.152",
     "@types/jest": "^30.0.0",
@@ -55,7 +55,7 @@
     "eslint": "^9.34.0",
     "eslint-config-prettier": "10.1.8",
     "husky": "9.1.7",
-    "jest": "^30.1.1",
+    "jest": "^30.1.2",
     "jest-extended": "6.0.0",
     "jest-junit": "16.0.0",
     "jest-when": "3.7.0",
