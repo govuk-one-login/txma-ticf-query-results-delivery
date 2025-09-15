@@ -187,7 +187,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref ResultsApiAccessLogs
-      FilterPattern: ''
+      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   LambdaDeployRole:
@@ -330,7 +330,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref ConfirmDownloadFunctionLogs
-      FilterPattern: ''
+      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   DownloadWarningFunction:
@@ -423,7 +423,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref DownloadWarningFunctionLogs
-      FilterPattern: ''
+      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   SendEmailRequestToNotifyFunction:
@@ -541,7 +541,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref SendEmailRequestToNotifyLogs
-      FilterPattern: ''
+      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   SendEmailQueue:
@@ -681,7 +681,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref GenerateDownloadFunctionLogs
-      FilterPattern: ''
+      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   # Query results integration test resources
