@@ -28,6 +28,10 @@ Parameters:
     Type: String
     Description: The name of the stack containing the VPC
     Default: none
+  LogSubscriptionFilterPattern:
+    Type: String
+    Description: The default filter used when forwarding CloudWatch logs to external logging apps such as CSLS and Splunk
+    Default: '{ $.errorMessage || ($.level = * && $.level != %TRACE|DEBUG%) }'
 
 Conditions:
   ApiCustomDomain: !Not [!Equals [!Ref Environment, dev]]
@@ -187,7 +191,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref ResultsApiAccessLogs
-      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
+      FilterPattern: !Ref LogSubscriptionFilterPattern
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   LambdaDeployRole:
@@ -330,7 +334,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref ConfirmDownloadFunctionLogs
-      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
+      FilterPattern: !Ref LogSubscriptionFilterPattern
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   DownloadWarningFunction:
@@ -423,7 +427,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref DownloadWarningFunctionLogs
-      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
+      FilterPattern: !Ref LogSubscriptionFilterPattern
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   SendEmailRequestToNotifyFunction:
@@ -541,7 +545,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref SendEmailRequestToNotifyLogs
-      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
+      FilterPattern: !Ref LogSubscriptionFilterPattern
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   SendEmailQueue:
@@ -681,7 +685,7 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref GenerateDownloadFunctionLogs
-      FilterPattern: '{ $.level = * && $.level != %TRACE|DEBUG% }'
+      FilterPattern: !Ref LogSubscriptionFilterPattern
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   # Query results integration test resources
