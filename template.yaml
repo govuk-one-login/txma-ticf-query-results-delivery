@@ -191,12 +191,12 @@ Resources:
     Condition: CslsEgress
     Properties:
       LogGroupName: !Ref ResultsApiAccessLogs
-      FilterPattern: !Ref LogSubscriptionFilterPattern
+      FilterPattern: ''
       DestinationArn: '{{resolve:ssm:CSLSLogsDestination}}'
 
   LambdaDeployRole:
     Type: AWS::IAM::Role
-    # checkov:skip=CKV_AWS_111: "Ensure IAM policies does not allow write access without constraints
+    # checkov:skip=CKV_AWS_111: "Ensure IAM policies does not allow to write access without constraints
     # The network interface permissions can only be applied at the '*' resource level
     Properties:
       PermissionsBoundary: !If
