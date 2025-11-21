@@ -19,9 +19,13 @@ const config: JestConfigWithTsJest = {
       }
     ]
   ],
+  runner: 'jest-runner',
   setupFiles: ['<rootDir>/../shared-test-code/setup/setup.ts'],
   testMatch: ['<rootDir>/**/*.spec.ts'],
   testTimeout: 60000,
+  transform: {
+    '^.+.ts$': ['ts-jest', { useESM: true }]
+  },
   verbose: true
 }
 
