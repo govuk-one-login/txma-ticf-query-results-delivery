@@ -37,8 +37,8 @@
     "micromatch": "4.0.8"
   },
   "devDependencies": {
-    "@aws-sdk/client-cloudformation": "3.936.0",
-    "@aws-sdk/client-lambda": "3.936.0",
+    "@aws-sdk/client-cloudformation": "3.938.0",
+    "@aws-sdk/client-lambda": "3.938.0",
     "@aws-sdk/client-ssm": "3.936.0",
     "@eslint/js": "^9.39.1",
     "@types/aws-lambda": "8.10.159",
