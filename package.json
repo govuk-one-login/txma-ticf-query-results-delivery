@@ -25,11 +25,11 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "2.30.0",
-    "@aws-sdk/client-dynamodb": "3.956.0",
-    "@aws-sdk/client-s3": "3.956.0",
-    "@aws-sdk/client-secrets-manager": "3.956.0",
-    "@aws-sdk/client-sqs": "3.956.0",
-    "@aws-sdk/s3-request-presigner": "3.956.0",
+    "@aws-sdk/client-dynamodb": "3.983.0",
+    "@aws-sdk/client-s3": "3.983.0",
+    "@aws-sdk/client-secrets-manager": "3.983.0",
+    "@aws-sdk/client-sqs": "3.983.0",
+    "@aws-sdk/s3-request-presigner": "3.983.0",
     "@aws-sdk/util-endpoints": "3.956.0",
     "notifications-node-client": "8.2.1"
   },
@@ -37,9 +37,9 @@
     "micromatch": "4.0.8"
   },
   "devDependencies": {
-    "@aws-sdk/client-cloudformation": "3.936.0",
-    "@aws-sdk/client-lambda": "3.936.0",
-    "@aws-sdk/client-ssm": "3.936.0",
+    "@aws-sdk/client-cloudformation": "3.983.0",
+    "@aws-sdk/client-lambda": "3.983.0",
+    "@aws-sdk/client-ssm": "3.983.0",
     "@eslint/js": "^9.39.1",
     "@types/aws-lambda": "8.10.159",
     "@types/jest": "^30.0.0",
