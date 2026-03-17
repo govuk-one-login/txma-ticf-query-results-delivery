@@ -1,0 +1,13 @@
+{
+  "httpMethod": "POST",
+  "path": "/download/test-download-hash",
+  "headers": {},
+  "pathParameters": {
+    "downloadHash": "test-download-hash"
+  },
+  "body": null,
+  "isBase64Encoded": false,
+  "queryStringParameters": null,
+  "stageVariables": null,
+  "requestContext": {}
+}
