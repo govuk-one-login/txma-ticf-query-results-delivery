@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 22
           cache: npm
@@ -43,7 +43,7 @@ jobs:
         run: sam validate --lint
       - name: Run Checkov on SAM template
         if: always()
-        uses: bridgecrewio/checkov-action@1f64b282b7fd1cb3897c4b6123ac37a81ef6b214 # v12.3095.0
+        uses: bridgecrewio/checkov-action@3203f966a7ccd680cd8f6aaa3c3c5b0b3e9afa32 # v12.3099.0
         with:
           directory: '.'
           framework: cloudformation
