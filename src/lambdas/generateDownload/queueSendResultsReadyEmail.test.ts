@@ -7,8 +7,8 @@ import {
   TEST_SEND_TO_EMAIL_QUEUE_URL,
   TEST_ZENDESK_TICKET_ID
 } from '../../../common/utils/tests/setup/testConstants'
-jest.mock('../../../common/sharedServices/queue/sendSqsMessage', () => ({
-  sendSqsMessage: jest.fn()
+vi.mock('../../../common/sharedServices/queue/sendSqsMessage', () => ({
+  sendSqsMessage: vi.fn()
 }))
 import { queueSendResultsReadyEmail } from './queueSendResultsReadyEmail'
 

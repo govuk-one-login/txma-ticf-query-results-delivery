@@ -13,17 +13,18 @@ import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
 import { logger } from '../../../common/sharedServices/logger'
 import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
 
-jest.mock('./sendEmailToNotify', () => ({
-  sendEmailToNotify: jest.fn()
+vi.mock('./sendEmailToNotify', () => ({
+  sendEmailToNotify: vi.fn()
 }))
 
-jest.mock('./sendMessageToCloseTicketQueue', () => ({
-  sendMessageToCloseTicketQueue: jest.fn()
+vi.mock('./sendMessageToCloseTicketQueue', () => ({
+  sendMessageToCloseTicketQueue: vi.fn()
 }))
 
-const mockSendEmailToNotify = sendEmailToNotify as jest.Mock
-const mockSendMessageToCloseTicketQueue =
-  sendMessageToCloseTicketQueue as jest.Mock
+const mockSendEmailToNotify = vi.mocked(sendEmailToNotify)
+const mockSendMessageToCloseTicketQueue = vi.mocked(
+  sendMessageToCloseTicketQueue
+)
 
 const givenUnsuccessfulSendEmailToNotify = () => {
   mockSendEmailToNotify.mockImplementation(() => {
@@ -52,10 +53,10 @@ const unsuccessfulCommentCopyReference = 'resultNotEmailed'
 
 describe('initiate sendEmailRequest handler', () => {
   beforeEach(() => {
-    jest.spyOn(logger, 'error')
+    vi.spyOn(logger, 'error')
   })
   afterEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
   })
 
   it('creates a NotifyClient and calls sendEmail with correct parameters', async () => {

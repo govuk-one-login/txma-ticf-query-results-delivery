@@ -1,4 +1,3 @@
-import { resetAllWhenMocks, when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
   TEST_QUERY_RESULTS_BUCKET_NAME,
@@ -10,24 +9,24 @@ import {
 import { getSecureDownloadRecord } from './dynamoDb/getSecureDownloadRecord'
 import { getDownloadAvailabilityResult } from '../../common/sharedServices/getDownloadAvailabilityResult'
 import { isDateOverDaysLimit } from '../../common/sharedServices/isDateOverDaysLimit'
-jest.mock('./isDateOverDaysLimit', () => ({
-  isDateOverDaysLimit: jest.fn()
+vi.mock('./isDateOverDaysLimit', () => ({
+  isDateOverDaysLimit: vi.fn()
 }))
 
-jest.mock('./dynamoDb/getSecureDownloadRecord', () => ({
-  getSecureDownloadRecord: jest.fn()
+vi.mock('./dynamoDb/getSecureDownloadRecord', () => ({
+  getSecureDownloadRecord: vi.fn()
 }))
-jest.mock('../utils/currentDateEpoch', () => ({
-  currentDateEpochMilliseconds: jest.fn()
+vi.mock('../utils/currentDateEpoch', () => ({
+  currentDateEpochMilliseconds: vi.fn()
 }))
 
 describe('getDownloadAvailabilityResult', () => {
   beforeEach(() => {
-    resetAllWhenMocks()
+    vi.resetAllMocks()
   })
 
   const givenDownloadRecordAvailable = (downloadsRemaining: number) => {
-    when(getSecureDownloadRecord).mockResolvedValue({
+    vi.mocked(getSecureDownloadRecord).mockResolvedValue({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining,
       s3ResultsBucket: TEST_QUERY_RESULTS_BUCKET_NAME,
@@ -38,15 +37,15 @@ describe('getDownloadAvailabilityResult', () => {
   }
 
   const givenNoDownloadRecordAvailable = () => {
-    when(getSecureDownloadRecord).mockResolvedValue(null)
+    vi.mocked(getSecureDownloadRecord).mockResolvedValue(null)
   }
 
   const givenDateOverDateLimit = () => {
-    when(isDateOverDaysLimit).mockReturnValue(true)
+    vi.mocked(isDateOverDaysLimit).mockReturnValue(true)
   }
 
   const givenDateWithinDateLimit = () => {
-    when(isDateOverDaysLimit).mockReturnValue(false)
+    vi.mocked(isDateOverDaysLimit).mockReturnValue(false)
   }
 
   it.each([3, 2, 1])(
@@ -73,7 +72,7 @@ describe('getDownloadAvailabilityResult', () => {
 
   it('should return no available download result when the maximum number of downloads has been exceeded', async () => {
     givenDateWithinDateLimit()
-    when(getSecureDownloadRecord).mockResolvedValue({
+    vi.mocked(getSecureDownloadRecord).mockResolvedValue({
       downloadHash: DOWNLOAD_HASH,
       downloadsRemaining: 0,
       s3ResultsBucket: TEST_QUERY_RESULTS_BUCKET_NAME,

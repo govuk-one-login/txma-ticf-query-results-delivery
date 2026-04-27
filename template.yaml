@@ -125,7 +125,7 @@ Globals:
     PermissionsBoundary:
       !If [UsePermissionsBoundary, !Ref PermissionsBoundary, !Ref AWS::NoValue]
     ReservedConcurrentExecutions: 10
-    Runtime: nodejs22.x
+    Runtime: nodejs24.x
     Timeout: 15
     VpcConfig:
       SecurityGroupIds:
