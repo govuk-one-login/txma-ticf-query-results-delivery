@@ -1,15 +1,14 @@
 import { isDateOverDaysLimit } from './isDateOverDaysLimit'
 import { currentDateEpochMilliseconds } from '../utils/currentDateEpoch'
-import { when } from 'jest-when'
-jest.mock('../utils/currentDateEpoch', () => ({
-  currentDateEpochMilliseconds: jest.fn()
+vi.mock('../utils/currentDateEpoch', () => ({
+  currentDateEpochMilliseconds: vi.fn()
 }))
 
 describe('isDateOverDaysLimit', () => {
   const MOCK_CURRENT_TIME = 1666956229830
   const DAYS_LIMIT = 7
   beforeEach(() => {
-    when(currentDateEpochMilliseconds).mockReturnValue(MOCK_CURRENT_TIME)
+    vi.mocked(currentDateEpochMilliseconds).mockReturnValue(MOCK_CURRENT_TIME)
   })
   it('should return true if date is 1 millisecond over the limit', () => {
     const sevenDaysAgoPlusOneMillisecond =

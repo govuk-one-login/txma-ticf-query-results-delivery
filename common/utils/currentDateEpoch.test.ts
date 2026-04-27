@@ -5,13 +5,13 @@ import {
 
 describe('currentDateEpoch', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     // Mock Date.now to return a consistent value for testing
-    jest.spyOn(Date, 'now').mockReturnValue(1667836126000)
+    vi.spyOn(Date, 'now').mockReturnValue(1667836126000)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
   })
 
   describe('currentDateEpochSeconds', () => {

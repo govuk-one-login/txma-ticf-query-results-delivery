@@ -14,13 +14,12 @@ import {
 } from '../../../common/utils/tests/setup/testConstants'
 import { getSecureDownloadRecord } from './getSecureDownloadRecord'
 import { mockClient } from 'aws-sdk-client-mock'
-import 'aws-sdk-client-mock-jest'
 
 const dynamoMock = mockClient(DynamoDBClient)
 
 describe('dynamoDBGet', () => {
   beforeEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
   })
 
   const createMockDbContents = () => ({

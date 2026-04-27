@@ -1,1 +1,1 @@
-import 'jest-extended'
+export {}

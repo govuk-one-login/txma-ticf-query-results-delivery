@@ -1,33 +1,15 @@
 import { checkSecretsSet, retrieveSecretValue } from './retrieveSecretValue'
 import { retrieveSSMParameterValue } from './retrieveSSMParameterValue'
 
-// eslint-disable-next-line @typescript-eslint/prefer-namespace-keyword, @typescript-eslint/no-namespace
-declare module global {
-  const NOTIFY_MOCK_SERVER_BASE_URL: string
-  const STACK_NAME: string
-  const AWS_REGION: string
-}
-const region = global.AWS_REGION
-const stack = process.env.STACK_NAME
-  ? process.env.STACK_NAME
-  : global.STACK_NAME
+const region = process.env['AWS_REGION'] as string
+const stack = process.env['STACK_NAME'] as string
 
 const isMainStack = stack === 'txma-query-results'
 
-module.exports = async () => {
-  setEnvVarsFromJestGlobals()
+export default async () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   isMainStack ? await readEnvVarsFromSecrets() : setMockServerNotifyDetails()
   await readEnvVarsFromSSM()
-}
-
-const setEnvVarsFromJestGlobals = () => {
-  process.env['NOTIFY_MOCK_SERVER_BASE_URL'] =
-    global['NOTIFY_MOCK_SERVER_BASE_URL' as keyof typeof global]
-
-  process.env['STACK_NAME'] = global['STACK_NAME' as keyof typeof global]
-
-  process.env['AWS_REGION'] = global['AWS_REGION' as keyof typeof global]
 }
 
 const readEnvVarsFromSecrets = async () => {
