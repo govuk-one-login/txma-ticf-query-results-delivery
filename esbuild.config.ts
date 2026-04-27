@@ -1,7 +1,11 @@
 import esbuild from 'esbuild'
-import { readFileSync } from 'fs'
-import { join } from 'path'
+import { readFileSync, writeFileSync, mkdirSync } from 'fs'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 import { yamlParse } from 'yaml-cfn'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 interface IAwsResource {
   Type: string
@@ -40,6 +44,27 @@ esbuild
     outdir: 'dist',
     sourcesContent: false,
     sourcemap: 'inline',
-    target: 'es2022'
+    target: 'es2022',
+    banner: {
+      js: "import { createRequire } from 'module';const require = createRequire(import.meta.url);import { fileURLToPath } from 'url';import { dirname } from 'path';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);"
+    }
+  })
+  .then(() => {
+    // Create package.json with type: module for each Lambda function
+    lambdas.forEach((lambda) => {
+      const lambdaName = lambda.Properties.CodeUri.split('/')[1]
+      const lambdaDistPath = join(__dirname, 'dist', lambdaName)
+
+      mkdirSync(lambdaDistPath, { recursive: true })
+
+      const packageJson = {
+        type: 'module'
+      }
+
+      writeFileSync(
+        join(lambdaDistPath, 'package.json'),
+        JSON.stringify(packageJson, null, 2)
+      )
+    })
   })
   .catch(() => process.exit(1))

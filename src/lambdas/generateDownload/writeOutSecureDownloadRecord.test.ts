@@ -17,20 +17,20 @@ import {
   currentDateEpochSeconds
 } from '../../../common/utils/currentDateEpoch'
 import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
-import { when } from 'jest-when'
-import 'aws-sdk-client-mock-jest'
 
-jest.mock('../../../common/utils/currentDateEpoch', () => ({
-  currentDateEpochMilliseconds: jest.fn(),
-  currentDateEpochSeconds: jest.fn()
+vi.mock('../../../common/utils/currentDateEpoch', () => ({
+  currentDateEpochMilliseconds: vi.fn(),
+  currentDateEpochSeconds: vi.fn()
 }))
 
 const dynamoMock = mockClient(DynamoDBClient)
 const TEST_EPOCH_MILLISECONDS = 1666360736316
 const TEST_EPOCH_SECONDS = 1666360736
 describe('writeOutSecureDownloadRecord', () => {
-  when(currentDateEpochMilliseconds).mockReturnValue(TEST_EPOCH_MILLISECONDS)
-  when(currentDateEpochSeconds).mockReturnValue(TEST_EPOCH_SECONDS)
+  vi.mocked(currentDateEpochMilliseconds).mockReturnValue(
+    TEST_EPOCH_MILLISECONDS
+  )
+  vi.mocked(currentDateEpochSeconds).mockReturnValue(TEST_EPOCH_SECONDS)
   const basicRecordExpectation: PutItemCommandInput = {
     TableName: TEST_FRAUD_TABLE,
     Item: {
@@ -51,9 +51,8 @@ describe('writeOutSecureDownloadRecord', () => {
       downloadHash: DOWNLOAD_HASH,
       zendeskId: TEST_ZENDESK_TICKET_ID
     })
-    expect(dynamoMock).toHaveReceivedCommandWith(
-      PutItemCommand,
-      basicRecordExpectation
-    )
+    const calls = dynamoMock.commandCalls(PutItemCommand)
+    expect(calls).toHaveLength(1)
+    expect(calls[0].args[0].input).toMatchObject(basicRecordExpectation)
   })
 })

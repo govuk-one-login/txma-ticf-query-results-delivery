@@ -7,13 +7,11 @@ import {
   ALL_NOTIFY_SECRETS
 } from '../../../common/utils/tests/setup/testConstants'
 
-jest.mock('./retrieveSecrets', () => ({
-  retrieveSecrets: jest.fn()
+vi.mock('./retrieveSecrets', () => ({
+  retrieveSecrets: vi.fn()
 }))
 
-const mockRetrieveSecrets = retrieveSecrets as jest.Mock<
-  Promise<Record<string, string>>
->
+const mockRetrieveSecrets = vi.mocked(retrieveSecrets)
 const givenSecretKeysSet = (secrets: Record<string, string>) => {
   mockRetrieveSecrets.mockResolvedValue(secrets)
 }
@@ -44,7 +42,7 @@ describe('retrieveNotifySecrets', () => {
       delete secretCollection[keyToOmit]
       givenSecretKeysSet(secretCollection)
 
-      expect(retrieveNotifySecrets()).rejects.toThrow(
+      await expect(retrieveNotifySecrets()).rejects.toThrow(
         `Secret with key ${keyToOmit} not set in ${TEST_NOTIFY_API_SECRETS_ARN}`
       )
     }
