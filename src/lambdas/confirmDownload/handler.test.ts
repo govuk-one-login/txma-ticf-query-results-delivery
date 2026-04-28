@@ -4,7 +4,6 @@ import { getDownloadAvailabilityResult } from '../../../common/sharedServices/ge
 import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { decrementDownloadCount } from '../../../common/sharedServices/dynamoDb/decrementDownloadCount'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
-import { when } from 'jest-when'
 import { logger } from '../../../common/sharedServices/logger'
 import {
   DOWNLOAD_HASH,
@@ -16,42 +15,39 @@ import {
 import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
 import { assertSecurityHeadersSet } from '../../../common/utils/tests/assertSecurityHeadersSet'
 
-jest.mock(
-  '../../../common/sharedServices/getDownloadAvailabilityResult',
-  () => ({
-    getDownloadAvailabilityResult: jest.fn()
-  })
-)
-
-jest.mock('./createTemporaryS3Link', () => ({
-  createTemporaryS3Link: jest.fn()
+vi.mock('../../../common/sharedServices/getDownloadAvailabilityResult', () => ({
+  getDownloadAvailabilityResult: vi.fn()
 }))
 
-jest.mock(
+vi.mock('./createTemporaryS3Link', () => ({
+  createTemporaryS3Link: vi.fn()
+}))
+
+vi.mock(
   '../../../common/sharedServices/dynamoDb/decrementDownloadCount',
   () => ({
-    decrementDownloadCount: jest.fn()
+    decrementDownloadCount: vi.fn()
   })
 )
 
-jest.mock('./auditTemporaryS3LinkCreated', () => ({
-  auditTemporaryS3LinkCreated: jest.fn()
+vi.mock('./auditTemporaryS3LinkCreated', () => ({
+  auditTemporaryS3LinkCreated: vi.fn()
 }))
 
 describe('confirmDownload.handler', () => {
   beforeEach(() => {
-    jest.spyOn(logger, 'warn')
-    jest.spyOn(logger, 'error')
-    jest.resetAllMocks()
+    vi.spyOn(logger, 'warn')
+    vi.spyOn(logger, 'error')
+    vi.resetAllMocks()
   })
   const givenNoDownloadAvailable = () => {
-    when(getDownloadAvailabilityResult).mockResolvedValue({
+    vi.mocked(getDownloadAvailabilityResult).mockResolvedValue({
       canDownload: false
     })
   }
 
   const givenDownloadExpired = () => {
-    when(getDownloadAvailabilityResult).mockResolvedValue({
+    vi.mocked(getDownloadAvailabilityResult).mockResolvedValue({
       canDownload: false,
       zendeskId: TEST_ZENDESK_TICKET_ID
     })
@@ -70,7 +66,7 @@ describe('confirmDownload.handler', () => {
   }
 
   const givenDownloadAvailable = () => {
-    when(getDownloadAvailabilityResult).mockResolvedValue({
+    vi.mocked(getDownloadAvailabilityResult).mockResolvedValue({
       canDownload: true,
       s3ResultsBucket: TEST_QUERY_RESULTS_BUCKET_NAME,
       s3ResultsKey: TEST_S3_OBJECT_KEY,
@@ -89,7 +85,7 @@ describe('confirmDownload.handler', () => {
   })
 
   it('should return a 500 if there is an unexpected error', async () => {
-    when(getDownloadAvailabilityResult).mockRejectedValue('Some DB error')
+    vi.mocked(getDownloadAvailabilityResult).mockRejectedValue('Some DB error')
     const result = await invokeHandler()
 
     expect(result.statusCode).toEqual(500)
@@ -136,8 +132,7 @@ describe('confirmDownload.handler', () => {
 
   it('should return a refresh tag with a signed S3 URL if hash corresponds to a valid download entry', async () => {
     givenDownloadAvailable()
-    when(createTemporaryS3Link).mockResolvedValue(TEST_SIGNED_URL)
-
+    vi.mocked(createTemporaryS3Link).mockResolvedValue(TEST_SIGNED_URL)
     const result = await invokeHandler()
 
     expect(result.statusCode).toEqual(200)

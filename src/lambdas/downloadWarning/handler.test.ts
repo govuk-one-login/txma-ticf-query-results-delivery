@@ -1,7 +1,6 @@
 import { defaultApiRequest } from '../../../common/utils/tests/defaultApiRequest'
 import { handler } from './handler'
 import { getDownloadAvailabilityResult } from '../../../common/sharedServices/getDownloadAvailabilityResult'
-import { when } from 'jest-when'
 import { logger } from '../../../common/sharedServices/logger'
 import {
   DOWNLOAD_HASH,
@@ -12,27 +11,24 @@ import {
 import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
 import { assertSecurityHeadersSet } from '../../../common/utils/tests/assertSecurityHeadersSet'
 
-jest.mock(
-  '../../../common/sharedServices/getDownloadAvailabilityResult',
-  () => ({
-    getDownloadAvailabilityResult: jest.fn()
-  })
-)
+vi.mock('../../../common/sharedServices/getDownloadAvailabilityResult', () => ({
+  getDownloadAvailabilityResult: vi.fn()
+}))
 
 const TEST_DOWNLOADS_REMAINING = 3
 
 describe('downloadWarning.handler', () => {
-  beforeEach(() => jest.resetAllMocks())
-  jest.spyOn(logger, 'warn')
-  jest.spyOn(logger, 'error')
+  beforeEach(() => vi.resetAllMocks())
+  vi.spyOn(logger, 'warn')
+  vi.spyOn(logger, 'error')
   const givenNoDownloadAvailable = () => {
-    when(getDownloadAvailabilityResult).mockResolvedValue({
+    vi.mocked(getDownloadAvailabilityResult).mockResolvedValue({
       canDownload: false
     })
   }
 
   const givenDownloadExpired = () => {
-    when(getDownloadAvailabilityResult).mockResolvedValue({
+    vi.mocked(getDownloadAvailabilityResult).mockResolvedValue({
       canDownload: false,
       zendeskId: TEST_ZENDESK_TICKET_ID
     })
@@ -41,7 +37,7 @@ describe('downloadWarning.handler', () => {
   const givenDownloadAvailable = (
     downloadsRemaining = TEST_DOWNLOADS_REMAINING
   ) => {
-    when(getDownloadAvailabilityResult).mockResolvedValue({
+    vi.mocked(getDownloadAvailabilityResult).mockResolvedValue({
       downloadsRemaining,
       canDownload: true,
       s3ResultsBucket: TEST_QUERY_RESULTS_BUCKET_NAME,
@@ -69,7 +65,7 @@ describe('downloadWarning.handler', () => {
   })
 
   it('should return a 500 if there is an unexpected error', async () => {
-    when(getDownloadAvailabilityResult).mockRejectedValue('Some DB error')
+    vi.mocked(getDownloadAvailabilityResult).mockRejectedValue('Some DB error')
     const result = await invokeHandler()
 
     expect(result.statusCode).toEqual(500)
