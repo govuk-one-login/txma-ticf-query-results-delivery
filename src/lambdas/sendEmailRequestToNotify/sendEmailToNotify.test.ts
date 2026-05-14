@@ -12,20 +12,24 @@ import {
 import { testSuccessfulNotifyResponse } from '../../../common/utils/tests/setup/testNotifyResponses'
 import { logger } from '../../../common/sharedServices/logger'
 
-jest.mock('notifications-node-client', () => ({
-  NotifyClient: jest.fn().mockImplementation(() => {
-    return { sendEmail: mockSendEmail }
+const mockSendEmail = vi.hoisted(() => vi.fn())
+
+vi.mock('notifications-node-client', () => ({
+  NotifyClient: vi.fn().mockImplementation(function (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this: any
+  ) {
+    this.sendEmail = mockSendEmail
   })
 }))
-jest.mock(
+vi.mock(
   '../../../common/sharedServices/secrets/retrieveNotifyApiSecrets',
   () => ({
-    retrieveNotifySecrets: jest.fn()
+    retrieveNotifySecrets: vi.fn()
   })
 )
 
-const mockRetrieveNotifySecrets = retrieveNotifySecrets as jest.Mock
-const mockSendEmail = jest.fn()
+const mockRetrieveNotifySecrets = vi.mocked(retrieveNotifySecrets)
 
 const givenNotifySecretsAvailable = () => {
   mockRetrieveNotifySecrets.mockResolvedValue(ALL_NOTIFY_SECRETS)
@@ -58,7 +62,7 @@ describe('sendEmailToNotify', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   afterAll(() => {
@@ -66,7 +70,7 @@ describe('sendEmailToNotify', () => {
   })
 
   it('given correct parameters, sends an email and logs the response information', async () => {
-    jest.spyOn(logger, 'info')
+    vi.spyOn(logger, 'info')
     process.env.USE_NOTIFY_MOCK_SERVER = 'false'
     givenNotifySecretsAvailable()
     givenSuccessfulSendEmailRequest()
@@ -96,7 +100,7 @@ describe('sendEmailToNotify', () => {
   })
 
   it('given correct parameters and mock server enabled, uses mock server base URL', async () => {
-    jest.spyOn(logger, 'info')
+    vi.spyOn(logger, 'info')
     process.env.USE_NOTIFY_MOCK_SERVER = 'true'
     process.env.MOCK_SERVER_BASE_URL = 'http://mock-server'
     givenNotifySecretsAvailable()

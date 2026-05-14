@@ -6,17 +6,17 @@ import {
   TEST_ZENDESK_TICKET_ID
 } from '../../../common/utils/tests/setup/testConstants'
 
-jest.mock('../../../common/sharedServices/queue/sendSqsMessage', () => ({
-  sendSqsMessage: jest.fn()
+vi.mock('../../../common/sharedServices/queue/sendSqsMessage', () => ({
+  sendSqsMessage: vi.fn()
 }))
 
-const mockSendSqsMessage = sendSqsMessage as jest.Mock
+const mockSendSqsMessage = vi.mocked(sendSqsMessage)
 const TEST_MESSAGE_ID = 'test-message-id-12345'
 
 describe('sendMessageToCloseTicketQueue', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest.spyOn(logger, 'info')
+    vi.clearAllMocks()
+    vi.spyOn(logger, 'info')
   })
 
   it('should send message to close ticket queue with correct parameters for linkToResults', async () => {

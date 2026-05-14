@@ -8,15 +8,22 @@ import {
   TEST_SIGNED_URL
 } from '../../../common/utils/tests/setup/testConstants'
 
-jest.mock('@aws-sdk/client-s3', () => ({
-  S3Client: jest.fn().mockReturnValue({}),
-  GetObjectCommand: jest
-    .fn()
-    .mockImplementation(() => testGetObjectCommandInput)
+vi.mock('@aws-sdk/client-s3', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  S3Client: vi.fn().mockImplementation(function (this: any) {
+    return this
+  }),
+  GetObjectCommand: vi.fn().mockImplementation(function (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this: any,
+    input: object
+  ) {
+    Object.assign(this, input)
+  })
 }))
 
-jest.mock('@aws-sdk/s3-request-presigner', () => ({
-  getSignedUrl: jest.fn().mockImplementation(() => TEST_SIGNED_URL)
+vi.mock('@aws-sdk/s3-request-presigner', () => ({
+  getSignedUrl: vi.fn().mockImplementation(() => TEST_SIGNED_URL)
 }))
 
 const testGetObjectCommandInput = {
@@ -35,9 +42,11 @@ describe('createTemporaryS3Link', () => {
 
     expect(S3Client).toHaveBeenCalledWith({ region: TEST_AWS_REGION })
     expect(GetObjectCommand).toHaveBeenCalledWith(testGetObjectCommandInput)
-    expect(getSignedUrl).toHaveBeenCalledWith({}, testGetObjectCommandInput, {
-      expiresIn: 300
-    })
+    expect(getSignedUrl).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining(testGetObjectCommandInput),
+      { expiresIn: 300 }
+    )
     expect(returnUrl).toEqual(TEST_SIGNED_URL)
   })
 })

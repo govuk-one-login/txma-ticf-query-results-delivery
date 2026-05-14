@@ -4,7 +4,6 @@ import { writeOutSecureDownloadRecord } from './writeOutSecureDownloadRecord'
 import { generateSecureDownloadHash } from './generateSecureDownloadHash'
 import { copyDataFromAthenaOutputBucket } from './copyDataFromAthenaOutputBucket'
 import { queueSendResultsReadyEmail } from './queueSendResultsReadyEmail'
-import { when } from 'jest-when'
 import {
   DOWNLOAD_HASH,
   TEST_ATHENA_QUERY_ID,
@@ -14,26 +13,26 @@ import {
 } from '../../../common/utils/tests/setup/testConstants'
 import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
 
-jest.mock('./writeOutSecureDownloadRecord', () => ({
-  writeOutSecureDownloadRecord: jest.fn()
+vi.mock('./writeOutSecureDownloadRecord', () => ({
+  writeOutSecureDownloadRecord: vi.fn()
 }))
 
-jest.mock('./generateSecureDownloadHash', () => ({
-  generateSecureDownloadHash: jest.fn()
+vi.mock('./generateSecureDownloadHash', () => ({
+  generateSecureDownloadHash: vi.fn()
 }))
 
-jest.mock('./copyDataFromAthenaOutputBucket', () => ({
-  copyDataFromAthenaOutputBucket: jest.fn()
+vi.mock('./copyDataFromAthenaOutputBucket', () => ({
+  copyDataFromAthenaOutputBucket: vi.fn()
 }))
 
-jest.mock('./queueSendResultsReadyEmail', () => ({
-  queueSendResultsReadyEmail: jest.fn()
+vi.mock('./queueSendResultsReadyEmail', () => ({
+  queueSendResultsReadyEmail: vi.fn()
 }))
 
 describe('generateDownload', () => {
   beforeEach(() => {
-    jest.resetAllMocks()
-    when(generateSecureDownloadHash).mockReturnValue(DOWNLOAD_HASH)
+    vi.resetAllMocks()
+    vi.mocked(generateSecureDownloadHash).mockReturnValue(DOWNLOAD_HASH)
   })
 
   it('should handle a query complete event', async () => {

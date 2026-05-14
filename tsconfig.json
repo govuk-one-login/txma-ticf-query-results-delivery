@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
+    "noEmit": true,
     "noImplicitAny": true,
-    "lib": ["es2022"],
-    "outDir": "./dist/",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2022"
+    "target": "ES2024",
+    "types": ["vitest/globals"]
   },
   "exclude": ["node_modules"]
 }

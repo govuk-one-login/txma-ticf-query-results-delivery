@@ -5,7 +5,6 @@ import {
 } from '@aws-sdk/client-secrets-manager'
 import { retrieveSecrets } from './retrieveSecrets'
 import { mockClient } from 'aws-sdk-client-mock'
-import 'aws-sdk-client-mock-jest'
 
 const GIVEN_SECRET_ID = 'my-secret-key'
 const GIVEN_SECRET_KEY = 'MY_SECRET_ITEM'
@@ -20,7 +19,9 @@ describe('retrieve secrets', () => {
   it('should retrieve secrets when available', async () => {
     const secrets = await retrieveSecrets(GIVEN_SECRET_ID)
     expect(secrets[GIVEN_SECRET_KEY]).toEqual(GIVEN_SECRET_VALUE)
-    expect(secretsMockClient).toHaveReceivedCommandWith(GetSecretValueCommand, {
+    const calls = secretsMockClient.commandCalls(GetSecretValueCommand)
+    expect(calls).toHaveLength(1)
+    expect(calls[0].args[0].input).toMatchObject({
       SecretId: GIVEN_SECRET_ID
     })
   })
