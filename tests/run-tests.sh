@@ -10,6 +10,8 @@
 # in the Dockerfile.
 cd /test-app || exit 1
 
+export STACK_NAME="${SAM_STACK_NAME}"
+
 if [ "$TEST_ENVIRONMENT" == "build" ]; then
   npm run test:integration
   TESTS_EXIT_CODE=$?
