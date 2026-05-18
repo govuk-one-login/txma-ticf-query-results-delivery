@@ -14,7 +14,8 @@ export const retrieveSSMParameterValue = async (parameterName: string) => {
     }
   } catch (error) {
     throw Error(
-      `Error retrieving SSM parameter with name  ${parameterName}\n${error}`
+      `Error retrieving SSM parameter with name  ${parameterName}\n${error}`,
+      { cause: error }
     )
   }
 }

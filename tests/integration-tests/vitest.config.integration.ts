@@ -11,6 +11,14 @@ export default defineConfig({
     environment: 'node',
     globalSetup: ['tests/shared-test-code/setup/setup.ts'],
     include: ['tests/integration-tests/**/*.spec.ts'],
+    env: {
+      NOTIFY_MOCK_SERVER_BASE_URL:
+        'https://mockserver.transaction.build.account.gov.uk',
+      STACK_NAME: 'txma-query-results',
+      AWS_REGION: 'eu-west-2'
+    },
+    globalSetup: ['tests/shared-test-code/setup/setup.ts'],
+    include: ['tests/integration-tests/test-suites/**/*.spec.ts'],
     testTimeout: 60000
   }
 })
