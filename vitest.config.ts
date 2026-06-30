@@ -9,8 +9,11 @@ export default defineConfig({
     setupFiles: ['./common/utils/tests/setup/testEnvVars.ts'],
     coverage: {
       provider: 'v8',
+      reporter: ['text', 'lcov'],
       include: ['src/**/*.ts', 'common/**/*.ts'],
       exclude: [
+        '**/node_modules/**',
+        '**/dist/**',
         '**/scripts/**',
         '**/interface/**',
         '**/interfaces/**',
