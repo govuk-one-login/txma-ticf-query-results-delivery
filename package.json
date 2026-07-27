@@ -25,12 +25,12 @@
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "2.34.0",
-    "@aws-sdk/client-dynamodb": "3.1092.0",
-    "@aws-sdk/client-s3": "3.1092.0",
-    "@aws-sdk/client-secrets-manager": "3.1092.0",
-    "@aws-sdk/client-sqs": "3.1092.0",
-    "@aws-sdk/s3-request-presigner": "3.1092.0",
-    "@aws-sdk/util-endpoints": "3.996.33",
+    "@aws-sdk/client-dynamodb": "3.1095.0",
+    "@aws-sdk/client-s3": "3.1095.0",
+    "@aws-sdk/client-secrets-manager": "3.1095.0",
+    "@aws-sdk/client-sqs": "3.1095.0",
+    "@aws-sdk/s3-request-presigner": "3.1095.0",
+    "@aws-sdk/util-endpoints": "3.996.34",
     "notifications-node-client": "8.4.0"
   },
   "resolutions": {
