@@ -1,7 +1,9 @@
 import { sendSqsMessage } from '../../../common/sharedServices/queue/sendSqsMessage'
 import { currentDateEpochSeconds } from '../../../common/utils/currentDateEpoch'
 import { getEnv } from '../../../common/utils/getEnv'
-import { logger } from '../../../common/sharedServices/logger'
+import { logger, normaliseError } from '../../../common/sharedServices/logger'
+import { TQRD_AUDIT_01 } from '../../../common/constants/errorCodes'
+
 export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
   try {
     const messageId = await sendSqsMessage(
@@ -23,7 +25,10 @@ export const auditTemporaryS3LinkCreated = async (zendeskId: string) => {
   } catch (err) {
     logger.error(
       'Error sending audit message. This error has not disrupted any user flow',
-      err as Error
+      {
+        errorCode: TQRD_AUDIT_01,
+        error: normaliseError(err)
+      }
     )
   }
 }

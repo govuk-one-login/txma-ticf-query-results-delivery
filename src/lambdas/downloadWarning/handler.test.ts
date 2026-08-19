@@ -10,6 +10,11 @@ import {
 } from '../../../common/utils/tests/setup/testConstants'
 import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
 import { assertSecurityHeadersSet } from '../../../common/utils/tests/assertSecurityHeadersSet'
+import {
+  TQRD_RESPONSE_01,
+  TQRD_RESPONSE_02,
+  TQRD_WARNING_01
+} from '../../../common/constants/errorCodes'
 
 vi.mock('../../../common/sharedServices/getDownloadAvailabilityResult', () => ({
   getDownloadAvailabilityResult: vi.fn()
@@ -21,6 +26,7 @@ describe('downloadWarning.handler', () => {
   beforeEach(() => vi.resetAllMocks())
   vi.spyOn(logger, 'warn')
   vi.spyOn(logger, 'error')
+  vi.spyOn(logger, 'info')
   const givenNoDownloadAvailable = () => {
     vi.mocked(getDownloadAvailabilityResult).mockResolvedValue({
       canDownload: false
@@ -75,8 +81,13 @@ describe('downloadWarning.handler', () => {
 
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
     expect(logger.error).toHaveBeenCalledWith(
-      'Error while handling download warning request',
-      'Some DB error'
+      'Handler failed',
+      expect.objectContaining({
+        errorCode: TQRD_WARNING_01,
+        handlerName: 'downloadWarning',
+        outcome: 'failure',
+        error: { message: 'Some DB error', name: 'UnknownError' }
+      })
     )
   })
 
@@ -90,9 +101,10 @@ describe('downloadWarning.handler', () => {
     assertSecurityHeadersSet(result)
 
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
-    expect(logger.warn).toHaveBeenCalledWith(
-      'Returning 404 response because no record was found'
-    )
+    expect(logger.warn).toHaveBeenCalledWith('Returning 404 response', {
+      errorCode: TQRD_RESPONSE_01,
+      reason: 'no record was found'
+    })
   })
 
   it('should return a 404 if the hash provided has expired', async () => {
@@ -105,9 +117,10 @@ describe('downloadWarning.handler', () => {
     assertSecurityHeadersSet(result)
 
     expect(getDownloadAvailabilityResult).toHaveBeenCalledWith(DOWNLOAD_HASH)
-    expect(logger.warn).toHaveBeenCalledWith(
-      'Returning 404 response because the download has expired or has been downloaded too many times already'
-    )
+    expect(logger.warn).toHaveBeenCalledWith('Returning 404 response', {
+      errorCode: TQRD_RESPONSE_02,
+      reason: 'download expired or downloaded too many times'
+    })
   })
 
   it('should return a page containing a submit button to the same URL', async () => {

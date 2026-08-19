@@ -1,13 +1,14 @@
 import { logger } from '../sharedServices/logger'
+import { TQRD_PARSE_01 } from '../constants/errorCodes'
 
 export const tryParseJSON = (jsonString: string) => {
   try {
     return JSON.parse(jsonString)
-  } catch (error) {
+  } catch {
     // We deliberately don't log out the specific error here,
     // because Node 19 and onwards will include part of the string the parser
     // was attempting to parse, which can leak sensitive data
-    logger.error('Error parsing JSON')
+    logger.error('Error parsing JSON', { errorCode: TQRD_PARSE_01 })
     return {}
   }
 }

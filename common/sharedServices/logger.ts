@@ -1,23 +1,45 @@
-import { Logger } from '@aws-lambda-powertools/logger'
-import type { LogLevel } from '@aws-lambda-powertools/logger/types'
+import {
+  logger,
+  initialiseLogger as baseInitialiseLogger
+} from '@govuk-one-login/dpt-logging'
 import { Context } from 'aws-lambda'
 
-const loggerInstance = new Logger({
-  serviceName: process.env.AWS_LAMBDA_FUNCTION_NAME,
-  logLevel: (process.env.LOG_LEVEL as LogLevel) || 'DEBUG',
-  environment: process.env.ENVIRONMENT
-})
-
+/**
+ * Initialise the shared logger with Lambda context.
+ * Extends the base initialisation by also clearing repo-specific
+ * contextual keys (zendeskId, correlationId) between invocations.
+ */
 export const initialiseLogger = (context: Context) => {
-  loggerInstance.addContext(context)
-  // Because consecutive  Lambda invocations can share the same
-  // execution environment, we have to clear out any zendeskId
-  // that might be lingering in the in-memory logger
-  loggerInstance.removeKeys(['zendeskId'])
+  baseInitialiseLogger(context)
+  logger.removeKeys(['zendeskId', 'correlationId'])
 }
 
 export const appendZendeskIdToLogger = (zendeskId: string) => {
-  loggerInstance.appendKeys({ zendeskId })
+  logger.appendKeys({ zendeskId })
 }
 
-export const logger = loggerInstance
+export const appendCorrelationId = (correlationId: string) => {
+  logger.appendKeys({ correlationId })
+}
+
+/**
+ * Normalises an error object into a consistent structured format
+ * for logging. Always extracts message, name, and stack.
+ */
+export const normaliseError = (
+  err: unknown
+): { message: string; name: string; stack?: string } => {
+  if (err instanceof Error) {
+    return {
+      message: err.message,
+      name: err.name,
+      stack: err.stack
+    }
+  }
+  return {
+    message: String(err),
+    name: 'UnknownError'
+  }
+}
+
+export { logger }

@@ -19,6 +19,51 @@ This is an API Gateway, 2 AWS Lambda functions, a DynamoDB table and an S3 bucke
   - Send an HTTP Redirect to the user to the expiring link just generated
     - This will ensure that even if the user shares the link it cannot be downloaded unless they download it within the time above
 
+## Logging Standards (DPT-2736)
+
+This service follows the unified TXMA logging standard defined in [IA - DPT-2736](./IA%20-%20DPT-2736%20-%20Unifying%20logging%20standards.md).
+
+### Shared logging library
+
+This service uses [`@govuk-one-login/dpt-logging`](https://github.com/govuk-one-login/dpt-platform-logging) as its base logger. The package provides a pre-configured AWS Lambda Powertools logger with a custom `OneLoginLogger` formatter that produces a consistent JSON log shape across all DPT services.
+
+The local wrapper at `common/sharedServices/logger.ts` re-exports the shared logger and adds repo-specific helpers (correlation IDs, Zendesk ID context, error normalisation).
+
+### Key conventions
+
+- **Static messages only** — no template literals in log statements. Variable data goes in the metadata object.
+- **Handler lifecycle pattern** — every handler logs `'Handler started'` on entry and `'Handler completed'` / `'Handler failed'` on exit, including `duration` (ms) and `outcome`.
+- **Correlation IDs** — each handler sets a `correlationId` (SQS message ID for queue-triggered handlers, API Gateway request ID for HTTP handlers) which is appended to all log entries for the invocation.
+- **Normalised error logging** — errors are logged as structured objects `{ message, name, stack }` via the `normaliseError()` helper. The `err as Error` pattern is not used.
+- **Error codes** — every error log includes an `errorCode` field from `common/constants/errorCodes.ts` for quick identification and tracking.
+- **Log levels** — `DEBUG` for diagnostics, `INFO` for operational events, `WARN` for recoverable issues (e.g. 404 responses), `ERROR` for failures.
+
+### Error codes reference
+
+All error codes are defined in `common/constants/errorCodes.ts` with the format `TQRD_<AREA>_<NUMBER>`:
+
+| Code               | Description                         |
+| ------------------ | ----------------------------------- |
+| `TQRD_DOWNLOAD_01` | Confirm download handler failure    |
+| `TQRD_WARNING_01`  | Download warning handler failure    |
+| `TQRD_GENERATE_01` | Generate download handler failure   |
+| `TQRD_EMAIL_01`    | Send email to Notify failure        |
+| `TQRD_AUDIT_01`    | Audit event send failure            |
+| `TQRD_PARSE_01`    | JSON parsing error                  |
+| `TQRD_RESPONSE_01` | 404 — no record found               |
+| `TQRD_RESPONSE_02` | 404 — download expired or exhausted |
+| `TQRD_RESPONSE_03` | 400 — invalid parameters            |
+
+### Logger API
+
+The local wrapper (`common/sharedServices/logger.ts`) exports:
+
+- `initialiseLogger(context)` — wraps `@govuk-one-login/dpt-logging`'s initialiser; also clears repo-specific contextual keys
+- `appendZendeskIdToLogger(zendeskId)` — add Zendesk ticket ID to all subsequent logs
+- `appendCorrelationId(correlationId)` — add correlation ID to all subsequent logs
+- `normaliseError(err)` — consistently extract `{ message, name, stack }` from any error
+- `logger` — the pre-configured Logger instance from `@govuk-one-login/dpt-logging`
+
 ## Unit tests
 
 To run the unit tests, use the following command:
