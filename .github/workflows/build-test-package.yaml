@@ -4,6 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   AWS_REGION: eu-west-2
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   validate-build:
