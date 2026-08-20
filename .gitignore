@@ -17,5 +17,3 @@ node_modules/
 
 # IntelliJ
 .idea/*
-
-.npmrc

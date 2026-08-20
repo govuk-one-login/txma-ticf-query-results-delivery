@@ -12,3 +12,4 @@ dist/
 Dockerfile
 sonar-project.properties
 .nvmrc
+.npmrc
