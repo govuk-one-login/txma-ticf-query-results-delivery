@@ -17,13 +17,15 @@ RUN apk update && \
 
 WORKDIR /test-app
 
-COPY package.json package-lock.json tsconfig.json ./
+COPY package.json package-lock.json tsconfig.json .npmrc ./
 COPY tests ./tests
 COPY common ./common
 COPY tests/run-tests.sh /
 
 RUN corepack enable
-RUN npm ci
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
+    NODE_AUTH_TOKEN=$(cat /run/secrets/NODE_AUTH_TOKEN) \
+    npm ci
 RUN chmod +x /run-tests.sh
 
 WORKDIR /test-app/tests
