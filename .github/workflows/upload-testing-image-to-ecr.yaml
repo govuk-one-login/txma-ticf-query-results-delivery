@@ -41,6 +41,6 @@ jobs:
           IMAGE_TAG: latest
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build -f tests/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg GIT_COMMIT=$(git log -1 --format=%h) --secret id=NODE_AUTH_TOKEN .
+          docker build -f tests/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --secret id=NODE_AUTH_TOKEN .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           cosign sign --key awskms:///${CONTAINER_SIGN_KMS_KEY} $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
