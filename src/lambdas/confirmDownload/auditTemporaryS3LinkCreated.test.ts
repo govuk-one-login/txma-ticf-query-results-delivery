@@ -7,6 +7,7 @@ import {
 } from '../../../common/utils/tests/setup/testConstants'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
 import { logger } from '../../../common/sharedServices/logger'
+import { TQRD_AUDIT_01 } from '../../../common/constants/errorCodes'
 
 vi.mock('../../../common/sharedServices/queue/sendSqsMessage', () => ({
   sendSqsMessage: vi.fn()
@@ -43,12 +44,22 @@ describe('auditTemporaryS3LinkCreated', () => {
   })
 
   it('should trap and log any errors', async () => {
-    const errorMessage =
+    const testError = new Error(
       'Error sending audit message. This error has not disrupted any user flow'
-    const testError = new Error(errorMessage)
+    )
     vi.mocked(sendSqsMessage).mockRejectedValue(testError)
     await auditTemporaryS3LinkCreated(TEST_ZENDESK_TICKET_ID)
 
-    expect(logger.error).toHaveBeenCalledWith(errorMessage, testError as Error)
+    expect(logger.error).toHaveBeenCalledWith(
+      'Error sending audit message. This error has not disrupted any user flow',
+      {
+        errorCode: TQRD_AUDIT_01,
+        error: {
+          message: testError.message,
+          name: testError.name,
+          stack: testError.stack
+        }
+      }
+    )
   })
 })

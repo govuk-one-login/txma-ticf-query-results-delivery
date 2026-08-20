@@ -4,6 +4,7 @@ on: [push, workflow_dispatch]
 
 env:
   AWS_REGION: eu-west-2
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   validate-build:
@@ -11,19 +12,24 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      packages: read
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Check out repository code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Setup node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           cache: npm
-          cache-dependancy-path: package-lock.json
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@govuk-one-login'
 
       - name: Install dependencies
         run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@89ddb14d60e682855e3fea4be85b3c56485de310 # v3

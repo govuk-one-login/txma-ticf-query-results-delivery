@@ -10,13 +10,27 @@ import {
   notFoundResponse,
   serverErrorResponse
 } from '../../../common/sharedServices/responseHelpers'
-import { initialiseLogger, logger } from '../../../common/sharedServices/logger'
+import {
+  appendCorrelationId,
+  initialiseLogger,
+  logger,
+  normaliseError
+} from '../../../common/sharedServices/logger'
+import { TQRD_WARNING_01 } from '../../../common/constants/errorCodes'
 
 export const handler = async (
   event: APIGatewayProxyEvent,
   context: Context
 ): Promise<APIGatewayProxyResult> => {
   initialiseLogger(context)
+  const startTime = Date.now()
+  const correlationId = context.awsRequestId
+  appendCorrelationId(correlationId)
+
+  logger.info('Handler started', {
+    handlerName: 'downloadWarning'
+  })
+
   try {
     if (!event.pathParameters?.downloadHash) {
       return invalidParametersResponse()
@@ -32,11 +46,23 @@ export const handler = async (
       return notFoundResponse(!!downloadAvailabilityResult.zendeskId)
     }
 
+    logger.info('Handler completed', {
+      handlerName: 'downloadWarning',
+      outcome: 'success',
+      duration: Date.now() - startTime
+    })
+
     return downloadConfirmResponse(
       downloadAvailabilityResult.downloadsRemaining as number
     )
   } catch (err) {
-    logger.error('Error while handling download warning request', err as Error)
+    logger.error('Handler failed', {
+      errorCode: TQRD_WARNING_01,
+      handlerName: 'downloadWarning',
+      outcome: 'failure',
+      duration: Date.now() - startTime,
+      error: normaliseError(err)
+    })
     return serverErrorResponse()
   }
 }

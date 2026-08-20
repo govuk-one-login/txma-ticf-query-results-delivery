@@ -14,13 +14,27 @@ import { createTemporaryS3Link } from './createTemporaryS3Link'
 import { decrementDownloadCount } from '../../../common/sharedServices/dynamoDb/decrementDownloadCount'
 import { createDownloadPageResponse } from './createDownloadPageResponse'
 import { auditTemporaryS3LinkCreated } from './auditTemporaryS3LinkCreated'
-import { initialiseLogger, logger } from '../../../common/sharedServices/logger'
+import {
+  appendCorrelationId,
+  initialiseLogger,
+  logger,
+  normaliseError
+} from '../../../common/sharedServices/logger'
+import { TQRD_DOWNLOAD_01 } from '../../../common/constants/errorCodes'
 
 export const handler = async (
   event: APIGatewayProxyEvent,
   context: Context
 ): Promise<APIGatewayProxyResult> => {
   initialiseLogger(context)
+  const startTime = Date.now()
+  const correlationId = context.awsRequestId
+  appendCorrelationId(correlationId)
+
+  logger.info('Handler started', {
+    handlerName: 'confirmDownload'
+  })
+
   try {
     if (!event.pathParameters?.downloadHash) {
       return invalidParametersResponse()
@@ -47,9 +61,21 @@ export const handler = async (
       downloadAvailabilityResult.zendeskId as string
     )
 
+    logger.info('Handler completed', {
+      handlerName: 'confirmDownload',
+      outcome: 'success',
+      duration: Date.now() - startTime
+    })
+
     return htmlResponse(200, createDownloadPageResponse(temporaryS3Link))
   } catch (err) {
-    logger.error('Error while handling confirm download request', err as Error)
+    logger.error('Handler failed', {
+      errorCode: TQRD_DOWNLOAD_01,
+      handlerName: 'confirmDownload',
+      outcome: 'failure',
+      duration: Date.now() - startTime,
+      error: normaliseError(err)
+    })
 
     return serverErrorResponse()
   }

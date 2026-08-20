@@ -12,6 +12,7 @@ import { constructSqsEvent } from '../../../common/utils/tests/events/sqsEvent'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
 import { logger } from '../../../common/sharedServices/logger'
 import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
+import { TQRD_EMAIL_01 } from '../../../common/constants/errorCodes'
 
 vi.mock('./sendEmailToNotify', () => ({
   sendEmailToNotify: vi.fn()
@@ -54,6 +55,7 @@ const unsuccessfulCommentCopyReference = 'resultNotEmailed'
 describe('initiate sendEmailRequest handler', () => {
   beforeEach(() => {
     vi.spyOn(logger, 'error')
+    vi.spyOn(logger, 'info')
   })
   afterEach(() => {
     vi.resetAllMocks()
@@ -126,8 +128,17 @@ describe('initiate sendEmailRequest handler', () => {
       ).rejects.toThrow('Required details were not all present in event body')
 
       expect(logger.error).toHaveBeenCalledWith(
-        'Could not send a request to Notify: ',
-        Error('Required details were not all present in event body')
+        'Could not send a request to Notify',
+        expect.objectContaining({
+          errorCode: TQRD_EMAIL_01,
+          handlerName: 'sendEmailRequestToNotify',
+          outcome: 'failure',
+          error: {
+            message: 'Required details were not all present in event body',
+            name: 'Error',
+            stack: expect.any(String)
+          }
+        })
       )
       expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
         TEST_ZENDESK_TICKET_ID,
@@ -151,8 +162,17 @@ describe('initiate sendEmailRequest handler', () => {
       ).rejects.toThrow('Required details were not all present in event body')
 
       expect(logger.error).toHaveBeenCalledWith(
-        'Could not send a request to Notify: ',
-        Error('Required details were not all present in event body')
+        'Could not send a request to Notify',
+        expect.objectContaining({
+          errorCode: TQRD_EMAIL_01,
+          handlerName: 'sendEmailRequestToNotify',
+          outcome: 'failure',
+          error: {
+            message: 'Required details were not all present in event body',
+            name: 'Error',
+            stack: expect.any(String)
+          }
+        })
       )
       expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
         TEST_ZENDESK_TICKET_ID,
@@ -168,8 +188,17 @@ describe('initiate sendEmailRequest handler', () => {
     )
 
     expect(logger.error).toHaveBeenCalledWith(
-      'Could not send a request to Notify: ',
-      Error('A Notify related error')
+      'Could not send a request to Notify',
+      expect.objectContaining({
+        errorCode: TQRD_EMAIL_01,
+        handlerName: 'sendEmailRequestToNotify',
+        outcome: 'failure',
+        error: {
+          message: 'A Notify related error',
+          name: 'Error',
+          stack: expect.any(String)
+        }
+      })
     )
     expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
       TEST_ZENDESK_TICKET_ID,
@@ -206,8 +235,16 @@ describe('initiate sendEmailRequest handler', () => {
     )
 
     expect(logger.error).toHaveBeenCalledWith(
-      'Could not send a request to Notify: Email address is not valid',
-      notifyError
+      'Could not send a request to Notify',
+      expect.objectContaining({
+        errorCode: TQRD_EMAIL_01,
+        notifyError: 'Email address is not valid',
+        error: {
+          message: 'Notify error',
+          name: 'Error',
+          stack: expect.any(String)
+        }
+      })
     )
   })
 })

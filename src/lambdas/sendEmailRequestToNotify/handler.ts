@@ -7,13 +7,25 @@ import { notifyCopy } from '../../../common/constants/notifyCopy'
 import { NotifyError } from '../../../common/types/notify/notifyError'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
 import {
+  appendCorrelationId,
   appendZendeskIdToLogger,
   initialiseLogger,
-  logger
+  logger,
+  normaliseError
 } from '../../../common/sharedServices/logger'
+import { TQRD_EMAIL_01 } from '../../../common/constants/errorCodes'
 
 export const handler = async (event: SQSEvent, context: Context) => {
   initialiseLogger(context)
+  const startTime = Date.now()
+  const correlationId = event.Records[0]?.messageId ?? context.awsRequestId
+  appendCorrelationId(correlationId)
+
+  logger.info('Handler started', {
+    handlerName: 'sendEmailRequestToNotify',
+    recordCount: event.Records.length
+  })
+
   const requestDetails = parseRequestDetails(event)
   appendZendeskIdToLogger(requestDetails.zendeskId)
 
@@ -23,13 +35,15 @@ export const handler = async (event: SQSEvent, context: Context) => {
     }
     await sendEmailToNotify(requestDetails)
   } catch (error) {
-    logger.error(
-      `${interpolateTemplate(
-        'requestNotSentToNotify',
-        notifyCopy
-      )}${formatNotifyErrors(error)}`,
-      error as Error
-    )
+    const notifyErrorDetail = formatNotifyErrors(error)
+    logger.error('Could not send a request to Notify', {
+      errorCode: TQRD_EMAIL_01,
+      handlerName: 'sendEmailRequestToNotify',
+      outcome: 'failure',
+      duration: Date.now() - startTime,
+      notifyError: notifyErrorDetail || undefined,
+      error: normaliseError(error)
+    })
     await sendMessageToCloseTicketQueue(
       requestDetails.zendeskId,
       'resultNotEmailed'
@@ -38,6 +52,12 @@ export const handler = async (event: SQSEvent, context: Context) => {
   }
 
   await sendMessageToCloseTicketQueue(requestDetails.zendeskId, 'linkToResults')
+
+  logger.info('Handler completed', {
+    handlerName: 'sendEmailRequestToNotify',
+    outcome: 'success',
+    duration: Date.now() - startTime
+  })
 }
 
 const formatNotifyErrors = (error: unknown): string => {
