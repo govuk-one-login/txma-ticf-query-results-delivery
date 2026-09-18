@@ -12,6 +12,7 @@ import {
   TEST_ZENDESK_TICKET_ID
 } from '../../../common/utils/tests/setup/testConstants'
 import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
+import * as loggerModule from '../../../common/sharedServices/logger'
 
 vi.mock('./writeOutSecureDownloadRecord', () => ({
   writeOutSecureDownloadRecord: vi.fn()
@@ -33,6 +34,8 @@ describe('generateDownload', () => {
   beforeEach(() => {
     vi.resetAllMocks()
     vi.mocked(generateSecureDownloadHash).mockReturnValue(DOWNLOAD_HASH)
+    vi.spyOn(loggerModule, 'appendZendeskIdToLogger')
+    vi.spyOn(loggerModule.logger, 'info')
   })
 
   it('should handle a query complete event', async () => {
@@ -63,6 +66,33 @@ describe('generateDownload', () => {
       recipientEmail: TEST_RECIPIENT_EMAIL,
       recipientName: TEST_RECIPIENT_NAME
     })
+  })
+
+  it('should append zendeskId to logger before Handler started is logged', async () => {
+    await handler(
+      constructSqsEvent(
+        JSON.stringify({
+          athenaQueryId: TEST_ATHENA_QUERY_ID,
+          recipientEmail: TEST_RECIPIENT_EMAIL,
+          recipientName: TEST_RECIPIENT_NAME,
+          zendeskTicketId: TEST_ZENDESK_TICKET_ID
+        })
+      ),
+      mockLambdaContext
+    )
+
+    const appendZendeskIdOrder = vi.mocked(loggerModule.appendZendeskIdToLogger)
+      .mock.invocationCallOrder[0]
+    const handlerStartedOrder = vi
+      .mocked(loggerModule.logger.info)
+      .mock.calls.findIndex((call) => call[0] === 'Handler started')
+    const handlerStartedCallOrder = vi.mocked(loggerModule.logger.info).mock
+      .invocationCallOrder[handlerStartedOrder]
+
+    expect(appendZendeskIdOrder).toBeLessThan(handlerStartedCallOrder)
+    expect(loggerModule.appendZendeskIdToLogger).toHaveBeenCalledWith(
+      TEST_ZENDESK_TICKET_ID
+    )
   })
 
   it('should throw an appropriate error if there is no data in the event', async () => {

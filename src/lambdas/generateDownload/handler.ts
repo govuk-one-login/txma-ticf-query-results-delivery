@@ -21,6 +21,11 @@ export const handler = async (event: SQSEvent, context: Context) => {
   const correlationId = event.Records[0]?.messageId ?? context.awsRequestId
   appendCorrelationId(correlationId)
 
+  const eventData = tryParseJSON(event.Records[0]?.body ?? '')
+  if (isQueryCompleteMessage(eventData)) {
+    appendZendeskIdToLogger(eventData.zendeskTicketId)
+  }
+
   logger.info('Handler started', {
     handlerName: 'generateDownload',
     recordCount: event.Records.length
@@ -30,7 +35,6 @@ export const handler = async (event: SQSEvent, context: Context) => {
     if (event.Records.length === 0) {
       throw new Error('No data in event')
     }
-    const eventData = tryParseJSON(event.Records[0].body)
     if (isEmpty(eventData)) {
       throw new Error('Event data did not include a valid JSON body')
     }
@@ -38,8 +42,6 @@ export const handler = async (event: SQSEvent, context: Context) => {
     if (!isQueryCompleteMessage(eventData)) {
       throw new Error('Event data was not of the correct type')
     }
-
-    appendZendeskIdToLogger(eventData.zendeskTicketId)
 
     const downloadHash = generateSecureDownloadHash()
     await copyDataFromAthenaOutputBucket(eventData.athenaQueryId)
