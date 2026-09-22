@@ -21,13 +21,13 @@ export const handler = async (event: SQSEvent, context: Context) => {
   const correlationId = event.Records[0]?.messageId ?? context.awsRequestId
   appendCorrelationId(correlationId)
 
+  const requestDetails = parseRequestDetails(event)
+  appendZendeskIdToLogger(requestDetails.zendeskId)
+
   logger.info('Handler started', {
     handlerName: 'sendEmailRequestToNotify',
     recordCount: event.Records.length
   })
-
-  const requestDetails = parseRequestDetails(event)
-  appendZendeskIdToLogger(requestDetails.zendeskId)
 
   try {
     if (isEventBodyInvalid(requestDetails)) {
