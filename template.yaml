@@ -736,7 +736,7 @@ Resources:
   ConfirmDownloadRequestLambdaFilter:
     Type: AWS::Logs::MetricFilter
     Properties:
-      FilterPattern: 'Error while handling confirm download request'
+      FilterPattern: 'Handler failed'
       LogGroupName: !Ref ConfirmDownloadFunctionLogs
       MetricTransformations:
         - MetricValue: '1'
@@ -746,7 +746,7 @@ Resources:
   DownloadWarningLambdaFilter:
     Type: AWS::Logs::MetricFilter
     Properties:
-      FilterPattern: 'Error while handling download warning request'
+      FilterPattern: 'Handler failed'
       LogGroupName: !Ref DownloadWarningFunctionLogs
       MetricTransformations:
         - MetricValue: '1'
@@ -756,7 +756,7 @@ Resources:
   SendEmailRequestToNotifyLambdaFilter:
     Type: AWS::Logs::MetricFilter
     Properties:
-      FilterPattern: 'requestNotSentToNotify'
+      FilterPattern: 'Could not send a request to Notify'
       LogGroupName: !Ref SendEmailRequestToNotifyLogs
       MetricTransformations:
         - MetricValue: '1'
