@@ -10,7 +10,7 @@ import { handler } from './handler'
 import { sendEmailToNotify } from './sendEmailToNotify'
 import { constructSqsEvent } from '../../../common/utils/tests/events/sqsEvent'
 import { sendMessageToCloseTicketQueue } from './sendMessageToCloseTicketQueue'
-import { logger } from '../../../common/sharedServices/logger'
+import * as loggerModule from '../../../common/sharedServices/logger'
 import { mockLambdaContext } from '../../../common/utils/tests/mocks/mockLambdaContext'
 import { TQRD_EMAIL_01 } from '../../../common/constants/errorCodes'
 
@@ -54,8 +54,9 @@ const unsuccessfulCommentCopyReference = 'resultNotEmailed'
 
 describe('initiate sendEmailRequest handler', () => {
   beforeEach(() => {
-    vi.spyOn(logger, 'error')
-    vi.spyOn(logger, 'info')
+    vi.spyOn(loggerModule, 'appendZendeskIdToLogger')
+    vi.spyOn(loggerModule.logger, 'error')
+    vi.spyOn(loggerModule.logger, 'info')
   })
   afterEach(() => {
     vi.resetAllMocks()
@@ -73,6 +74,23 @@ describe('initiate sendEmailRequest handler', () => {
     expect(sendMessageToCloseTicketQueue).toHaveBeenCalledWith(
       TEST_ZENDESK_TICKET_ID,
       successfulCommentCopyReference
+    )
+  })
+
+  it('should append zendeskId to logger before Handler started is logged', async () => {
+    await callHandlerWithBody(validEventBody)
+
+    const appendZendeskIdOrder = vi.mocked(loggerModule.appendZendeskIdToLogger)
+      .mock.invocationCallOrder[0]
+    const handlerStartedIndex = vi
+      .mocked(loggerModule.logger.info)
+      .mock.calls.findIndex((call) => call[0] === 'Handler started')
+    const handlerStartedCallOrder = vi.mocked(loggerModule.logger.info).mock
+      .invocationCallOrder[handlerStartedIndex]
+
+    expect(appendZendeskIdOrder).toBeLessThan(handlerStartedCallOrder)
+    expect(loggerModule.appendZendeskIdToLogger).toHaveBeenCalledWith(
+      TEST_ZENDESK_TICKET_ID
     )
   })
 
@@ -127,7 +145,7 @@ describe('initiate sendEmailRequest handler', () => {
         callHandlerWithBody(JSON.stringify(eventBodyParams))
       ).rejects.toThrow('Required details were not all present in event body')
 
-      expect(logger.error).toHaveBeenCalledWith(
+      expect(loggerModule.logger.error).toHaveBeenCalledWith(
         'Could not send a request to Notify',
         expect.objectContaining({
           errorCode: TQRD_EMAIL_01,
@@ -161,7 +179,7 @@ describe('initiate sendEmailRequest handler', () => {
         callHandlerWithBody(JSON.stringify(eventBodyParams))
       ).rejects.toThrow('Required details were not all present in event body')
 
-      expect(logger.error).toHaveBeenCalledWith(
+      expect(loggerModule.logger.error).toHaveBeenCalledWith(
         'Could not send a request to Notify',
         expect.objectContaining({
           errorCode: TQRD_EMAIL_01,
@@ -187,7 +205,7 @@ describe('initiate sendEmailRequest handler', () => {
       'A Notify related error'
     )
 
-    expect(logger.error).toHaveBeenCalledWith(
+    expect(loggerModule.logger.error).toHaveBeenCalledWith(
       'Could not send a request to Notify',
       expect.objectContaining({
         errorCode: TQRD_EMAIL_01,
@@ -234,7 +252,7 @@ describe('initiate sendEmailRequest handler', () => {
       'Notify error'
     )
 
-    expect(logger.error).toHaveBeenCalledWith(
+    expect(loggerModule.logger.error).toHaveBeenCalledWith(
       'Could not send a request to Notify',
       expect.objectContaining({
         errorCode: TQRD_EMAIL_01,
