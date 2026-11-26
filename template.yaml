@@ -75,8 +75,6 @@ Globals:
   Function:
     Architectures:
       - 'arm64'
-    CodeSigningConfigArn:
-      !If [UseCodeSigning, !Ref CodeSigningConfigArn, !Ref AWS::NoValue]
     Environment:
       Variables:
         NODE_OPTIONS: --enable-source-maps
@@ -231,6 +229,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: dist/confirmDownload/
+      CodeSigningConfigArn:
+        !If [UseCodeSigning, !Ref CodeSigningConfigArn, !Ref AWS::NoValue]
       Handler: handler.handler
       Environment:
         Variables:
@@ -343,6 +343,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: dist/downloadWarning/
+      CodeSigningConfigArn:
+        !If [UseCodeSigning, !Ref CodeSigningConfigArn, !Ref AWS::NoValue]
       Handler: handler.handler
       Environment:
         Variables:
